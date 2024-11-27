@@ -1,10 +1,18 @@
 #pragma once
 
 #include "ofMain.h"
+#include "../Particle.h"
+
 
 class ofApp : public ofBaseApp{
 
 	public:
+		int cols, rows; // Anzahl der Spalten und Reihen im Gitter
+		int resolution; // Größe jeder Zelle
+		vector<ofVec2f> flowField; // Array für die Vektoren im Gitter
+		vector<Particle> particles;
+		float zOffset; // Für animierten Perlin Noise
+
 		void setup();
 		void update();
 		void draw();
