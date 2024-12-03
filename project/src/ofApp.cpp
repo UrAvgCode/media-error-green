@@ -1,8 +1,10 @@
 #include "ofApp.h"
 
+ofShader shader;
+
 //--------------------------------------------------------------
 void ofApp::setup(){
-
+	shader.load("shaders/chromatic");
 }
 
 //--------------------------------------------------------------
@@ -12,7 +14,10 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-
+    ofSetColor(255);
+    shader.begin();
+    ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
+    shader.end();
 }
 
 //--------------------------------------------------------------
