@@ -2,12 +2,12 @@
 #include <ofGLProgrammableRenderer.cpp>
 
 void Particle::applyForce(ofVec2f force) {
-    acceleration += force;
+    acceleration += 5;
 }
 
 void Particle::update() {
 
-    velocity += acceleration;
+    velocity = acceleration;
     velocity.limit(maxSpeed);
     position += velocity;
     acceleration *= 0; // Beschleunigung zurücksetzen
@@ -21,6 +21,6 @@ void Particle::edges() {
 }
 
 void Particle::draw() {
-    ofDrawCircle(position, 2);
+    ofDrawCircle(position, 25);
 }
 

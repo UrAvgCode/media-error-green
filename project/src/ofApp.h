@@ -13,6 +13,8 @@ class ofApp : public ofBaseApp{
 		vector<Particle> particles;
 		float zOffset; // Für animierten Perlin Noise
 
+		void reset();
+
 		void setup();
 		void update();
 		void draw();
@@ -29,4 +31,11 @@ class ofApp : public ofBaseApp{
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
 		
+
+		ofImage img;
+		int maxSize;
+		int generation;
+		ofImageQualityType quality;
+		int addX, addY, subX, subY;
+		float glitchStart;
 };
