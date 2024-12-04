@@ -31,14 +31,14 @@
     <CopyFileToFolders Include="res\logo.svg">
       <Filter>res</Filter>
     </CopyFileToFolders>
-    <CopyFileToFolders Include="res\logo.png">
-      <Filter>res</Filter>
-    </CopyFileToFolders>
     <CopyFileToFolders Include="src\shaders\chromatic.frag">
       <Filter>shaders</Filter>
     </CopyFileToFolders>
     <CopyFileToFolders Include="src\shaders\chromatic.vert">
       <Filter>shaders</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="res\logo.png">
+      <Filter>res</Filter>
     </CopyFileToFolders>
   </ItemGroup>
 </Project>
