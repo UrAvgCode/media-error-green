@@ -15,6 +15,12 @@
     <Filter Include="src">
       <UniqueIdentifier>{d8376475-7454-4a24-b08a-aac121d3ad6f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="addons">
+      <UniqueIdentifier>{3336daf4-ebde-42ed-ae33-61820b85d9f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources">
+      <UniqueIdentifier>{5726d514-a11d-41ee-a2b9-bb72d4940f9a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\ofApp.h">
@@ -26,5 +32,13 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="icon.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\Personal\WS202425\Projekt\mediapipeDetection\resources\rotateGreen.png">
+      <Filter>resources</Filter>
+    </Image>
+    <Image Include="resources\logo_filled.png">
+      <Filter>resources</Filter>
+    </Image>
   </ItemGroup>
 </Project>

@@ -3,6 +3,10 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+
+	logo.load("rotateGreen.png");
+	logo.resize(200,200);
+
 	resolution = 20; // Zellenbreite und -höhe
 	cols = ofGetWidth() / resolution;
 	rows = ofGetHeight() / resolution;
@@ -51,9 +55,22 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
+	int logo_left = screen_width / 2 - logo.getWidth() / 2;
+	int logo_right = screen_width / 2 + logo.getWidth() / 2;
+	int logo_top = screen_height / 2 - logo.getHeight() / 2;
+	int logo_bottom = screen_height / 2 + logo.getHeight() / 2;
+	logo.draw(logo_left, logo_top);
 	// Flow Field visualisieren
 	for (int y = 0; y < rows; y++) {
 		for (int x = 0; x < cols; x++) {
+			int posX = x * resolution;
+			int posY = y * resolution;
+			// Überprüfen, ob der aktuelle Punkt im Logo-Bereich liegt
+			if (posX >= logo_left && posX <= logo_right &&
+				posY >= logo_top && posY <= logo_bottom) {
+				continue; // Überspringe diesen Punkt
+			}
+
 			ofVec2f vec = flowField[y * cols + x];
 			ofPushMatrix();
 			ofTranslate(x * resolution, y * resolution);

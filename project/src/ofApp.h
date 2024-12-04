@@ -7,11 +7,14 @@
 class ofApp : public ofBaseApp{
 
 	public:
+		int screen_width = ofGetWidth();
+		int screen_height = ofGetHeight();
 		int cols, rows; // Anzahl der Spalten und Reihen im Gitter
 		int resolution; // Größe jeder Zelle
 		vector<ofVec2f> flowField; // Array für die Vektoren im Gitter
 		vector<Particle> particles;
 		float zOffset; // Für animierten Perlin Noise
+		ofImage logo;
 
 		void setup();
 		void update();
