@@ -12,11 +12,11 @@
     <Filter Include="src">
       <UniqueIdentifier>{d8376475-7454-4a24-b08a-aac121d3ad6f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="shaders">
-      <UniqueIdentifier>{5c4f02a8-3be7-42c8-aa72-9e9e63e57277}</UniqueIdentifier>
-    </Filter>
     <Filter Include="res">
       <UniqueIdentifier>{9ccbe672-ffe1-4d45-944f-95966ca636c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shaders">
+      <UniqueIdentifier>{e6c7762c-485a-4afd-b3e2-c50e94ed4b1a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -28,17 +28,17 @@
     <ResourceCompile Include="icon.rc" />
   </ItemGroup>
   <ItemGroup>
-    <CopyFileToFolders Include="src\shaders\chromatic.frag">
-      <Filter>shaders</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="src\shaders\chromatic.vert">
-      <Filter>shaders</Filter>
-    </CopyFileToFolders>
     <CopyFileToFolders Include="res\logo.svg">
       <Filter>res</Filter>
     </CopyFileToFolders>
     <CopyFileToFolders Include="res\logo.png">
       <Filter>res</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="src\shaders\chromatic.frag">
+      <Filter>shaders</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="src\shaders\chromatic.vert">
+      <Filter>shaders</Filter>
     </CopyFileToFolders>
   </ItemGroup>
 </Project>

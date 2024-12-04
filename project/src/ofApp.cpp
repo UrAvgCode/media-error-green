@@ -4,6 +4,7 @@ ofShader shader;
 ofFbo fbo;
 ofImage image;
 float aberration = 10;
+float shader_time = 0;
 
 //--------------------------------------------------------------
 void ofApp::setup(){
@@ -15,7 +16,8 @@ void ofApp::setup(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
-
+    aberration = ofMap(mouseX, 0, ofGetWidth(), 0, 100);
+    shader_time += 0.5f;
 }
 
 //--------------------------------------------------------------
@@ -24,12 +26,13 @@ void ofApp::draw(){
     image.draw(50, 50);
     fbo.end();
 
-	aberration = ofMap(mouseX, 0, ofGetWidth(), 0, 100);
-
     shader.begin();
     shader.setUniformTexture("tex0", fbo.getTexture(), 0);
     shader.setUniform1f("aberrationAmount", aberration);
+	shader.setUniform1f("time", shader_time);
+
     fbo.draw(0, 0);
+
     shader.end();
 }
 
