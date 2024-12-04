@@ -1,10 +1,15 @@
 #include "ofApp.h"
 
 ofShader shader;
+ofFbo fbo;
+ofImage image;
 
 //--------------------------------------------------------------
 void ofApp::setup(){
 	shader.load("shaders/chromatic");
+
+    image.load("res/logo.png");
+    fbo.allocate(image.getWidth(), image.getHeight(), GL_RGBA);
 }
 
 //--------------------------------------------------------------
@@ -14,9 +19,14 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-    ofSetColor(255);
+    fbo.begin();
+    image.draw(0, 0);
+    fbo.end();
+
     shader.begin();
-    ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
+    shader.setUniformTexture("tex0", fbo.getTexture(), 0);
+    shader.setUniform1f("aberrationAmount", 10);
+    fbo.draw(0, 0);
     shader.end();
 }
 

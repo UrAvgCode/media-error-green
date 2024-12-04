@@ -15,6 +15,9 @@
     <Filter Include="shaders">
       <UniqueIdentifier>{5c4f02a8-3be7-42c8-aa72-9e9e63e57277}</UniqueIdentifier>
     </Filter>
+    <Filter Include="res">
+      <UniqueIdentifier>{9ccbe672-ffe1-4d45-944f-95966ca636c3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\ofApp.h">
@@ -30,6 +33,12 @@
     </CopyFileToFolders>
     <CopyFileToFolders Include="src\shaders\chromatic.vert">
       <Filter>shaders</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="res\logo.svg">
+      <Filter>res</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="res\logo.png">
+      <Filter>res</Filter>
     </CopyFileToFolders>
   </ItemGroup>
 </Project>

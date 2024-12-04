@@ -1,22 +1,20 @@
-// fragment shader
-
 #version 150
 
-out vec4 outputColor;
+uniform sampler2DRect tex0;
+uniform float aberrationAmount;
 
-void main()
-{
-    // gl_FragCoord contains the window relative coordinate for the fragment.
-    // we use gl_FragCoord.x position to control the red color value.
-    // we use gl_FragCoord.y position to control the green color value.
-    // please note that all r, g, b, a values are between 0 and 1.
+in vec2 vTexCoord;
+out vec4 fragColor;
 
-    float windowWidth = 1024.0;
-    float windowHeight = 768.0;
+void main() {
+    vec2 offset = vec2(aberrationAmount, 0.0);
 
-    float r = gl_FragCoord.x / windowWidth;
-    float g = gl_FragCoord.y / windowHeight;
-    float b = 1.0;
-    float a = 1.0;
-    outputColor = vec4(r, g, b, a);
+    vec3 color;
+    color.r = texture(tex0, vTexCoord + offset).r;
+    color.g = texture(tex0, vTexCoord).g;
+    color.b = texture(tex0, vTexCoord - offset).b;
+
+    float alpha = 1.0;
+
+    fragColor = vec4(color, alpha);
 }
