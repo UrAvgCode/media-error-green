@@ -3,13 +3,14 @@
 ofShader shader;
 ofFbo fbo;
 ofImage image;
+float aberration = 10;
 
 //--------------------------------------------------------------
 void ofApp::setup(){
 	shader.load("shaders/chromatic");
 
     image.load("res/logo.png");
-    fbo.allocate(image.getWidth(), image.getHeight(), GL_RGBA);
+    fbo.allocate(image.getWidth() + 100, image.getHeight() + 100, GL_RGBA);
 }
 
 //--------------------------------------------------------------
@@ -20,12 +21,14 @@ void ofApp::update(){
 //--------------------------------------------------------------
 void ofApp::draw(){
     fbo.begin();
-    image.draw(0, 0);
+    image.draw(50, 50);
     fbo.end();
+
+	aberration = ofMap(mouseX, 0, ofGetWidth(), 0, 100);
 
     shader.begin();
     shader.setUniformTexture("tex0", fbo.getTexture(), 0);
-    shader.setUniform1f("aberrationAmount", 10);
+    shader.setUniform1f("aberrationAmount", aberration);
     fbo.draw(0, 0);
     shader.end();
 }
