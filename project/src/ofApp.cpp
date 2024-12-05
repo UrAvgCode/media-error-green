@@ -11,7 +11,7 @@ void ofApp::setup(){
 	shader.load("shaders/chromatic");
 
     image.load("res/logo.png");
-    fbo.allocate(image.getWidth() + 100, image.getHeight() + 100, GL_RGBA);
+    fbo.allocate(ofGetHeight(), ofGetWidth(), GL_RGBA);
 }
 
 //--------------------------------------------------------------
@@ -23,7 +23,7 @@ void ofApp::update(){
 //--------------------------------------------------------------
 void ofApp::draw(){
     fbo.begin();
-    image.draw(50, 50);
+    image.draw(ofGetWidth() / 2 - image.getWidth() / 2, ofGetHeight() / 2 - image.getHeight() / 2);
     fbo.end();
 
     shader.begin();
