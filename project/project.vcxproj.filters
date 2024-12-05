@@ -40,5 +40,11 @@
     <CopyFileToFolders Include="res\logo.png">
       <Filter>res</Filter>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="src\shaders\blur.frag">
+      <Filter>shaders</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="src\shaders\blur.vert">
+      <Filter>shaders</Filter>
+    </CopyFileToFolders>
   </ItemGroup>
 </Project>
