@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ofMain.h"
+#include "ofxOpenCv.h"
 
 class ofApp : public ofBaseApp{
 
@@ -8,6 +9,10 @@ class ofApp : public ofBaseApp{
 		void setup();
 		void update();
 		void draw();
+
+		ofVideoGrabber vidGrabber;
+		ofxCvColorImage colorImg;
+		ofxCvGrayscaleImage grayImg;
 
 		void keyPressed(int key);
 		void keyReleased(int key);

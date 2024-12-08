@@ -2,17 +2,27 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+    vidGrabber.setVerbose(true);
+    vidGrabber.setup(640, 480);
 
+    colorImg.allocate(640, 480);
+    grayImg.allocate(640, 480);
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
+    vidGrabber.update();
 
+    if (vidGrabber.isFrameNew()) {
+        colorImg.setFromPixels(vidGrabber.getPixels());
+        grayImg = colorImg;
+    }
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-
+    colorImg.draw(0, 0);
+    grayImg.draw(640, 0);
 }
 
 //--------------------------------------------------------------
