@@ -34,208 +34,241 @@
 		<ClCompile Include="..\openFrameworks\addons\ofxOpenCv\src\ofxCvShortImage.cpp">
 			<Filter>addons\ofxOpenCv\src</Filter>
 		</ClCompile>
+		<ClCompile Include="..\openFrameworks\addons\ofxSvg\src\ofxSvg.cpp">
+			<Filter>addons\ofxSvg\src</Filter>
+		</ClCompile>
 	</ItemGroup>
 	<ItemGroup>
 		<Filter Include="src">
 			<UniqueIdentifier>{d8376475-7454-4a24-b08a-aac121d3ad6f}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons">
-			<UniqueIdentifier>{4563E1AF--B37-1-43-BD-A-997-B9F2B9D96C6D}</UniqueIdentifier>
+			<UniqueIdentifier>{E867D533--64D-5-46-01-8-0BA-A1F06A730353}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv">
-			<UniqueIdentifier>{93E82E36--122-0-4E-8C-A-7B2-2EA8FD50F9AA}</UniqueIdentifier>
+			<UniqueIdentifier>{DB5186BB--550-2-4D-31-9-AE5-C705C5CA36B0}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\src">
-			<UniqueIdentifier>{02790D4F--53A-A-43-F6-8-E13-DDCF25F50FD2}</UniqueIdentifier>
+			<UniqueIdentifier>{A89A54A4--C00-6-49-83-A-EF5-F0DB56385991}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs">
-			<UniqueIdentifier>{4F2BBCC3--578-1-4E-51-B-907-21C19EA0913D}</UniqueIdentifier>
+			<UniqueIdentifier>{CA74967E--F9A-1-45-B9-9-D2D-5547E66B4FA5}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\ippicv">
-			<UniqueIdentifier>{BEF62E50--54A-0-47-EE-A-E28-60C10A3B2BD5}</UniqueIdentifier>
+			<UniqueIdentifier>{3DEDFFAB--5E6-4-41-27-9-831-42FD3E93C4B3}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\ippicv\ippicv">
-			<UniqueIdentifier>{774B1B70--6CD-A-4D-4E-8-D0F-5935AA361011}</UniqueIdentifier>
+			<UniqueIdentifier>{881F6FF3--3D9-4-41-47-A-B48-D7308586E325}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\ippicv\ippicv\include">
-			<UniqueIdentifier>{A0A0804D--298-8-48-52-A-4F7-B990139D1AF2}</UniqueIdentifier>
+			<UniqueIdentifier>{660386B0--146-C-4E-28-9-090-1FFFDECBDD15}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\opencv">
-			<UniqueIdentifier>{14C2B242--489-2-4F-A3-9-96D-FEE646AE8433}</UniqueIdentifier>
+			<UniqueIdentifier>{A0B01D02--0A4-5-42-76-A-B97-303E05825D68}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\opencv\opencv">
-			<UniqueIdentifier>{5AA1249E--A0D-3-4C-39-B-E3F-E0A3AC6BEE49}</UniqueIdentifier>
+			<UniqueIdentifier>{23A8F25C--4CE-3-40-B8-9-701-833FFBE2B5D7}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\opencv\opencv\include">
-			<UniqueIdentifier>{3B030DDE--1E9-7-4B-B0-8-EB8-F1130FD4AF3D}</UniqueIdentifier>
+			<UniqueIdentifier>{C6772861--4AE-1-4B-9C-9-257-CF3303ED9568}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\opencv\opencv\include\opencv2">
-			<UniqueIdentifier>{CB8A8301--2A5-A-41-AE-B-F9C-5CAF2281854A}</UniqueIdentifier>
+			<UniqueIdentifier>{DA6266CB--0E3-F-49-C5-9-8C1-1AD07488EC8A}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\opencv\opencv\include\opencv2\calib3d">
-			<UniqueIdentifier>{DDA64775--F0E-0-46-00-A-62D-791F5E7EECCB}</UniqueIdentifier>
+			<UniqueIdentifier>{2C972836--EF5-A-43-12-A-55F-6466DCC0D19A}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\opencv\opencv\include\opencv2\core">
-			<UniqueIdentifier>{639A0E0D--0C5-7-4F-61-8-274-CCA6018CDB04}</UniqueIdentifier>
+			<UniqueIdentifier>{903B8128--61A-7-49-75-9-E37-952BC83AF987}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\opencv\opencv\include\opencv2\core\cuda">
-			<UniqueIdentifier>{2CE91C15--3A0-E-4E-D6-9-584-4AD7C2D867A3}</UniqueIdentifier>
+			<UniqueIdentifier>{0A84F2CE--C09-6-41-73-A-EED-091A0343E8B8}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\opencv\opencv\include\opencv2\core\cuda\detail">
-			<UniqueIdentifier>{2D71721B--F83-F-48-EA-9-126-18DEDFCC4FEA}</UniqueIdentifier>
+			<UniqueIdentifier>{F74F59FC--29D-A-44-04-8-600-DFB99C912AC1}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\opencv\opencv\include\opencv2\core\detail">
-			<UniqueIdentifier>{2F02E99F--B47-D-43-B4-B-40D-33F66D2DFC4E}</UniqueIdentifier>
+			<UniqueIdentifier>{3F8C08C0--ADC-C-40-D5-A-2A3-EF1A0B8FE3F5}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\opencv\opencv\include\opencv2\core\hal">
-			<UniqueIdentifier>{7946025D--797-E-4D-56-9-838-90B532A84C35}</UniqueIdentifier>
+			<UniqueIdentifier>{A2A4F449--273-E-49-D4-B-539-56D92F6BF01E}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\opencv\opencv\include\opencv2\core\llapi">
-			<UniqueIdentifier>{D9CDE403--7D9-F-46-51-8-74E-312C54B5B2E4}</UniqueIdentifier>
+			<UniqueIdentifier>{F58EEF9F--3A5-6-40-E6-B-534-DA286B9C2AF9}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\opencv\opencv\include\opencv2\core\opencl">
-			<UniqueIdentifier>{06389330--3B7-5-44-75-8-66D-D12E7C4135C9}</UniqueIdentifier>
+			<UniqueIdentifier>{224C5567--87E-7-43-19-B-538-974900C468CD}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\opencv\opencv\include\opencv2\core\opencl\runtime">
-			<UniqueIdentifier>{3EC41ADD--A6A-6-43-7A-B-767-306CFDC2DA72}</UniqueIdentifier>
+			<UniqueIdentifier>{ACD2BE74--C0F-D-44-90-B-7D8-A1ACD441D5D6}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\opencv\opencv\include\opencv2\core\opencl\runtime\autogenerated">
-			<UniqueIdentifier>{E8C2BFF5--892-8-4D-F8-B-05E-C8DD8EACF8EE}</UniqueIdentifier>
+			<UniqueIdentifier>{ED2FE49F--DF0-1-42-86-9-579-7999311B4C20}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\opencv\opencv\include\opencv2\core\openvx">
-			<UniqueIdentifier>{A108ECFD--499-5-48-5F-8-F6A-49BB554E15DA}</UniqueIdentifier>
+			<UniqueIdentifier>{99E4A4B0--98C-C-4A-02-A-563-83C98109ABF0}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\opencv\opencv\include\opencv2\core\parallel">
-			<UniqueIdentifier>{4EF7ADCE--D45-C-41-39-9-EAF-A4AA5A110D6D}</UniqueIdentifier>
+			<UniqueIdentifier>{A39BC0EE--E03-3-49-38-8-C83-775849B3C964}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\opencv\opencv\include\opencv2\core\parallel\backend">
-			<UniqueIdentifier>{541C0844--5A6-A-45-99-8-4D4-2C10FB1FF595}</UniqueIdentifier>
+			<UniqueIdentifier>{E3250DAF--6AC-A-45-11-8-419-D34041C3656A}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\opencv\opencv\include\opencv2\core\private">
-			<UniqueIdentifier>{E916510B--2FF-8-49-D1-8-E59-93DD76CB3364}</UniqueIdentifier>
+			<UniqueIdentifier>{1ADCE0E8--3F8-5-43-F8-8-DCE-5A87378ED9CD}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\opencv\opencv\include\opencv2\core\utils">
-			<UniqueIdentifier>{E602F06C--E28-5-4B-0D-9-D17-8E89E1A5A01B}</UniqueIdentifier>
+			<UniqueIdentifier>{D021624D--F16-9-45-64-8-557-028687635AFA}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\opencv\opencv\include\opencv2\dnn">
-			<UniqueIdentifier>{99493F37--9D7-A-4A-3F-9-5A7-C3849B27EE64}</UniqueIdentifier>
+			<UniqueIdentifier>{C26AB83B--D13-3-4C-54-8-D9A-2483483B3741}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\opencv\opencv\include\opencv2\dnn\utils">
-			<UniqueIdentifier>{F9B8078E--311-7-4D-E9-A-DA5-527936BFAACD}</UniqueIdentifier>
+			<UniqueIdentifier>{2AD6ADCA--C41-A-48-C4-A-190-8BA06880ADDC}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\opencv\opencv\include\opencv2\features2d">
-			<UniqueIdentifier>{2FB6DCA0--3EE-7-4E-6E-B-BEC-73D36D515F92}</UniqueIdentifier>
+			<UniqueIdentifier>{920F89F6--AF7-1-4A-95-A-E98-6943AA748F58}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\opencv\opencv\include\opencv2\features2d\hal">
-			<UniqueIdentifier>{05816EC8--104-2-4E-18-B-097-DCCCDFD37162}</UniqueIdentifier>
+			<UniqueIdentifier>{ACE919B9--350-F-4D-AE-B-82A-DA8C97764660}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\opencv\opencv\include\opencv2\flann">
-			<UniqueIdentifier>{BF0E1690--312-A-41-05-9-85F-5A387538DEAA}</UniqueIdentifier>
+			<UniqueIdentifier>{1816FDA0--074-A-40-85-A-61D-BE10AE3636CF}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\opencv\opencv\include\opencv2\gapi">
-			<UniqueIdentifier>{7015EE8D--5E3-0-4B-72-8-BD0-B7380351DD17}</UniqueIdentifier>
+			<UniqueIdentifier>{93F8C370--15D-2-4D-FC-9-925-9F634C15BF42}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\opencv\opencv\include\opencv2\gapi\cpu">
-			<UniqueIdentifier>{DE86B8FC--875-9-44-FA-A-A21-C131F7740BAA}</UniqueIdentifier>
+			<UniqueIdentifier>{874CF014--386-A-4F-98-9-92B-DABAC52F194F}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\opencv\opencv\include\opencv2\gapi\fluid">
-			<UniqueIdentifier>{CFF87B8E--D0B-B-46-06-A-AC7-7941656D5165}</UniqueIdentifier>
+			<UniqueIdentifier>{D423112C--F4E-1-45-D3-A-57F-D7A41605DD1B}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\opencv\opencv\include\opencv2\gapi\gpu">
-			<UniqueIdentifier>{AA9487BF--985-9-41-68-A-1CE-1914FAD5A2E1}</UniqueIdentifier>
+			<UniqueIdentifier>{F0C03536--E7A-5-41-2F-A-762-8F6038DB0814}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\opencv\opencv\include\opencv2\gapi\infer">
-			<UniqueIdentifier>{058C75FD--D77-E-48-3F-A-F44-F7F3F10D665F}</UniqueIdentifier>
+			<UniqueIdentifier>{2F40E5D6--A15-3-42-AF-A-072-0F52F1815F43}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\opencv\opencv\include\opencv2\gapi\oak">
-			<UniqueIdentifier>{E5CC304D--856-0-43-16-A-429-85C354698B61}</UniqueIdentifier>
+			<UniqueIdentifier>{A4C82C9F--D8F-4-44-90-9-47D-235D7C82776E}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\opencv\opencv\include\opencv2\gapi\ocl">
-			<UniqueIdentifier>{431BE838--B5D-6-41-84-9-F6A-00A7CF291140}</UniqueIdentifier>
+			<UniqueIdentifier>{BF1E2060--AB7-9-49-B8-B-39F-89FA1F5A6429}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\opencv\opencv\include\opencv2\gapi\own">
-			<UniqueIdentifier>{661AABD0--C53-1-40-64-9-5C9-73FB3DE3F9FA}</UniqueIdentifier>
+			<UniqueIdentifier>{E6927AE9--AF9-6-4D-46-9-7F7-E5E5B8BF6525}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\opencv\opencv\include\opencv2\gapi\plaidml">
-			<UniqueIdentifier>{017EA295--4AC-1-49-BA-9-3AE-0D26160FE314}</UniqueIdentifier>
+			<UniqueIdentifier>{D65A87A2--CA5-4-4E-7C-A-101-E7DDADD0A8F4}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\opencv\opencv\include\opencv2\gapi\python">
-			<UniqueIdentifier>{687AB68E--346-7-40-92-B-8E3-BDF5D451766A}</UniqueIdentifier>
+			<UniqueIdentifier>{3543AD4F--B32-3-4E-B2-A-4DC-F84FCA5FB57D}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\opencv\opencv\include\opencv2\gapi\render">
-			<UniqueIdentifier>{1CFE5646--736-5-45-BA-9-FB6-76400B1C8A48}</UniqueIdentifier>
+			<UniqueIdentifier>{BD8A069A--B29-A-4C-AF-9-812-80EC4FB13C2D}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\opencv\opencv\include\opencv2\gapi\s11n">
-			<UniqueIdentifier>{BD413DFB--6DD-7-45-1A-A-3CA-D99A86D1BFEA}</UniqueIdentifier>
+			<UniqueIdentifier>{FA1FE899--87C-0-4D-81-B-FFA-121EE1AFE26C}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\opencv\opencv\include\opencv2\gapi\streaming">
-			<UniqueIdentifier>{3FAEE0E3--154-A-4C-B6-A-6A5-EBCDCB462E62}</UniqueIdentifier>
+			<UniqueIdentifier>{05D5FD84--66C-9-4B-4B-A-019-B2C3700A1DD7}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\opencv\opencv\include\opencv2\gapi\streaming\gstreamer">
-			<UniqueIdentifier>{5043E5CF--A7B-C-47-1D-A-113-97266A6D7148}</UniqueIdentifier>
+			<UniqueIdentifier>{D0AA218D--85D-8-47-F0-A-057-255F8FEBAB5E}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\opencv\opencv\include\opencv2\gapi\streaming\onevpl">
-			<UniqueIdentifier>{01DBECBB--809-7-40-81-8-50D-CA940F73E354}</UniqueIdentifier>
+			<UniqueIdentifier>{21B71C4F--87F-F-45-F4-A-989-74FB6D56BE08}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\opencv\opencv\include\opencv2\gapi\util">
-			<UniqueIdentifier>{07093B3B--0F7-0-4A-9D-8-85E-2E8FF5C93EE0}</UniqueIdentifier>
+			<UniqueIdentifier>{72C03E9A--955-5-40-4B-8-3FC-DAD3BCAB668C}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\opencv\opencv\include\opencv2\highgui">
-			<UniqueIdentifier>{D751EF17--474-2-4A-3F-8-552-D48D4804CF58}</UniqueIdentifier>
+			<UniqueIdentifier>{5D246E05--214-D-45-09-B-D66-DAD1980628B5}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\opencv\opencv\include\opencv2\imgcodecs">
-			<UniqueIdentifier>{A0512D8A--B2D-F-40-DD-B-34B-79C944836677}</UniqueIdentifier>
+			<UniqueIdentifier>{9490F4B7--932-A-46-F1-8-FC8-686C31E3F399}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\opencv\opencv\include\opencv2\imgcodecs\legacy">
-			<UniqueIdentifier>{DD0BFBC8--CB8-C-44-6B-A-47E-9CAE4B6AD13A}</UniqueIdentifier>
+			<UniqueIdentifier>{1CAA576D--834-C-47-DE-A-67B-E80F465612B6}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\opencv\opencv\include\opencv2\imgproc">
-			<UniqueIdentifier>{2463DDD0--30E-2-4B-E5-8-E66-8F00B6583DE4}</UniqueIdentifier>
+			<UniqueIdentifier>{A044B055--AB6-3-48-D0-B-F27-FE84112BD7D9}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\opencv\opencv\include\opencv2\imgproc\detail">
-			<UniqueIdentifier>{F3D28E66--3DC-F-40-DA-9-BB6-9EC46DA6D47B}</UniqueIdentifier>
+			<UniqueIdentifier>{4F024170--A7D-E-4E-69-8-C08-4AD481594697}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\opencv\opencv\include\opencv2\imgproc\hal">
-			<UniqueIdentifier>{7C9E9AA4--7A2-7-48-6C-9-496-4BC7368A2E04}</UniqueIdentifier>
+			<UniqueIdentifier>{46985AB9--89D-4-4B-4F-9-1FF-0F9DC370AB8F}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\opencv\opencv\include\opencv2\ml">
-			<UniqueIdentifier>{731814D0--FCF-7-4A-17-A-F1D-64EDF5A659AD}</UniqueIdentifier>
+			<UniqueIdentifier>{DDD368F1--A86-6-44-27-9-0A6-F169354E229C}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\opencv\opencv\include\opencv2\objdetect">
-			<UniqueIdentifier>{0D2A6766--C45-0-4B-F7-9-798-DD2F1BD65CFF}</UniqueIdentifier>
+			<UniqueIdentifier>{EF41AC90--C6B-6-4B-07-B-AA8-C5141CA802C6}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\opencv\opencv\include\opencv2\photo">
-			<UniqueIdentifier>{3851AB30--973-8-42-92-B-8B7-7827175736DC}</UniqueIdentifier>
+			<UniqueIdentifier>{421740D7--107-F-41-15-9-8CD-D618179CCB55}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\opencv\opencv\include\opencv2\photo\legacy">
-			<UniqueIdentifier>{C7458F3F--E8E-1-42-4F-8-8AD-A2DB50796B8C}</UniqueIdentifier>
+			<UniqueIdentifier>{344E545A--240-8-48-A1-8-8D7-C006A829ABAC}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\opencv\opencv\include\opencv2\stitching">
-			<UniqueIdentifier>{2131744E--3B1-F-45-D4-B-683-AD7319787CE6}</UniqueIdentifier>
+			<UniqueIdentifier>{627D1EEC--FEC-2-43-29-9-ABB-9D9E1A5ED24C}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\opencv\opencv\include\opencv2\stitching\detail">
-			<UniqueIdentifier>{0FC5417D--90A-1-49-02-A-F39-4220F1000399}</UniqueIdentifier>
+			<UniqueIdentifier>{877A0C8B--691-3-44-56-8-9CE-E915B7AD721B}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\opencv\opencv\include\opencv2\ts">
-			<UniqueIdentifier>{AE6A4E95--2BE-B-42-4E-9-C24-78BB55D64CC1}</UniqueIdentifier>
+			<UniqueIdentifier>{8D00670F--A37-A-44-36-A-64A-9926EB915B2A}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\opencv\opencv\include\opencv2\video">
-			<UniqueIdentifier>{EA0575E3--A9E-7-45-DC-B-798-073F1EDD5814}</UniqueIdentifier>
+			<UniqueIdentifier>{35653F15--582-C-44-7B-A-2C5-7F4A807CB7F6}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\opencv\opencv\include\opencv2\video\detail">
-			<UniqueIdentifier>{5355C633--C9F-B-42-CD-8-E90-106402BFD809}</UniqueIdentifier>
+			<UniqueIdentifier>{EEFF0C4B--9F8-C-47-DA-B-C57-040CA67CDE0C}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\opencv\opencv\include\opencv2\video\legacy">
-			<UniqueIdentifier>{C7D20469--BE8-7-44-32-A-166-B402C054CE7E}</UniqueIdentifier>
+			<UniqueIdentifier>{0A8D4F16--407-0-4B-0A-9-DB6-C239347D24AA}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\opencv\opencv\include\opencv2\videoio">
-			<UniqueIdentifier>{CE3ED797--445-1-48-91-A-8AE-1DF0499517EA}</UniqueIdentifier>
+			<UniqueIdentifier>{A00D10CE--336-B-4B-FC-9-90E-D05460491198}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\opencv\opencv\include\opencv2\videoio\doc">
-			<UniqueIdentifier>{D80B1272--EAD-E-42-32-9-D56-601880F6609F}</UniqueIdentifier>
+			<UniqueIdentifier>{675FAF5F--4CB-A-4A-5D-B-696-99EEE18F9AD2}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="addons\ofxOpenCv\libs\opencv\opencv\include\opencv2\videoio\legacy">
-			<UniqueIdentifier>{36E6F149--0B6-0-4D-21-B-EDC-579800790A2F}</UniqueIdentifier>
+			<UniqueIdentifier>{8D84F289--A51-2-4A-A5-8-4DD-BD38A245469D}</UniqueIdentifier>
+		</Filter>
+		<Filter Include="addons\ofxSvg">
+			<UniqueIdentifier>{4882CA87--46B-F-40-78-A-27A-0858F6CC1AAA}</UniqueIdentifier>
+		</Filter>
+		<Filter Include="addons\ofxSvg\src">
+			<UniqueIdentifier>{71D67A1A--DF9-2-43-02-B-4E6-E21709BF7995}</UniqueIdentifier>
+		</Filter>
+		<Filter Include="addons\ofxSvg\libs">
+			<UniqueIdentifier>{B56C301E--83D-5-45-10-9-098-6235257269BA}</UniqueIdentifier>
+		</Filter>
+		<Filter Include="addons\ofxSvg\libs\libxml2">
+			<UniqueIdentifier>{843880E2--947-0-4A-B7-9-C8E-1A416488AD85}</UniqueIdentifier>
+		</Filter>
+		<Filter Include="addons\ofxSvg\libs\libxml2\libxml2">
+			<UniqueIdentifier>{92D59702--4B9-E-48-4B-A-CE4-79D961B85583}</UniqueIdentifier>
+		</Filter>
+		<Filter Include="addons\ofxSvg\libs\libxml2\libxml2\include">
+			<UniqueIdentifier>{EA39A1ED--45F-E-44-81-B-3D8-42418459BF1D}</UniqueIdentifier>
+		</Filter>
+		<Filter Include="addons\ofxSvg\libs\libxml2\libxml2\include\libxml">
+			<UniqueIdentifier>{D90DCCE7--3B9-B-43-8B-A-1EB-666C27FDF1E6}</UniqueIdentifier>
+		</Filter>
+		<Filter Include="addons\ofxSvg\libs\svgtiny">
+			<UniqueIdentifier>{14F1BB67--C60-2-45-A2-B-65A-142D6BD65CD6}</UniqueIdentifier>
+		</Filter>
+		<Filter Include="addons\ofxSvg\libs\svgtiny\svgtiny">
+			<UniqueIdentifier>{D30184EB--8BE-3-46-A6-8-549-BCB2D552D309}</UniqueIdentifier>
+		</Filter>
+		<Filter Include="addons\ofxSvg\libs\svgtiny\svgtiny\include">
+			<UniqueIdentifier>{4D0C4EBB--9C7-E-43-4E-9-698-85D21537BAF8}</UniqueIdentifier>
 		</Filter>
 	</ItemGroup>
 	<ItemGroup>
@@ -1372,6 +1405,153 @@
 		</ClInclude>
 		<ClInclude Include="..\openFrameworks\addons\ofxOpenCv\libs\opencv\opencv\include\opencv2\world.hpp">
 			<Filter>addons\ofxOpenCv\libs\opencv\opencv\include\opencv2</Filter>
+		</ClInclude>
+		<ClInclude Include="..\openFrameworks\addons\ofxSvg\src\ofxSvg.h">
+			<Filter>addons\ofxSvg\src</Filter>
+		</ClInclude>
+		<ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\libxml2\libxml2\include\libxml\c14n.h">
+			<Filter>addons\ofxSvg\libs\libxml2\libxml2\include\libxml</Filter>
+		</ClInclude>
+		<ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\libxml2\libxml2\include\libxml\catalog.h">
+			<Filter>addons\ofxSvg\libs\libxml2\libxml2\include\libxml</Filter>
+		</ClInclude>
+		<ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\libxml2\libxml2\include\libxml\chvalid.h">
+			<Filter>addons\ofxSvg\libs\libxml2\libxml2\include\libxml</Filter>
+		</ClInclude>
+		<ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\libxml2\libxml2\include\libxml\debugXML.h">
+			<Filter>addons\ofxSvg\libs\libxml2\libxml2\include\libxml</Filter>
+		</ClInclude>
+		<ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\libxml2\libxml2\include\libxml\dict.h">
+			<Filter>addons\ofxSvg\libs\libxml2\libxml2\include\libxml</Filter>
+		</ClInclude>
+		<ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\libxml2\libxml2\include\libxml\DOCBparser.h">
+			<Filter>addons\ofxSvg\libs\libxml2\libxml2\include\libxml</Filter>
+		</ClInclude>
+		<ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\libxml2\libxml2\include\libxml\encoding.h">
+			<Filter>addons\ofxSvg\libs\libxml2\libxml2\include\libxml</Filter>
+		</ClInclude>
+		<ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\libxml2\libxml2\include\libxml\entities.h">
+			<Filter>addons\ofxSvg\libs\libxml2\libxml2\include\libxml</Filter>
+		</ClInclude>
+		<ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\libxml2\libxml2\include\libxml\globals.h">
+			<Filter>addons\ofxSvg\libs\libxml2\libxml2\include\libxml</Filter>
+		</ClInclude>
+		<ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\libxml2\libxml2\include\libxml\hash.h">
+			<Filter>addons\ofxSvg\libs\libxml2\libxml2\include\libxml</Filter>
+		</ClInclude>
+		<ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\libxml2\libxml2\include\libxml\HTMLparser.h">
+			<Filter>addons\ofxSvg\libs\libxml2\libxml2\include\libxml</Filter>
+		</ClInclude>
+		<ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\libxml2\libxml2\include\libxml\HTMLtree.h">
+			<Filter>addons\ofxSvg\libs\libxml2\libxml2\include\libxml</Filter>
+		</ClInclude>
+		<ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\libxml2\libxml2\include\libxml\list.h">
+			<Filter>addons\ofxSvg\libs\libxml2\libxml2\include\libxml</Filter>
+		</ClInclude>
+		<ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\libxml2\libxml2\include\libxml\nanoftp.h">
+			<Filter>addons\ofxSvg\libs\libxml2\libxml2\include\libxml</Filter>
+		</ClInclude>
+		<ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\libxml2\libxml2\include\libxml\nanohttp.h">
+			<Filter>addons\ofxSvg\libs\libxml2\libxml2\include\libxml</Filter>
+		</ClInclude>
+		<ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\libxml2\libxml2\include\libxml\parser.h">
+			<Filter>addons\ofxSvg\libs\libxml2\libxml2\include\libxml</Filter>
+		</ClInclude>
+		<ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\libxml2\libxml2\include\libxml\parserInternals.h">
+			<Filter>addons\ofxSvg\libs\libxml2\libxml2\include\libxml</Filter>
+		</ClInclude>
+		<ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\libxml2\libxml2\include\libxml\pattern.h">
+			<Filter>addons\ofxSvg\libs\libxml2\libxml2\include\libxml</Filter>
+		</ClInclude>
+		<ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\libxml2\libxml2\include\libxml\relaxng.h">
+			<Filter>addons\ofxSvg\libs\libxml2\libxml2\include\libxml</Filter>
+		</ClInclude>
+		<ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\libxml2\libxml2\include\libxml\SAX.h">
+			<Filter>addons\ofxSvg\libs\libxml2\libxml2\include\libxml</Filter>
+		</ClInclude>
+		<ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\libxml2\libxml2\include\libxml\SAX2.h">
+			<Filter>addons\ofxSvg\libs\libxml2\libxml2\include\libxml</Filter>
+		</ClInclude>
+		<ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\libxml2\libxml2\include\libxml\schemasInternals.h">
+			<Filter>addons\ofxSvg\libs\libxml2\libxml2\include\libxml</Filter>
+		</ClInclude>
+		<ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\libxml2\libxml2\include\libxml\schematron.h">
+			<Filter>addons\ofxSvg\libs\libxml2\libxml2\include\libxml</Filter>
+		</ClInclude>
+		<ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\libxml2\libxml2\include\libxml\threads.h">
+			<Filter>addons\ofxSvg\libs\libxml2\libxml2\include\libxml</Filter>
+		</ClInclude>
+		<ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\libxml2\libxml2\include\libxml\tree.h">
+			<Filter>addons\ofxSvg\libs\libxml2\libxml2\include\libxml</Filter>
+		</ClInclude>
+		<ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\libxml2\libxml2\include\libxml\uri.h">
+			<Filter>addons\ofxSvg\libs\libxml2\libxml2\include\libxml</Filter>
+		</ClInclude>
+		<ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\libxml2\libxml2\include\libxml\valid.h">
+			<Filter>addons\ofxSvg\libs\libxml2\libxml2\include\libxml</Filter>
+		</ClInclude>
+		<ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\libxml2\libxml2\include\libxml\xinclude.h">
+			<Filter>addons\ofxSvg\libs\libxml2\libxml2\include\libxml</Filter>
+		</ClInclude>
+		<ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\libxml2\libxml2\include\libxml\xlink.h">
+			<Filter>addons\ofxSvg\libs\libxml2\libxml2\include\libxml</Filter>
+		</ClInclude>
+		<ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\libxml2\libxml2\include\libxml\xmlautomata.h">
+			<Filter>addons\ofxSvg\libs\libxml2\libxml2\include\libxml</Filter>
+		</ClInclude>
+		<ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\libxml2\libxml2\include\libxml\xmlerror.h">
+			<Filter>addons\ofxSvg\libs\libxml2\libxml2\include\libxml</Filter>
+		</ClInclude>
+		<ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\libxml2\libxml2\include\libxml\xmlexports.h">
+			<Filter>addons\ofxSvg\libs\libxml2\libxml2\include\libxml</Filter>
+		</ClInclude>
+		<ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\libxml2\libxml2\include\libxml\xmlIO.h">
+			<Filter>addons\ofxSvg\libs\libxml2\libxml2\include\libxml</Filter>
+		</ClInclude>
+		<ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\libxml2\libxml2\include\libxml\xmlmemory.h">
+			<Filter>addons\ofxSvg\libs\libxml2\libxml2\include\libxml</Filter>
+		</ClInclude>
+		<ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\libxml2\libxml2\include\libxml\xmlmodule.h">
+			<Filter>addons\ofxSvg\libs\libxml2\libxml2\include\libxml</Filter>
+		</ClInclude>
+		<ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\libxml2\libxml2\include\libxml\xmlreader.h">
+			<Filter>addons\ofxSvg\libs\libxml2\libxml2\include\libxml</Filter>
+		</ClInclude>
+		<ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\libxml2\libxml2\include\libxml\xmlregexp.h">
+			<Filter>addons\ofxSvg\libs\libxml2\libxml2\include\libxml</Filter>
+		</ClInclude>
+		<ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\libxml2\libxml2\include\libxml\xmlsave.h">
+			<Filter>addons\ofxSvg\libs\libxml2\libxml2\include\libxml</Filter>
+		</ClInclude>
+		<ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\libxml2\libxml2\include\libxml\xmlschemas.h">
+			<Filter>addons\ofxSvg\libs\libxml2\libxml2\include\libxml</Filter>
+		</ClInclude>
+		<ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\libxml2\libxml2\include\libxml\xmlschemastypes.h">
+			<Filter>addons\ofxSvg\libs\libxml2\libxml2\include\libxml</Filter>
+		</ClInclude>
+		<ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\libxml2\libxml2\include\libxml\xmlstring.h">
+			<Filter>addons\ofxSvg\libs\libxml2\libxml2\include\libxml</Filter>
+		</ClInclude>
+		<ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\libxml2\libxml2\include\libxml\xmlunicode.h">
+			<Filter>addons\ofxSvg\libs\libxml2\libxml2\include\libxml</Filter>
+		</ClInclude>
+		<ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\libxml2\libxml2\include\libxml\xmlversion.h">
+			<Filter>addons\ofxSvg\libs\libxml2\libxml2\include\libxml</Filter>
+		</ClInclude>
+		<ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\libxml2\libxml2\include\libxml\xmlwriter.h">
+			<Filter>addons\ofxSvg\libs\libxml2\libxml2\include\libxml</Filter>
+		</ClInclude>
+		<ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\libxml2\libxml2\include\libxml\xpath.h">
+			<Filter>addons\ofxSvg\libs\libxml2\libxml2\include\libxml</Filter>
+		</ClInclude>
+		<ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\libxml2\libxml2\include\libxml\xpathInternals.h">
+			<Filter>addons\ofxSvg\libs\libxml2\libxml2\include\libxml</Filter>
+		</ClInclude>
+		<ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\libxml2\libxml2\include\libxml\xpointer.h">
+			<Filter>addons\ofxSvg\libs\libxml2\libxml2\include\libxml</Filter>
+		</ClInclude>
+		<ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\svgtiny\svgtiny\include\svgtiny.h">
+			<Filter>addons\ofxSvg\libs\svgtiny\svgtiny\include</Filter>
 		</ClInclude>
 	</ItemGroup>
 	<ItemGroup>
