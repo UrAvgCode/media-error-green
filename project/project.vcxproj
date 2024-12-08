@@ -126,6 +126,10 @@
   <ItemGroup>
     <Image Include="..\..\..\Personal\WS202425\Projekt\mediapipeDetection\resources\rotateGreen.png" />
     <Image Include="resources\logo_filled.png" />
+    <CopyFileToFolders Include="resources\rotateGreen1.png">
+      <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">data/%(Filename)%(Extension)</DestinationFileName>
+      <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">data/%(Filename)%(Extension)</DestinationFileName>
+    </CopyFileToFolders>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ProjectExtensions>

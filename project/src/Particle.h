@@ -8,8 +8,8 @@ public:
     ofVec2f position, velocity, acceleration;
     float maxSpeed;
 
-    Particle() {
-        position = ofVec2f(ofRandomWidth(), ofRandomHeight());
+    Particle(float x, float y) {
+        position = ofVec2f(x, y);
         velocity = ofVec2f(0, 0);
         acceleration = ofVec2f(0, 0);
         maxSpeed = 4;

@@ -41,4 +41,9 @@
       <Filter>resources</Filter>
     </Image>
   </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="resources\rotateGreen1.png">
+      <Filter>resources</Filter>
+    </CopyFileToFolders>
+  </ItemGroup>
 </Project>

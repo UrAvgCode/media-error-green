@@ -9,16 +9,28 @@ class ofApp : public ofBaseApp{
 	public:
 		int screen_width = ofGetWidth();
 		int screen_height = ofGetHeight();
+
+		//Flow Field
 		int cols, rows; // Anzahl der Spalten und Reihen im Gitter
-		int resolution; // Größe jeder Zelle
+		int resolution = 20; // size of every cell
 		vector<ofVec2f> flowField; // Array für die Vektoren im Gitter
-		vector<Particle> particles;
 		float zOffset; // Für animierten Perlin Noise
+
+		//particles
+		vector<Particle> particles;
+		int num_particles = 1000;
+
+		//logo
 		ofImage logo;
+		//vector<bool> logoMask;   // masc of logo
+		vector<ofVec2f> logoPositions; // vectorpositions of logo
+		int logo_left, logo_right, logo_top, logo_bottom;
 
 		void setup();
 		void update();
 		void draw();
+
+		void create_logo_mask();
 
 		void keyPressed(int key);
 		void keyReleased(int key);
