@@ -12,12 +12,14 @@ void Particle::update() {
     position += velocity;
     acceleration *= 0; // Beschleunigung zurücksetzen
 
+    // adds one particle to trail each update
     trail.push_back(position);
     if (trail.size() > max_trail_length) {
         trail.erase(trail.begin());
     }
 }
 
+//checks if particle is still in screen
 void Particle::edges() {
     if (position.x > ofGetWidth()) {
         ofDrawLine(position, ofVec2f(0, position.y));
@@ -38,14 +40,13 @@ void Particle::edges() {
 }
 
 void Particle::draw() {
-   // ofNoFill(); // Keine Füllung
 
     // Setze die Farbe mit Transparenz (Alpha-Wert für Fading-Effekt)
     for (int i = 0; i < trail.size(); ++i) {
-        float alpha = ofMap(i, 0, trail.size(), 255, 0);  // Alpha-Wert nimmt ab
+        float alpha = ofMap(i, 0, trail.size(), 0, 150); // newest particle has highest opacity
         ofSetColor(0, 255, 0, alpha);  // green with variating opacity
 
-        ofDrawCircle(trail[i], 1);  // Zeichne an jeder Position einen kleinen Kreis
+        ofDrawCircle(trail[i], 2);  // Zeichne an jeder Position einen kleinen Kreis
     }
 }
 
