@@ -15,7 +15,7 @@ void ofApp::setup(){
 	logo_right = screen_width / 2 + logo.getWidth() / 2;
 	logo_top = screen_height / 2 - logo.getHeight() / 2;
 	logo_bottom = screen_height / 2 + logo.getHeight() / 2;
-	create_logo_mask();
+	create_logo_vectors();
 	
 
 	//for (int i = 0; i < cols * rows; i++) {
@@ -38,16 +38,8 @@ void ofApp::update(){
 	for (int y = 0; y < rows; y++) {
 		for (int x = 0; x < cols; x++) {
 			ofVec2f currentPos(x,y);
-			if (std::find(logoPositions.begin(), logoPositions.end(), currentPos) != logoPositions.end()) {
-				continue;
-			}
-			else {
-				float angle = ofNoise(x * 0.1, y * 0.1, zOffset) * TWO_PI; // Noise erzeugt Winkel
-				flowField[y * cols + x] = ofVec2f(cos(angle), sin(angle));
-			}
-
-
-			
+			float angle = ofNoise(x * 0.1, y * 0.1, zOffset) * TWO_PI; // Noise erzeugt Winkel
+			flowField[y * cols + x] = ofVec2f(cos(angle), sin(angle));
 		}
 	}
 
@@ -67,12 +59,22 @@ void ofApp::update(){
 		float attractionRadius = 50; // Radius, in dem Partikel vom Logo angezogen werden
 		float attractionStrength = 100; // Stärke der Anziehungskraft
 
-		// using logo force if particles are close
-		for (auto& logoPos : logoPositions) {
-			float distance = p.position.distance(logoPos);
+		// Partikel in der Nähe der Logo-Vektoren anziehen und entlang der Vektoren bewegen
+		for (auto& logoVec : logo_vectors) {
+			float distance = p.position.distance(logoVec.first);  // Abstand zum Logo-Vektor
 			if (distance < attractionRadius) {
-				ofVec2f attractionForce = (logoPos - p.position).normalized() * attractionStrength;
+				// Vektor entlang der Logo-Richtung anwenden
+				ofVec2f attractionForce = logoVec.second * 0.2; // Stärke der Anziehung
 				p.applyForce(attractionForce);
+
+				// Bewegung entlang der Logo-Richtung (nicht an einem Punkt "kleben bleiben")
+				// Die Partikel sollten entlang des Vektors weiterziehen
+				// Berechnung der Richtung des Vektors zum aktuellen Partikel
+				ofVec2f directionToVector = logoVec.first - p.position;
+				directionToVector.normalize();
+
+				// Optionale zusätzliche Bewegungskraft entlang der Richtung des Vektors
+				p.applyForce(directionToVector * 0.1);
 			}
 		}
 
@@ -89,30 +91,6 @@ void ofApp::draw(){
 	// Flow Field visualisieren
 	for (int y = 0; y < rows; y++) {
 		for (int x = 0; x < cols; x++) {
-			////current position on screen
-			//int posX = x * resolution;
-			//int posY = y * resolution;
-
-			//// Überprüfen, ob der aktuelle Punkt im Logo-Bereich liegt
-			//if (posX >= logo_left && posX < logo_right &&
-			//	posY >= logo_top && posY < logo_bottom) {
-
-			//	// Umrechnung der Fensterkoordinaten in Logo-Koordinaten
-			//	int logoX = posX - logo_left;
-			//	int logoY = posY - logo_top;
-
-			//	// Wenn die Maske an dieser Position "true" ist, wird der Vektor übersprungen
-			//	if (logoMask[logoY * logo.getWidth() + logoX]) {
-			//		continue;
-			//	}
-			//}
-
-			//ofVec2f vec = flowField[y * cols + x];
-			//ofPushMatrix();
-			//ofTranslate(posX, posY);
-			//ofDrawLine(0, 0, vec.x * resolution, vec.y * resolution); // Richtung zeichnen
-			//ofPopMatrix();
-
 			ofVec2f vec = flowField[y * cols + x];
 			ofPushMatrix();
 			ofTranslate(x * resolution, y * resolution);
@@ -127,22 +105,35 @@ void ofApp::draw(){
 	}
 
 	// Logo-Vektoren zeichnen
-	ofSetColor(0, 255, 0); // Rote Linien für das Logo
-	for (auto& pos : logoPositions) {
-		//ofDrawLine(pos.x, pos.y, pos.x +1, pos.y + 1);
+	ofSetColor(0, 255, 0); // green lines für das Logo
+	for (auto& logo_vec : logo_vectors) {
+		//ofDrawLine(logo_vec.first, logo_vec.first + logo_vec.second * 10);
 	}
 }
 
-void ofApp::create_logo_mask() {
+void ofApp::create_logo_vectors() {
 	// analyse image
 	for (int y = 0; y < logo.getHeight(); y++) {
 		for (int x = 0; x < logo.getWidth(); x++) {
-			ofColor pixelColor = logo.getColor(x, y);
-			// Wenn der Pixel "sichtbar" ist, blockieren wir ihn
-			//logoMask[y * logo.getWidth() + x] = (pixelColor.a > 0); // Alpha > 0 => sichtbarer Pixel
-			if (logo.getColor(x, y).a > 0) { // Wenn Pixel nicht transparent ist
-				logoPositions.push_back(ofVec2f(x + logo_left, y + logo_top));
-				cout << "transparent ";
+
+			// Helligkeit des aktuellen Pixels
+			int currentBrightness = logo.getColor(x, y).getBrightness();
+
+			// Helligkeit der Nachbarpixel
+			int rightBrightness = logo.getColor(x + 1, y).getBrightness();
+			int downBrightness = logo.getColor(x, y + 1).getBrightness();
+
+			// Wenn ein signifikanter Unterschied in der Helligkeit besteht, ist das eine Kante
+			if (abs(currentBrightness - rightBrightness) > 20 || abs(currentBrightness - downBrightness) > 20) {
+				// Richtung berechnen (Differenz zwischen Nachbarpixeln)
+				int dx = rightBrightness - currentBrightness;
+				int dy = downBrightness - currentBrightness;
+
+				ofVec2f direction(dx, dy);
+				if (direction.length() > 0) {
+					direction.normalize();
+					logo_vectors.push_back(make_pair(ofVec2f(x + logo_left, y + logo_top), direction));
+				}
 			}
 		}
 	}

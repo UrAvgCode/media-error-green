@@ -22,15 +22,16 @@ class ofApp : public ofBaseApp{
 
 		//logo
 		ofImage logo;
+
 		//vector<bool> logoMask;   // masc of logo
-		vector<ofVec2f> logoPositions; // vectorpositions of logo
+		vector<pair <ofVec2f, ofVec2f>> logo_vectors; // 
 		int logo_left, logo_right, logo_top, logo_bottom;
 
 		void setup();
 		void update();
 		void draw();
 
-		void create_logo_mask();
+		void create_logo_vectors();
 
 		void keyPressed(int key);
 		void keyReleased(int key);

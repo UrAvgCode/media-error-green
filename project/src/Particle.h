@@ -7,6 +7,8 @@ class Particle {
 public:
     ofVec2f position, velocity, acceleration;
     float maxSpeed;
+    vector<ofVec2f> trail; //history of positions
+    int max_trail_length = 50;
 
     Particle(float x, float y) {
         position = ofVec2f(x, y);
