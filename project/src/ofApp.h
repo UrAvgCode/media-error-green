@@ -2,6 +2,7 @@
 
 #include "ofMain.h"
 #include "Particle.h"
+#include "ofxSvg.h"
 
 
 class ofApp : public ofBaseApp{
@@ -22,6 +23,7 @@ class ofApp : public ofBaseApp{
 
 		//logo
 		ofImage logo;
+		ofxSVG logo_svg;
 
 		//vector<bool> logoMask;   // masc of logo
 		vector<pair <ofVec2f, ofVec2f>> logo_vectors; // 

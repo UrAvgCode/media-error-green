@@ -1,4 +1,5 @@
 #include "ofApp.h"
+#include <ofVec2f.cpp>
 
 
 //--------------------------------------------------------------
@@ -10,6 +11,7 @@ void ofApp::setup(){
 
 	// creating logo masc
 	logo.load("rotateGreen.png");
+	logo_svg.load("meLogoPlain.svg");
 	logo.resize(200, 200);
 	logo_left = screen_width / 2 - logo.getWidth() / 2;
 	logo_right = screen_width / 2 + logo.getWidth() / 2;
@@ -19,7 +21,7 @@ void ofApp::setup(){
 	create_circle_vectors();
 
 	//for (int i = 0; i < cols * rows; i++) {
-	//	// Zufällige Vektoren für den Start
+	//	// zufällige vektoren für den start
 	//	flowField[i] = ofVec2f(ofRandom(-1, 1), ofRandom(-1, 1));
 	//}
 
@@ -86,6 +88,11 @@ void ofApp::update(){
 //--------------------------------------------------------------
 void ofApp::draw(){
 	//logo.draw(logo_left, logo_top);
+	ofPushMatrix();
+	//ofScale(2,2);
+	ofTranslate(ofGetWidth() / 2 - logo_svg.getHeight()/2, ofGetHeight()/2 - logo_svg.getHeight()/2);
+	logo_svg.draw();
+	ofPopMatrix();
 
 
 	// Flow Field visualisieren
