@@ -1,11 +1,12 @@
 #include "ofApp.h"
+#include "ofxSvg.h"
 
 ofShader chromatic_shader;
 ofShader blur_shader;
 
 ofFbo fbo_logo;
 ofFbo fbo_intermediate;
-ofImage image;
+ofxSvg logo;
 
 int kernel_size = 0;
 float aberration = 10;
@@ -16,7 +17,7 @@ void ofApp::setup(){
 	chromatic_shader.load("shaders/chromatic");
     blur_shader.load("shaders/blur");
 
-    image.load("res/logo.png");
+    logo.load("res/logo.svg");
     fbo_logo.allocate(ofGetHeight(), ofGetWidth(), GL_RGBA);
     fbo_intermediate.allocate(ofGetHeight(), ofGetWidth(), GL_RGBA);
 }
@@ -32,7 +33,10 @@ void ofApp::update(){
 //--------------------------------------------------------------
 void ofApp::draw(){
     fbo_logo.begin();
-    image.draw(ofGetWidth() / 2 - image.getWidth() / 2, ofGetHeight() / 2 - image.getHeight() / 2);
+    ofPushMatrix();
+    ofTranslate(ofGetWidth() / 2.0f - logo.getWidth() / 2, ofGetHeight() / 2.0f - logo.getHeight() / 2);
+    logo.draw();
+    ofPopMatrix();
     fbo_logo.end();
 
 	fbo_intermediate.begin();
