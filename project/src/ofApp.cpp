@@ -60,7 +60,7 @@ void ofApp::update(){
 		float attractionStrength = 100; // Stärke der Anziehungskraft
 
 		// Partikel in der Nähe der Logo-Vektoren anziehen und entlang der Vektoren bewegen
-		for (auto& logoVec : logo_vectors) {
+		for (auto& logoVec : circle_vectors) {
 			float distance = p.position.distance(logoVec.first);  // Abstand zum Logo-Vektor
 			if (distance < attractionRadius) {
 				// Vektor entlang der Logo-Richtung anwenden
@@ -158,7 +158,8 @@ void ofApp::create_circle_vectors() {
 		ofVec2f position(x, y);
 
 		// Beispiel: Vektor zeigt nach außen vom Mittelpunkt
-		ofVec2f direction = position - center;
+		//ofVec2f direction = position - center;
+		ofVec2f direction(-sin(angle), cos(angle));
 		direction.normalize(); // Normiere den Vektor auf Länge 1
 
 		circle_vectors.push_back(std::make_pair(position, direction));
