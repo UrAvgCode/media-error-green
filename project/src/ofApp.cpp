@@ -15,8 +15,8 @@ void ofApp::setup(){
 	logo_right = screen_width / 2 + logo.getWidth() / 2;
 	logo_top = screen_height / 2 - logo.getHeight() / 2;
 	logo_bottom = screen_height / 2 + logo.getHeight() / 2;
-	create_logo_vectors();
-	
+	//create_logo_vectors();
+	create_circle_vectors();
 
 	//for (int i = 0; i < cols * rows; i++) {
 	//	// Zufällige Vektoren für den Start
@@ -107,12 +107,17 @@ void ofApp::draw(){
 	// Logo-Vektoren zeichnen
 	ofSetColor(0, 255, 0); // green lines für das Logo
 	for (auto& logo_vec : logo_vectors) {
-		//ofDrawLine(logo_vec.first, logo_vec.first + logo_vec.second * 10);
+	//	ofDrawLine(logo_vec.first, logo_vec.first + logo_vec.second * 10);
+	}
+
+	// Circle-Vektoren zeichnen
+	ofSetColor(0, 255, 0); // green lines für das Logo
+	for (auto& circle_vec : circle_vectors) {
+		ofDrawLine(circle_vec.first, circle_vec.first + circle_vec.second * 10);
 	}
 }
 
 void ofApp::create_logo_vectors() {
-	// analyse image
 	for (int y = 0; y < logo.getHeight(); y++) {
 		for (int x = 0; x < logo.getWidth(); x++) {
 
@@ -136,6 +141,27 @@ void ofApp::create_logo_vectors() {
 				}
 			}
 		}
+	}
+}
+
+void ofApp::create_circle_vectors() {
+	ofVec2f center = ofVec2f(screen_width / 2, screen_height / 2); // Setze den Mittelpunkt in die Bildschirmmitte
+	int numVectors = 100;
+	float radius = 150;
+
+	// Erstelle die Vektoren entlang des Kreisumfangs
+	for (int i = 0; i < numVectors; i++) {
+		float angle = ofMap(i, 0, numVectors, 0, TWO_PI); // Verteile die Winkel gleichmäßig von 0 bis 2?
+		float x = center.x + cos(angle) * radius;
+		float y = center.y + sin(angle) * radius;
+
+		ofVec2f position(x, y);
+
+		// Beispiel: Vektor zeigt nach außen vom Mittelpunkt
+		ofVec2f direction = position - center;
+		direction.normalize(); // Normiere den Vektor auf Länge 1
+
+		circle_vectors.push_back(std::make_pair(position, direction));
 	}
 }
 

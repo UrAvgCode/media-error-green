@@ -26,12 +26,14 @@ class ofApp : public ofBaseApp{
 		//vector<bool> logoMask;   // masc of logo
 		vector<pair <ofVec2f, ofVec2f>> logo_vectors; // 
 		int logo_left, logo_right, logo_top, logo_bottom;
+		vector<pair <ofVec2f, ofVec2f>> circle_vectors;;
 
 		void setup();
 		void update();
 		void draw();
 
 		void create_logo_vectors();
+		void create_circle_vectors();
 
 		void keyPressed(int key);
 		void keyReleased(int key);
