@@ -1,18 +1,27 @@
 #version 150
 
 uniform sampler2DRect tex0;
-uniform float aberrationAmount;
+uniform float aberration_amount;
 uniform float time;
+uniform float rand1;
+uniform float rand2;
 
 in vec2 vTexCoord;
 out vec4 fragColor;
 
 void main() {
-    vec2 offset = vec2(aberrationAmount, 0.0);
+    vec2 offset = vec2(aberration_amount, 0.0);
 
     vec2 new_tex_coord = vec2(vTexCoord.x, vTexCoord.y);
-
     new_tex_coord.x += sin(new_tex_coord.y + time) * 10.0f;
+
+    if (vTexCoord.y < rand1 + 5 && vTexCoord.y > rand1 - 5) {
+        new_tex_coord.x += 30.0f;
+    }
+
+    if (vTexCoord.y < rand2 + 5 && vTexCoord.y > rand2 - 5) {
+        new_tex_coord.x -= 30.0f;
+    }
 
     vec3 color;
     color.r = texture(tex0, new_tex_coord + offset).r;

@@ -12,7 +12,11 @@ int kernel_size = 0;
 float aberration = 10;
 
 //--------------------------------------------------------------
-void ofApp::setup(){
+void ofApp::setup() {
+	ofSetFrameRate(60);
+	ofSetVerticalSync(true);
+	ofBackground(0);
+
 	chromatic_shader.load("shaders/chromatic");
     blur_shader.load("shaders/blur");
 
@@ -40,9 +44,10 @@ void ofApp::draw(){
 	fbo_intermediate.begin();
     chromatic_shader.begin();
 
-    chromatic_shader.setUniformTexture("tex0", fbo_logo.getTexture(), 0);
-    chromatic_shader.setUniform1f("aberrationAmount", aberration);
+    chromatic_shader.setUniform1f("aberration_amount", aberration);
     chromatic_shader.setUniform1f("time", static_cast<float>(ofGetElapsedTimeMillis()) / 50.0f);
+    chromatic_shader.setUniform1f("rand1", static_cast<float>(rand() % static_cast<int>(fbo_intermediate.getHeight())));
+    chromatic_shader.setUniform1f("rand2", static_cast<float>(rand() % static_cast<int>(fbo_intermediate.getHeight())));
     fbo_logo.draw(0, 0);
 
     chromatic_shader.end();
