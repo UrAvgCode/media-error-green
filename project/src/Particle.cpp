@@ -10,7 +10,7 @@ void Particle::update() {
     velocity += acceleration;
     velocity.limit(maxSpeed);
     position += velocity;
-    acceleration *= 0; // Beschleunigung zurücksetzen
+    acceleration *= 0; // undo acceleration
 
     // adds one particle to trail each update
     trail.push_back(position);
@@ -41,12 +41,12 @@ void Particle::edges() {
 
 void Particle::draw() {
 
-    // Setze die Farbe mit Transparenz (Alpha-Wert für Fading-Effekt)
+    // put color with transparency
     for (int i = 0; i < trail.size(); ++i) {
         float alpha = ofMap(i, 0, trail.size(), 0, 150); // newest particle has highest opacity
         ofSetColor(0, 255, 0, alpha);  // green with variating opacity
 
-        ofDrawCircle(trail[i], 2);  // Zeichne an jeder Position einen kleinen Kreis
+        ofDrawCircle(trail[i], 2);  // draw on each position a circle
     }
 }
 

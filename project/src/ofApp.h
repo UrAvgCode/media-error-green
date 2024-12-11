@@ -12,22 +12,21 @@ class ofApp : public ofBaseApp{
 		int screen_height = ofGetHeight();
 
 		//Flow Field
-		int cols, rows; // Anzahl der Spalten und Reihen im Gitter
+		int cols, rows; // count of rows an colums in gitter
 		int resolution = 20; // size of every cell
-		vector<ofVec2f> flowField; // Array für die Vektoren im Gitter
-		float zOffset; // Für animierten Perlin Noise
+		vector<ofVec2f> flowField; 
+		float zOffset; // for animated Perlin noise
 
 		//particles
 		vector<Particle> particles;
 		int num_particles = 1000;
 
 		//logo
-		ofImage logo;
 		ofxSVG logo_svg;
-
-		//vector<bool> logoMask;   // masc of logo
-		vector<pair <ofVec2f, ofVec2f>> logo_vectors; // 
+		vector<pair <ofVec2f, ofVec2f>> logo_vectors; 
 		int logo_left, logo_right, logo_top, logo_bottom;
+
+		//circle
 		vector<pair <ofVec2f, ofVec2f>> circle_vectors;;
 
 		void setup();
