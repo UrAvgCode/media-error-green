@@ -10,7 +10,6 @@ ofxSvg logo;
 
 int kernel_size = 0;
 float aberration = 10;
-float shader_time = 0;
 
 //--------------------------------------------------------------
 void ofApp::setup(){
@@ -27,7 +26,6 @@ void ofApp::update(){
     aberration = ofMap(mouseX, 0, ofGetWidth(), 0, 100);
     kernel_size = ofMap(mouseY, 0, ofGetHeight(), 1, 15);
 	kernel_size += kernel_size % 2 == 0 ? 1 : 0;
-    shader_time += 0.5f;
 }
 
 //--------------------------------------------------------------
@@ -44,7 +42,7 @@ void ofApp::draw(){
 
     chromatic_shader.setUniformTexture("tex0", fbo_logo.getTexture(), 0);
     chromatic_shader.setUniform1f("aberrationAmount", aberration);
-    chromatic_shader.setUniform1f("time", shader_time);
+    chromatic_shader.setUniform1f("time", static_cast<float>(ofGetElapsedTimeMillis()) / 50.0f);
     fbo_logo.draw(0, 0);
 
     chromatic_shader.end();
