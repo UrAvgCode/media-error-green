@@ -19,7 +19,7 @@ public:
 
     void applyForce(ofVec2f force);
     void update();
-    void edges();
+    void check_for_edges();
     void draw();
 
 };
