@@ -69,7 +69,6 @@ void ofApp::update(){
 		}
 
 		particle.update();
-		particle.edges();
 	}
 }
 

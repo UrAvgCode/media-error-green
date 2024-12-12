@@ -2,24 +2,27 @@
 #include "ofMain.h"
 #include <ofMath.h>
 #include <ofVec2f.h>
+#include <ofMesh.h>
 
 class Particle {
 public:
-    ofVec2f position, velocity, acceleration;
-    float maxSpeed;
-    vector<ofVec2f> trail; //history of positions
-    int max_trail_length = 50;
+	const float max_speed = 4;
+	const int max_trail_length = 50;
 
-    Particle(float x, float y) {
-        position = ofVec2f(x, y);
-        velocity = ofVec2f(0, 0);
-        acceleration = ofVec2f(0, 0);
-        maxSpeed = 4;
-    }
+	ofVec2f position;
+	ofVec2f velocity;
+	ofVec2f acceleration;
 
-    void applyForce(ofVec2f force);
-    void update();
-    void edges();
-    void draw();
+	Particle(float x, float y);
+
+	void update();
+	void draw();
+
+	void applyForce(ofVec2f force);
+
+	bool is_outside_of_screen() const;
+
+protected:
+	ofMesh mesh;
 
 };
