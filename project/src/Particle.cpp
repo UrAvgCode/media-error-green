@@ -15,7 +15,7 @@ Particle::Particle(float x, float y) :
 	}
 }
 
-void Particle::applyForce(ofVec2f force) {
+void Particle::apply_force(ofVec2f force) {
 	acceleration += force;
 }
 
@@ -26,19 +26,10 @@ void Particle::update() {
 	acceleration *= 0; // undo acceleration
 
 	for (std::size_t i = mesh.getNumVertices() - 1; i > 0; --i) {
-		auto current_vertex = &mesh.getVertex(i);
-		auto next_vertex = &mesh.getVertex(i - 1);
-
-		current_vertex->x = next_vertex->x;
-		current_vertex->y = next_vertex->y;
-
-		mesh.setVertex(i, *current_vertex);
+		mesh.setVertex(i, mesh.getVertex(i - 1));
 	}
 
-	auto first_vertex = &mesh.getVertex(0);
-	first_vertex->x = position.x;
-	first_vertex->y = position.y;
-	mesh.setVertex(0, *first_vertex);
+	mesh.setVertex(0, static_cast<ofPoint>(position));
 
 	if (is_outside_of_screen()) {
 		if (position.x < 0) position.x = ofGetWidth();

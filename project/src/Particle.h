@@ -18,7 +18,7 @@ public:
 	void update();
 	void draw();
 
-	void applyForce(ofVec2f force);
+	void apply_force(ofVec2f force);
 
 	bool is_outside_of_screen() const;
 
