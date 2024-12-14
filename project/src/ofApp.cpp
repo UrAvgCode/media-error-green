@@ -9,13 +9,13 @@ void ofApp::setup(){
 	flowField.resize(cols * rows); // initialize vector field
 	zOffset = 0.0;
 
-	logo_svg.load("meLogoPlain.svg");
+	logo_svg.load("logo_lines1.svg");
 	logo_left = screen_width / 2 - logo_svg.getWidth() / 2;
 	logo_right = screen_width / 2 + logo_svg.getWidth() / 2;
 	logo_top = screen_height / 2 - logo_svg.getHeight() / 2;
 	logo_bottom = screen_height / 2 + logo_svg.getHeight() / 2;
 
-	//create_logo_vectors();
+	create_logo_vectors();
 	create_circle_vectors();
 
 	for (int i = 0; i < num_particles; i++) {
@@ -49,20 +49,36 @@ void ofApp::update(){
 		}
 
 		// calculate logo force
-		float attractionRadius = 50;
+		float attractionRadius = 10;
 		float attractionStrength = 100;
 
 		// force, that pulls particles to the circle
-		for (auto& circle_vec : circle_vectors) {
-			float distance = particle.position.distance(circle_vec.first);  // distance to circle_vector position
-			// particles within distance, get attracted by circle_vector
+		//for (auto& circle_vec : circle_vectors) {
+		//	float distance = particle.position.distance(circle_vec.first);  // distance to circle_vector position
+		//	// particles within distance, get attracted by circle_vector
+		//	if (distance < attractionRadius) {
+		//		ofVec2f attractionForce = circle_vec.second * 0.2; // power of attractionforce calculated by circle_vector direction
+		//		particle.apply_force(attractionForce);
+
+		//		// movement along the circle (not sticking on one point)
+		//		// calculation direction from vector to current particle
+		//		ofVec2f directionToVector = circle_vec.first - particle.position;
+		//		directionToVector.normalize();
+		//		particle.apply_force(directionToVector * 0.1);
+		//	}
+		//}
+
+		// force, that pulls particles to the logo
+		for (auto& logo_vec : logo_vectors) {
+			float distance = particle.position.distance(logo_vec.first);  // distance to logo_vector position
+			// particles within distance, get attracted by logo_vector
 			if (distance < attractionRadius) {
-				ofVec2f attractionForce = circle_vec.second * 0.2; // power of attractionforce calculated by circle_vector direction
+				ofVec2f attractionForce = logo_vec.second * 0.2; // power of attractionforce calculated by logo_vector direction
 				particle.apply_force(attractionForce);
 
-				// movement along the circle (not sticking on one point)
+				// movement along the logo (not sticking on one point)
 				// calculation direction from vector to current particle
-				ofVec2f directionToVector = circle_vec.first - particle.position;
+				ofVec2f directionToVector = logo_vec.first - particle.position;
 				directionToVector.normalize();
 				particle.apply_force(directionToVector * 0.1);
 			}
@@ -78,7 +94,7 @@ void ofApp::draw(){
 	ofTranslate(ofGetWidth()/2, ofGetHeight()/2);
 	ofScale(0.5, 0.5);
 	ofTranslate(-logo_svg.getHeight()/2, -logo_svg.getHeight()/2);
-	logo_svg.draw();
+	//logo_svg.draw();
 	ofPopMatrix();
 
 
@@ -101,22 +117,59 @@ void ofApp::draw(){
 	// drawing logo_vectors
 	ofSetColor(0, 255, 0); // green
 	for (auto& logo_vec : logo_vectors) {
-	//	ofDrawLine(logo_vec.first, logo_vec.first + logo_vec.second * 10);
+		ofDrawLine(logo_vec.first, logo_vec.first + logo_vec.second * 10);
 	}
 
 	// drawing circle_vectors
 	ofSetColor(0, 255, 0); // green
 	for (auto& circle_vec : circle_vectors) {
-		ofDrawLine(circle_vec.first, circle_vec.first + circle_vec.second * 10);
+		//ofDrawLine(circle_vec.first, circle_vec.first + circle_vec.second * 10);
 	}
 }
 
 void ofApp::create_logo_vectors() {
-	for (int y = 0; y < logo_svg.getHeight(); y++) {
-		for (int x = 0; x < logo_svg.getWidth(); x++) {
 
-			//read vectors out of svg
+	// SVG-Bounding-Box berechnen
+	ofRectangle boundingBox;
 
+	for (int i = 0; i < logo_svg.getNumPath(); i++) {
+		ofPath path = logo_svg.getPathAt(i);
+		path.setPolyWindingMode(OF_POLY_WINDING_ODD);
+
+		vector<ofPolyline> outlines = path.getOutline();
+
+		for (auto& outline : outlines) {
+			outline = outline.getResampledBySpacing(1); // Resample für gleichmäßige Punkte
+			for (auto& point : outline) {
+				point *= logo_scale;
+			}
+			boundingBox.growToInclude(outline.getBoundingBox());
+		}
+	}
+
+	// Berechne den Offset, um das Logo in die Mitte des Screens zu verschieben
+	ofVec2f offset((ofGetWidth() - boundingBox.getWidth()) / 2 - boundingBox.getLeft(),
+		(ofGetHeight() - boundingBox.getHeight()) / 2 - boundingBox.getTop());
+
+	// Logo-Vektoren generieren und den Offset anwenden
+	for (int i = 0; i < logo_svg.getNumPath(); i++) {
+		ofPath path = logo_svg.getPathAt(i);
+		path.setPolyWindingMode(OF_POLY_WINDING_ODD);
+
+		vector<ofPolyline> outlines = path.getOutline();
+
+		for (auto& outline : outlines) {
+			outline = outline.getResampledBySpacing(1); // Optional: Punkte gleichmäßig verteilen
+			for (int j = 0; j < outline.size() - 1; j++) {
+				ofVec2f start = ofVec2f(outline[j]) * logo_scale + offset;
+				ofVec2f end = ofVec2f(outline[j + 1]) * logo_scale + offset;
+
+				// Richtung berechnen entlang des Pfades
+				ofVec2f direction = end - start;
+				direction.normalize();
+
+				logo_vectors.push_back(std::make_pair(start, direction));
+			}
 		}
 	}
 }
