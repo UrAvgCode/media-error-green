@@ -72,3 +72,21 @@ bool Particle::is_outside_of_screen() const {
 	}
 	return true;
 }
+
+void Particle::apply_repulsion(vector<Particle>& particles, float repulsionRadius, float repulsionStrength) {
+	for (auto& other : particles) {
+		// Vermeide Selbstabstoßung
+		if (&other == this) continue;
+
+		// Berechne die Distanz zum anderen Partikel
+		ofVec2f diff = position - other.position;
+		float distance = diff.length();
+
+		// Wenn die Partikel nahe genug sind, berechne die Abstoßungskraft
+		if (distance > 0 && distance < repulsionRadius) {
+			diff.normalize();
+			float force = ofMap(distance, 0, repulsionRadius, repulsionStrength, 0); // Kraft nimmt mit Entfernung ab
+			apply_force(diff * force);
+		}
+	}
+}

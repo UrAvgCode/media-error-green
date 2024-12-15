@@ -21,10 +21,12 @@ public:
 	void apply_force(ofVec2f force);
 
 	bool is_outside_of_screen() const;
+	void apply_repulsion(vector<Particle>& particles, float repulsionRadius, float repulsionStrength);
 
 protected:
 	ofMesh mesh;
 
 	void move_vertices();
 	void wrap_position();
+	
 };

@@ -52,6 +52,10 @@ void ofApp::update(){
 
 	// updating particles
 	for (auto& particle : particles) {
+
+		// Repulsionskraft anwenden
+		particle.apply_repulsion(particles, repulsion_radius, repulsion_strength); // Radius und Stärke anpassen
+
 		int xIndex = floor(particle.position.x / resolution);
 		int yIndex = floor(particle.position.y / resolution);
 		int index = yIndex * cols + xIndex;
@@ -128,11 +132,11 @@ void ofApp::draw(){
 		particle.draw();
 	}
 
-	//// drawing logo_vectors
-	//ofSetColor(0, 255, 0); // green
-	//for (auto& logo_vec : logo_vectors) {
-	//	ofDrawLine(logo_vec.first, logo_vec.first + logo_vec.second * 10);
-	//}
+	// drawing logo_vectors
+	ofSetColor(0, 255, 0); // green
+	for (auto& logo_vec : logo_vectors) {
+		//ofDrawLine(logo_vec.first, logo_vec.first + logo_vec.second * 10);
+	}
 
 	// drawing circle_vectors
 	ofSetColor(0, 255, 0); // green
@@ -181,6 +185,11 @@ void ofApp::create_logo_vectors() {
 				// Richtung berechnen entlang des Pfades
 				ofVec2f direction = end - start;
 				direction.normalize();
+
+				// Anpassung der Richtung: Richtung von oben rechts nach unten links erzwingen
+				if (direction.x > 0 ) {
+					direction *= -1; // Drehe den Vektor um
+				}
 
 				logo_vectors.push_back(std::make_pair(start, direction));
 			}
