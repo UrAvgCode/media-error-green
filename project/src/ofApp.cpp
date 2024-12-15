@@ -59,7 +59,7 @@ void ofApp::update(){
 		// using perlin noise as force
 		if (index >= 0 && index < flowField.size()) {
 			ofVec2f force = flowField[index];
-			particle.applyForce(force);
+			particle.apply_force(force);
 		}
 
 		// calculate logo force
@@ -72,13 +72,13 @@ void ofApp::update(){
 		//	// particles within distance, get attracted by circle_vector
 		//	if (distance < attractionRadius) {
 		//		ofVec2f attractionForce = circle_vec.second * 0.2; // power of attractionforce calculated by circle_vector direction
-		//		particle.applyForce(attractionForce);
+		//		particle.apply_force(attractionForce);
 
 		//		// movement along the circle (not sticking on one point)
 		//		// calculation direction from vector to current particle
 		//		ofVec2f directionToVector = circle_vec.first - particle.position;
 		//		directionToVector.normalize();
-		//		particle.applyForce(directionToVector * 0.1);
+		//		particle.apply_force(directionToVector * 0.1);
 		//	}
 		//}
 
@@ -88,18 +88,17 @@ void ofApp::update(){
 			// particles within distance, get attracted by logo_vector
 			if (distance < attractionRadius) {
 				ofVec2f attractionForce = logo_vec.second * 0.2; // power of attractionforce calculated by logo_vector direction
-				particle.applyForce(attractionForce);
+				particle.apply_force(attractionForce);
 
 				// movement along the logo (not sticking on one point)
 				// calculation direction from vector to current particle
 				ofVec2f directionToVector = logo_vec.first - particle.position;
 				directionToVector.normalize();
-				particle.applyForce(directionToVector * 0.1);
+				particle.apply_force(directionToVector * 0.1);
 			}
 		}
 
 		particle.update();
-		particle.check_for_edges();
 	}
 }
 

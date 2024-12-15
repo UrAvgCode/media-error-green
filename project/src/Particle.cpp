@@ -1,52 +1,74 @@
 #include "Particle.h"
 #include <ofGLProgrammableRenderer.cpp>
 
-void Particle::applyForce(ofVec2f force) {
-    acceleration += force;
+Particle::Particle(float x, float y) :
+	position(ofVec2f(x, y)),
+	velocity(ofVec2f(0, 0)),
+	acceleration(ofVec2f(0, 0))
+{
+	mesh.setMode(OF_PRIMITIVE_LINE_STRIP);
+	auto& vertices = mesh.getVertices();
+	auto& colors = mesh.getColors();
+
+	vertices.resize(max_trail_length);
+	colors.resize(max_trail_length);
+
+	for (std::size_t i = 0; i < max_trail_length; ++i) {
+		vertices[i] = static_cast<ofPoint>(position);
+
+		float alpha = 255.0f - (255.0f / max_trail_length) * i;
+		colors[i] = ofColor(0, 255, 0, alpha);
+	}
+}
+
+void Particle::apply_force(ofVec2f force) {
+	acceleration += force;
 }
 
 void Particle::update() {
+	velocity += acceleration;
+	velocity.limit(max_speed);
+	acceleration = { 0, 0 };
 
-    velocity += acceleration;
-    velocity.limit(maxSpeed);
-    position += velocity;
-    acceleration *= 0; // undo acceleration
+	position += velocity;
+	move_vertices();
 
-    // adds one particle to trail each update
-    trail.push_back(position);
-    if (trail.size() > max_trail_length) {
-        trail.erase(trail.begin());
-    }
-}
-
-//checks if particle is still in screen
-void Particle::check_for_edges() {
-    if (position.x > ofGetWidth()) {
-        ofDrawLine(position, ofVec2f(0, position.y));
-        position.x = 0;
-    }
-    if (position.x < 0) {
-        ofDrawLine(position, ofVec2f(ofGetWidth(), position.y));
-        position.x = ofGetWidth();
-    }
-    if (position.y > ofGetHeight()) {
-        ofDrawLine(position, ofVec2f(position.x, 0));
-        position.y = 0;
-    }
-    if (position.y < 0) {
-        ofDrawLine(position, ofVec2f(position.x, ofGetHeight()));
-        position.y = ofGetHeight();
-    }
+	if (is_outside_of_screen()) {
+		wrap_position();
+	}
 }
 
 void Particle::draw() {
-
-    // put color with transparency
-    for (int i = 0; i < trail.size(); ++i) {
-        float alpha = ofMap(i, 0, trail.size(), 0, 150); // newest particle has highest opacity
-        ofSetColor(0, 255, 0, alpha);  // green with variating opacity
-
-        ofDrawCircle(trail[i], 2);  // draw on each position a circle
-    }
+	mesh.draw();
 }
 
+void Particle::move_vertices() {
+	auto& vertices = mesh.getVertices();
+	for (std::size_t i = vertices.size() - 1; i > 0; --i) {
+		vertices[i] = vertices[i - 1];
+	}
+
+	vertices[0] = static_cast<ofPoint>(position);
+}
+
+void Particle::wrap_position() {
+	if (position.x < 0) position.x = ofGetWidth();
+	if (position.x > ofGetWidth()) position.x = 0;
+	if (position.y < 0) position.y = ofGetHeight();
+	if (position.y > ofGetHeight()) position.y = 0;
+
+	for (auto& vertex : mesh.getVertices()) {
+		vertex = static_cast<ofPoint>(position);
+	}
+}
+
+bool Particle::is_outside_of_screen() const {
+	for (std::size_t i = 0; i < mesh.getNumVertices(); ++i) {
+		auto vertex = mesh.getVertex(i);
+		if (vertex.x >= 0 && vertex.x <= ofGetWidth() &&
+			vertex.y >= 0 && vertex.y <= ofGetHeight()) {
+			return false;
+		}
+	}
+	return true;
+}
