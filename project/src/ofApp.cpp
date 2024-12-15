@@ -9,7 +9,7 @@ void ofApp::setup(){
 	flowField.resize(cols * rows); // initialize vector field
 	zOffset = 0.0;
 
-	logo_svg.load("logo_lines1.svg");
+	logo_svg.load(image);
 	logo_left = screen_width / 2 - logo_svg.getWidth() / 2;
 	logo_right = screen_width / 2 + logo_svg.getWidth() / 2;
 	logo_top = screen_height / 2 - logo_svg.getHeight() / 2;
@@ -27,10 +27,24 @@ void ofApp::setup(){
 void ofApp::update(){
 	zOffset += 0.01; // animation offset gets increased
 
+	ofVec2f logoPosition = ofVec2f(ofGetWidth() / 2, ofGetHeight() / 2); // Logo zentriert
+	float logoWidth = logo_svg.getWidth() * logo_scale;  // Passe die Breite des Logos an
+	float logoHeight = logo_svg.getHeight() * logo_scale; // Passe die Höhe des Logos an
+
 	// vectors get calculated by Perlin noise
 	for (int y = 0; y < rows; y++) {
 		for (int x = 0; x < cols; x++) {
-			ofVec2f currentPos(x,y);
+			
+			float posX = x * resolution;
+			float posY = y * resolution;
+
+			// Prüfen, ob der aktuelle Punkt innerhalb des Logo-Bereichs liegt
+			if (posX >= logoPosition.x - logoWidth / 2 && posX <= logoPosition.x + logoWidth / 2 &&
+				posY >= logoPosition.y - logoHeight / 2 && posY <= logoPosition.y + logoHeight / 2) {
+				// Überspringen, wenn innerhalb des Logos
+				continue;
+			}
+
 			float angle = ofNoise(x * 0.1, y * 0.1, zOffset) * TWO_PI; // noise creates angle
 			flowField[y * cols + x] = ofVec2f(cos(angle), sin(angle));
 		}
@@ -49,8 +63,8 @@ void ofApp::update(){
 		}
 
 		// calculate logo force
-		float attractionRadius = 10;
-		float attractionStrength = 100;
+		float attractionRadius = 20;
+		float attractionStrength = 1000;
 
 		// force, that pulls particles to the circle
 		//for (auto& circle_vec : circle_vectors) {
@@ -99,27 +113,27 @@ void ofApp::draw(){
 	ofPopMatrix();
 
 
-	// visualized flowing field
-	for (int y = 0; y < rows; y++) {
-		for (int x = 0; x < cols; x++) {
-			ofVec2f vec = flowField[y * cols + x];
-			ofPushMatrix();
-			ofTranslate(x * resolution, y * resolution);
-			ofDrawLine(0, 0, vec.x * resolution * 0.5, vec.y * resolution * 0.5);
-			ofPopMatrix();
-		}
-	}
+	//// visualized flowing field
+	//for (int y = 0; y < rows; y++) {
+	//	for (int x = 0; x < cols; x++) {
+	//		ofVec2f vec = flowField[y * cols + x];
+	//		ofPushMatrix();
+	//		ofTranslate(x * resolution, y * resolution);
+	//		ofDrawLine(0, 0, vec.x * resolution * 0.5, vec.y * resolution * 0.5);
+	//		ofPopMatrix();
+	//	}
+	//}
 
 	// draw particles
 	for (auto& particle : particles) {
 		particle.draw();
 	}
 
-	// drawing logo_vectors
-	ofSetColor(0, 255, 0); // green
-	for (auto& logo_vec : logo_vectors) {
-		ofDrawLine(logo_vec.first, logo_vec.first + logo_vec.second * 10);
-	}
+	//// drawing logo_vectors
+	//ofSetColor(0, 255, 0); // green
+	//for (auto& logo_vec : logo_vectors) {
+	//	ofDrawLine(logo_vec.first, logo_vec.first + logo_vec.second * 10);
+	//}
 
 	// drawing circle_vectors
 	ofSetColor(0, 255, 0); // green

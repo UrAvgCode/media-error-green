@@ -46,7 +46,7 @@ void Particle::draw() {
         float alpha = ofMap(i, 0, trail.size(), 0, 150); // newest particle has highest opacity
         ofSetColor(0, 255, 0, alpha);  // green with variating opacity
 
-        ofDrawCircle(trail[i], 5);  // draw on each position a circle
+        ofDrawCircle(trail[i], 2);  // draw on each position a circle
     }
 }
 

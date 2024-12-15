@@ -24,6 +24,7 @@ class ofApp : public ofBaseApp{
 		//logo
 		ofxSVG logo_svg;
 		float logo_scale = 1.0;
+		string image = "logo_lines2.svg";
 		vector<pair <ofVec2f, ofVec2f>> logo_vectors; 
 		int logo_left, logo_right, logo_top, logo_bottom;
 
