@@ -1585,5 +1585,8 @@
     <CopyFileToFolders Include="resources\logo_lines1.svg">
       <Filter>resources</Filter>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="resources\logo_lines2.svg">
+      <Filter>resources</Filter>
+    </CopyFileToFolders>
   </ItemGroup>
 </Project>
