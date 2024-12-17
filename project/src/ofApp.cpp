@@ -1,11 +1,14 @@
 #include "ofApp.h"
 #include <ofVec2f.cpp>
 
+#include <algorithm>
+#include <execution>
 
 //--------------------------------------------------------------
-void ofApp::setup(){
-	cols = ofGetWidth() / resolution;
-	rows = ofGetHeight() / resolution;
+void ofApp::setup() {
+	ofSetFrameRate(60);
+	ofSetVerticalSync(true);
+
 	flowField.resize(cols * rows); // initialize vector field
 	zOffset = 0.0;
 
@@ -16,7 +19,6 @@ void ofApp::setup(){
 	logo_bottom = screen_height / 2 + logo_svg.getHeight() / 2;
 
 	create_logo_vectors();
-	create_circle_vectors();
 
 	for (int i = 0; i < num_particles; i++) {
 		particles.push_back(Particle(ofRandom(ofGetWidth()), ofRandom(ofGetHeight())));
@@ -24,7 +26,7 @@ void ofApp::setup(){
 }
 
 //--------------------------------------------------------------
-void ofApp::update(){
+void ofApp::update() {
 	zOffset += 0.01; // animation offset gets increased
 
 	ofVec2f logoPosition = ofVec2f(ofGetWidth() / 2, ofGetHeight() / 2); // Logo zentriert
@@ -34,7 +36,7 @@ void ofApp::update(){
 	// vectors get calculated by Perlin noise
 	for (int y = 0; y < rows; y++) {
 		for (int x = 0; x < cols; x++) {
-			
+
 			float posX = x * resolution;
 			float posY = y * resolution;
 
@@ -50,15 +52,12 @@ void ofApp::update(){
 		}
 	}
 
-	// updating particles
-	for (auto& particle : particles) {
+	std::for_each(std::execution::par_unseq, particles.begin(), particles.end(), [&](Particle& particle) {
+		particle.apply_repulsion(particles, repulsion_radius, repulsion_strength);
 
-		// Repulsionskraft anwenden
-		particle.apply_repulsion(particles, repulsion_radius, repulsion_strength); // Radius und Stärke anpassen
-
-		int xIndex = floor(particle.position.x / resolution);
-		int yIndex = floor(particle.position.y / resolution);
-		int index = yIndex * cols + xIndex;
+		auto x_index = static_cast<int>(particle.position.x / resolution);
+		auto y_index = static_cast<int>(particle.position.y / resolution);
+		auto index = y_index * cols + x_index;
 
 		// using perlin noise as force
 		if (index >= 0 && index < flowField.size()) {
@@ -66,31 +65,11 @@ void ofApp::update(){
 			particle.apply_force(force);
 		}
 
-		// calculate logo force
-		float attractionRadius = 20;
-		float attractionStrength = 1000;
-
-		// force, that pulls particles to the circle
-		//for (auto& circle_vec : circle_vectors) {
-		//	float distance = particle.position.distance(circle_vec.first);  // distance to circle_vector position
-		//	// particles within distance, get attracted by circle_vector
-		//	if (distance < attractionRadius) {
-		//		ofVec2f attractionForce = circle_vec.second * 0.2; // power of attractionforce calculated by circle_vector direction
-		//		particle.apply_force(attractionForce);
-
-		//		// movement along the circle (not sticking on one point)
-		//		// calculation direction from vector to current particle
-		//		ofVec2f directionToVector = circle_vec.first - particle.position;
-		//		directionToVector.normalize();
-		//		particle.apply_force(directionToVector * 0.1);
-		//	}
-		//}
-
 		// force, that pulls particles to the logo
 		for (auto& logo_vec : logo_vectors) {
 			float distance = particle.position.distance(logo_vec.first);  // distance to logo_vector position
 			// particles within distance, get attracted by logo_vector
-			if (distance < attractionRadius) {
+			if (distance < attraction_radius) {
 				ofVec2f attractionForce = logo_vec.second * 0.2; // power of attractionforce calculated by logo_vector direction
 				particle.apply_force(attractionForce);
 
@@ -101,17 +80,20 @@ void ofApp::update(){
 				particle.apply_force(directionToVector * 0.1);
 			}
 		}
+		});
 
+	// updating particles
+	for (auto& particle : particles) {
 		particle.update();
 	}
 }
 
 //--------------------------------------------------------------
-void ofApp::draw(){
+void ofApp::draw() {
 	ofPushMatrix();
-	ofTranslate(ofGetWidth()/2, ofGetHeight()/2);
+	ofTranslate(ofGetWidth() / 2, ofGetHeight() / 2);
 	ofScale(0.5, 0.5);
-	ofTranslate(-logo_svg.getHeight()/2, -logo_svg.getHeight()/2);
+	ofTranslate(-logo_svg.getHeight() / 2, -logo_svg.getHeight() / 2);
 	//logo_svg.draw();
 	ofPopMatrix();
 
@@ -136,12 +118,6 @@ void ofApp::draw(){
 	ofSetColor(0, 255, 0); // green
 	for (auto& logo_vec : logo_vectors) {
 		//ofDrawLine(logo_vec.first, logo_vec.first + logo_vec.second * 10);
-	}
-
-	// drawing circle_vectors
-	ofSetColor(0, 255, 0); // green
-	for (auto& circle_vec : circle_vectors) {
-		//ofDrawLine(circle_vec.first, circle_vec.first + circle_vec.second * 10);
 	}
 }
 
@@ -187,7 +163,7 @@ void ofApp::create_logo_vectors() {
 				direction.normalize();
 
 				// Anpassung der Richtung: Richtung von oben rechts nach unten links erzwingen
-				if (direction.x > 0 ) {
+				if (direction.x > 0) {
 					direction *= -1; // Drehe den Vektor um
 				}
 
@@ -197,77 +173,57 @@ void ofApp::create_logo_vectors() {
 	}
 }
 
-void ofApp::create_circle_vectors() {
-	ofVec2f center = ofVec2f(screen_width / 2, screen_height / 2); // middlepoint of circle in the middle of screen
-	int numVectors = 100;
-	float radius = 150;
-
-	// creates vectors around the circle
-	for (int i = 0; i < numVectors; i++) {
-		float angle = ofMap(i, 0, numVectors, 0, TWO_PI); // place vectors evenly on circle. two_pi because its a circle
-		float x = center.x + cos(angle) * radius;
-		float y = center.y + sin(angle) * radius;
-
-		ofVec2f position(x, y);
-
-		ofVec2f direction(-sin(angle), cos(angle)); // direction of vectors follows circle
-		direction.normalize(); // norm vector to length 1
-
-		circle_vectors.push_back(std::make_pair(position, direction));
-	}
-}
-
 //--------------------------------------------------------------
-void ofApp::keyPressed(int key){
+void ofApp::keyPressed(int key) {
 
 }
 
 //--------------------------------------------------------------
-void ofApp::keyReleased(int key){
+void ofApp::keyReleased(int key) {
 
 }
 
 //--------------------------------------------------------------
-void ofApp::mouseMoved(int x, int y ){
+void ofApp::mouseMoved(int x, int y) {
 
 }
 
 //--------------------------------------------------------------
-void ofApp::mouseDragged(int x, int y, int button){
-	
-}
-
-//--------------------------------------------------------------
-void ofApp::mousePressed(int x, int y, int button){
-	
-}
-
-//--------------------------------------------------------------
-void ofApp::mouseReleased(int x, int y, int button){
+void ofApp::mouseDragged(int x, int y, int button) {
 
 }
 
 //--------------------------------------------------------------
-void ofApp::mouseEntered(int x, int y){
+void ofApp::mousePressed(int x, int y, int button) {
 
 }
 
 //--------------------------------------------------------------
-void ofApp::mouseExited(int x, int y){
+void ofApp::mouseReleased(int x, int y, int button) {
 
 }
 
 //--------------------------------------------------------------
-void ofApp::windowResized(int w, int h){
+void ofApp::mouseEntered(int x, int y) {
 
 }
 
 //--------------------------------------------------------------
-void ofApp::gotMessage(ofMessage msg){
+void ofApp::mouseExited(int x, int y) {
 
 }
 
 //--------------------------------------------------------------
-void ofApp::dragEvent(ofDragInfo dragInfo){ 
+void ofApp::windowResized(int w, int h) {
+
+}
+
+//--------------------------------------------------------------
+void ofApp::gotMessage(ofMessage msg) {
+
+}
+
+//--------------------------------------------------------------
+void ofApp::dragEvent(ofDragInfo dragInfo) {
 
 }
