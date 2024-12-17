@@ -1,22 +1,24 @@
 #pragma once
 
 #include "ofMain.h"
-#include "Particle.h"
 #include "ofxSvg.h"
 
+#include "Particle.h"
+
+#include <vector>
 
 class ofApp : public ofBaseApp {
 public:
-	int screen_width = ofGetWidth();
-	int screen_height = ofGetHeight();
+	const int screen_width = ofGetWidth();
+	const int screen_height = ofGetHeight();
 
 	//Flow Field
 	const int resolution = 20; // size of every cell
 	const int cols = ofGetWidth() / resolution;
 	const int rows = ofGetHeight() / resolution;
 
-	vector<ofVec2f> flowField;
-	float zOffset; // for animated Perlin noise
+	vector<ofVec2f> flow_field;
+	float z_offset; // for animated Perlin noise
 
 	//particles
 	vector<Particle> particles;
@@ -29,13 +31,14 @@ public:
 
 	//logo
 	ofxSVG logo_svg;
-	float logo_scale = 1.0;
+	const float logo_scale = 1.0;
 	string image = "logo_lines4.svg";
-	vector<pair <ofVec2f, ofVec2f>> logo_vectors;
+	std::vector<pair <ofVec2f, ofVec2f>> logo_vectors;
 	int logo_left, logo_right, logo_top, logo_bottom;
 
-	//circle
-	vector<pair <ofVec2f, ofVec2f>> circle_vectors;;
+	const ofVec2f logo_position = { ofGetWidth() / 2, ofGetHeight() / 2 };
+	const float logo_width = logo_svg.getWidth() * logo_scale;
+	const float logo_height = logo_svg.getHeight() * logo_scale;
 
 	void setup();
 	void update();
