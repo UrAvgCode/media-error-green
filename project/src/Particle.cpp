@@ -1,6 +1,9 @@
 #include "Particle.h"
 #include <ofGLProgrammableRenderer.cpp>
 
+#include <algorithm>
+#include <execution>
+
 Particle::Particle(float x, float y) :
 	position(ofVec2f(x, y)),
 	velocity(ofVec2f(0, 0)),
@@ -73,20 +76,21 @@ bool Particle::is_outside_of_screen() const {
 	return true;
 }
 
-void Particle::apply_repulsion(vector<Particle>& particles, float repulsionRadius, float repulsionStrength) {
-	for (auto& other : particles) {
-		// Vermeide Selbstabstoﬂung
-		if (&other == this) continue;
+void Particle::apply_repulsion(vector<Particle>& particles, float repulsion_radius, float repulsion_strength) {
+	acceleration += std::transform_reduce(std::execution::par_unseq, particles.begin(), particles.end(), ofVec2f(), std::plus<>(), [&](auto& other) {
+		if (&other == this) {
+			return ofVec2f(0, 0);
+		}
 
-		// Berechne die Distanz zum anderen Partikel
 		ofVec2f diff = position - other.position;
 		float distance = diff.length();
 
-		// Wenn die Partikel nahe genug sind, berechne die Abstoﬂungskraft
-		if (distance > 0 && distance < repulsionRadius) {
-			diff.normalize();
-			float force = ofMap(distance, 0, repulsionRadius, repulsionStrength, 0); // Kraft nimmt mit Entfernung ab
-			apply_force(diff * force);
+		if (distance > repulsion_radius) {
+			return ofVec2f(0, 0);
 		}
-	}
+
+		diff.normalize();
+		float force = ofMap(distance, 0, repulsion_radius, repulsion_strength, 0); // Kraft nimmt mit Entfernung ab
+		return diff * force;
+		});
 }
