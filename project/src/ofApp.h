@@ -1,55 +1,60 @@
 #pragma once
 
 #include "ofMain.h"
-#include "Particle.h"
 #include "ofxSvg.h"
 
+#include "Particle.h"
 
-class ofApp : public ofBaseApp{
+#include <vector>
 
-	public:
-		int screen_width = ofGetWidth();
-		int screen_height = ofGetHeight();
+class ofApp : public ofBaseApp {
+public:
+	const int screen_width = ofGetWidth();
+	const int screen_height = ofGetHeight();
 
-		//Flow Field
-		int cols, rows; // count of rows an colums in gitter
-		int resolution = 20; // size of every cell
-		vector<ofVec2f> flowField; 
-		float zOffset; // for animated Perlin noise
+	//Flow Field
+	const int resolution = 20; // size of every cell
+	const int cols = ofGetWidth() / resolution;
+	const int rows = ofGetHeight() / resolution;
 
-		//particles
-		vector<Particle> particles;
-		int num_particles = 2000;
-		float repulsion_radius = 15;
-		float repulsion_strength = 5;
+	vector<ofVec2f> flow_field;
+	float z_offset; // for animated Perlin noise
 
-		//logo
-		ofxSVG logo_svg;
-		float logo_scale = 1.0;
-		string image = "logo_lines5.svg";
-		vector<pair <ofVec2f, ofVec2f>> logo_vectors; 
-		int logo_left, logo_right, logo_top, logo_bottom;
+	//particles
+	vector<Particle> particles;
+	const int num_particles = 2000;
+	const float repulsion_radius = 10;
+	const float repulsion_strength = 5;
 
-		//circle
-		vector<pair <ofVec2f, ofVec2f>> circle_vectors;;
+	const float attraction_radius = 20;
+	const float attraction_strength = 1000;
 
-		void setup();
-		void update();
-		void draw();
+	//logo
+	ofxSVG logo_svg;
+	const float logo_scale = 1.0;
+	string image = "logo_lines5.svg";
+	std::vector<pair <ofVec2f, ofVec2f>> logo_vectors;
+	int logo_left, logo_right, logo_top, logo_bottom;
 
-		void create_logo_vectors();
-		void create_circle_vectors();
+	const ofVec2f logo_position = { ofGetWidth() / 2, ofGetHeight() / 2 };
+	const float logo_width = logo_svg.getWidth() * logo_scale;
+	const float logo_height = logo_svg.getHeight() * logo_scale;
 
-		void keyPressed(int key);
-		void keyReleased(int key);
-		void mouseMoved(int x, int y );
-		void mouseDragged(int x, int y, int button);
-		void mousePressed(int x, int y, int button);
-		void mouseReleased(int x, int y, int button);
-		void mouseEntered(int x, int y);
-		void mouseExited(int x, int y);
-		void windowResized(int w, int h);
-		void dragEvent(ofDragInfo dragInfo);
-		void gotMessage(ofMessage msg);
-		
+	void setup();
+	void update();
+	void draw();
+
+	void create_logo_vectors();
+
+	void keyPressed(int key);
+	void keyReleased(int key);
+	void mouseMoved(int x, int y);
+	void mouseDragged(int x, int y, int button);
+	void mousePressed(int x, int y, int button);
+	void mouseReleased(int x, int y, int button);
+	void mouseEntered(int x, int y);
+	void mouseExited(int x, int y);
+	void windowResized(int w, int h);
+	void dragEvent(ofDragInfo dragInfo);
+	void gotMessage(ofMessage msg);
 };
