@@ -17,11 +17,11 @@ public:
     const int cols = ofGetWidth() / resolution;
     const int rows = ofGetHeight() / resolution;
 
-    vector<ofVec2f> flow_field;
+    std::vector<ofVec2f> flow_field;
     float z_offset; // for animated Perlin noise
 
     // particles
-    vector<Particle> particles;
+    std::vector<Particle> particles;
     const int num_particles = 2000;
     const float repulsion_radius = 10;
     const float repulsion_strength = 5;
@@ -40,21 +40,21 @@ public:
     const float logo_width = logo_svg.getWidth() * logo_scale;
     const float logo_height = logo_svg.getHeight() * logo_scale;
 
-    void setup();
-    void update();
-    void draw();
+    void setup() override;
+    void update() override;
+    void draw() override;
 
     void create_logo_vectors();
 
-    void keyPressed(int key);
-    void keyReleased(int key);
-    void mouseMoved(int x, int y);
-    void mouseDragged(int x, int y, int button);
-    void mousePressed(int x, int y, int button);
-    void mouseReleased(int x, int y, int button);
-    void mouseEntered(int x, int y);
-    void mouseExited(int x, int y);
-    void windowResized(int w, int h);
-    void dragEvent(ofDragInfo dragInfo);
-    void gotMessage(ofMessage msg);
+    void keyPressed(int key) override;
+    void keyReleased(int key) override;
+    void mouseMoved(int x, int y) override;
+    void mouseDragged(int x, int y, int button) override;
+    void mousePressed(int x, int y, int button) override;
+    void mouseReleased(int x, int y, int button) override;
+    void mouseEntered(int x, int y) override;
+    void mouseExited(int x, int y) override;
+    void windowResized(int w, int h) override;
+    void dragEvent(ofDragInfo dragInfo) override;
+    void gotMessage(ofMessage msg) override;
 };

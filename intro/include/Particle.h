@@ -2,7 +2,8 @@
 #include <ofMath.h>
 #include <ofMesh.h>
 #include <ofVec2f.h>
-#include "ofMain.h"
+
+#include <vector>
 
 class Particle {
 public:
@@ -21,7 +22,7 @@ public:
     void apply_force(ofVec2f force);
 
     bool is_outside_of_screen() const;
-    void apply_repulsion(vector<Particle> &particles, float repulsionRadius, float repulsionStrength);
+    void apply_repulsion(std::vector<Particle> &particles, float repulsion_radius, float repulsion_strength);
 
 protected:
     ofMesh mesh;

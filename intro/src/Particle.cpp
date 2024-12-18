@@ -1,5 +1,6 @@
 #include "Particle.h"
-#include <ofGLProgrammableRenderer.cpp>
+
+#include <ofGLProgrammableRenderer.h>
 
 #include <algorithm>
 #include <execution>
@@ -71,7 +72,7 @@ bool Particle::is_outside_of_screen() const {
     return true;
 }
 
-void Particle::apply_repulsion(vector<Particle> &particles, float repulsion_radius, float repulsion_strength) {
+void Particle::apply_repulsion(std::vector<Particle> &particles, float repulsion_radius, float repulsion_strength) {
     acceleration += std::transform_reduce(
             std::execution::par_unseq, particles.begin(), particles.end(), ofVec2f(), std::plus<>(), [&](auto &other) {
                 if (&other == this) {

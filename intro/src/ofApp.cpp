@@ -1,5 +1,6 @@
 #include "ofApp.h"
-#include <ofVec2f.cpp>
+
+#include <ofVec2f.h>
 
 #include <algorithm>
 #include <execution>
@@ -128,7 +129,7 @@ void ofApp::create_logo_vectors() {
         ofPath path = logo_svg.getPathAt(i);
         path.setPolyWindingMode(OF_POLY_WINDING_ODD);
 
-        vector<ofPolyline> outlines = path.getOutline();
+        std::vector<ofPolyline> outlines = path.getOutline();
 
         for (auto &outline: outlines) {
             outline = outline.getResampledBySpacing(1); // Resample für gleichmäßige Punkte
@@ -148,7 +149,7 @@ void ofApp::create_logo_vectors() {
         ofPath path = logo_svg.getPathAt(i);
         path.setPolyWindingMode(OF_POLY_WINDING_ODD);
 
-        vector<ofPolyline> outlines = path.getOutline();
+        std::vector<ofPolyline> outlines = path.getOutline();
 
         for (auto &outline: outlines) {
             outline = outline.getResampledBySpacing(1); // Optional: Punkte gleichmäßig verteilen
