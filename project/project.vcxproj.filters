@@ -13,19 +13,19 @@
 		<ClCompile Include="src\ofApp.cpp">
 			<Filter>src</Filter>
 		</ClCompile>
-		<ClCompile Include="..\ofxAzureKinect\src\ofxAzureKinect\BodyTracker.cpp">
+		<ClCompile Include="..\addons\ofxAzureKinect\src\ofxAzureKinect\BodyTracker.cpp">
 			<Filter>addons\ofxAzureKinect\src\ofxAzureKinect</Filter>
 		</ClCompile>
-		<ClCompile Include="..\ofxAzureKinect\src\ofxAzureKinect\Device.cpp">
+		<ClCompile Include="..\addons\ofxAzureKinect\src\ofxAzureKinect\Device.cpp">
 			<Filter>addons\ofxAzureKinect\src\ofxAzureKinect</Filter>
 		</ClCompile>
-		<ClCompile Include="..\ofxAzureKinect\src\ofxAzureKinect\Playback.cpp">
+		<ClCompile Include="..\addons\ofxAzureKinect\src\ofxAzureKinect\Playback.cpp">
 			<Filter>addons\ofxAzureKinect\src\ofxAzureKinect</Filter>
 		</ClCompile>
-		<ClCompile Include="..\ofxAzureKinect\src\ofxAzureKinect\Recorder.cpp">
+		<ClCompile Include="..\addons\ofxAzureKinect\src\ofxAzureKinect\Recorder.cpp">
 			<Filter>addons\ofxAzureKinect\src\ofxAzureKinect</Filter>
 		</ClCompile>
-		<ClCompile Include="..\ofxAzureKinect\src\ofxAzureKinect\Stream.cpp">
+		<ClCompile Include="..\addons\ofxAzureKinect\src\ofxAzureKinect\Stream.cpp">
 			<Filter>addons\ofxAzureKinect\src\ofxAzureKinect</Filter>
 		</ClCompile>
 		<ClCompile Include="..\openFrameworks\addons\ofxOpenCv\src\ofxCvColorImage.cpp">
@@ -311,28 +311,28 @@
 		<ClInclude Include="src\ofApp.h">
 			<Filter>src</Filter>
 		</ClInclude>
-		<ClInclude Include="..\ofxAzureKinect\src\ofxAzureKinect\BodyTracker.h">
+		<ClInclude Include="..\addons\ofxAzureKinect\src\ofxAzureKinect\BodyTracker.h">
 			<Filter>addons\ofxAzureKinect\src\ofxAzureKinect</Filter>
 		</ClInclude>
-		<ClInclude Include="..\ofxAzureKinect\src\ofxAzureKinect\Device.h">
+		<ClInclude Include="..\addons\ofxAzureKinect\src\ofxAzureKinect\Device.h">
 			<Filter>addons\ofxAzureKinect\src\ofxAzureKinect</Filter>
 		</ClInclude>
-		<ClInclude Include="..\ofxAzureKinect\src\ofxAzureKinect\Playback.h">
+		<ClInclude Include="..\addons\ofxAzureKinect\src\ofxAzureKinect\Playback.h">
 			<Filter>addons\ofxAzureKinect\src\ofxAzureKinect</Filter>
 		</ClInclude>
-		<ClInclude Include="..\ofxAzureKinect\src\ofxAzureKinect\Recorder.h">
+		<ClInclude Include="..\addons\ofxAzureKinect\src\ofxAzureKinect\Recorder.h">
 			<Filter>addons\ofxAzureKinect\src\ofxAzureKinect</Filter>
 		</ClInclude>
-		<ClInclude Include="..\ofxAzureKinect\src\ofxAzureKinect\Stream.h">
+		<ClInclude Include="..\addons\ofxAzureKinect\src\ofxAzureKinect\Stream.h">
 			<Filter>addons\ofxAzureKinect\src\ofxAzureKinect</Filter>
 		</ClInclude>
-		<ClInclude Include="..\ofxAzureKinect\src\ofxAzureKinect\Types.h">
+		<ClInclude Include="..\addons\ofxAzureKinect\src\ofxAzureKinect\Types.h">
 			<Filter>addons\ofxAzureKinect\src\ofxAzureKinect</Filter>
 		</ClInclude>
-		<ClInclude Include="..\ofxAzureKinect\src\ofxAzureKinect.h">
+		<ClInclude Include="..\addons\ofxAzureKinect\src\ofxAzureKinect.h">
 			<Filter>addons\ofxAzureKinect\src</Filter>
 		</ClInclude>
-		<ClInclude Include="..\ofxAzureKinect\libs\turbojpeg\include\turbojpeg.h">
+		<ClInclude Include="..\addons\ofxAzureKinect\libs\turbojpeg\include\turbojpeg.h">
 			<Filter>addons\ofxAzureKinect\libs\turbojpeg\include</Filter>
 		</ClInclude>
 		<ClInclude Include="..\openFrameworks\addons\ofxOpenCv\src\ofxCvBlob.h">
