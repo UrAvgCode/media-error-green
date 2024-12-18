@@ -1,0 +1,3 @@
+ofxAzureKinect
+ofxOpenCv
+ofxSvg
