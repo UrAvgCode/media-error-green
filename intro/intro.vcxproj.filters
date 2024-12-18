@@ -303,11 +303,11 @@
     <Filter Include="addons\ofxSvg\libs\svgtiny\svgtiny\include">
       <UniqueIdentifier>{9F8D8504--B3B-E-46-FB-8-E46-0244142DCFDC}</UniqueIdentifier>
     </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{4d828552-0eec-452a-99d1-50a9dbd0faa5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\ofApp.h">
-      <Filter>src</Filter>
-    </ClInclude>
     <ClInclude Include="src\ofApp.h">
       <Filter>src</Filter>
     </ClInclude>
@@ -1609,6 +1609,9 @@
     </ClInclude>
     <ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\svgtiny\svgtiny\include\svgtiny.h">
       <Filter>addons\ofxSvg\libs\svgtiny\svgtiny\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ofApp.h">
+      <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
