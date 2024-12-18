@@ -2,23 +2,33 @@
 
 #include "ofMain.h"
 
-class ofApp : public ofBaseApp {
-
+class Circle {
 public:
-	void setup();
-	void update();
-	void draw();
+    ofPoint position;
+    ofPoint velocity;
+    float radius;
 
-	void keyPressed(int key);
-	void keyReleased(int key);
-	void mouseMoved(int x, int y);
-	void mouseDragged(int x, int y, int button);
-	void mousePressed(int x, int y, int button);
-	void mouseReleased(int x, int y, int button);
-	void mouseEntered(int x, int y);
-	void mouseExited(int x, int y);
-	void windowResized(int w, int h);
-	void dragEvent(ofDragInfo dragInfo);
-	void gotMessage(ofMessage msg);
+    Circle(ofPoint pos, ofPoint vel, float r)
+        : position(pos), velocity(vel), radius(r) {
+    }
 
+    void update() {
+        position += velocity;
+        if (position.x < radius || position.x > ofGetWidth() - radius) {
+            velocity.x *= -1;
+        }
+        if (position.y < radius || position.y > ofGetHeight() - radius) {
+            velocity.y *= -1;
+        }
+    }
+};
+
+class ofApp : public ofBaseApp {
+public:
+    vector<Circle> circles;
+    ofFbo fboBlur;
+
+    void setup();
+    void update();
+    void draw();
 };
