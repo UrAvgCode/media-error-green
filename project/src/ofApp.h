@@ -19,14 +19,14 @@ class ofApp : public ofBaseApp{
 
 		//particles
 		vector<Particle> particles;
-		int num_particles = 1000;
-		float repulsion_radius = 10;
+		int num_particles = 2000;
+		float repulsion_radius = 15;
 		float repulsion_strength = 5;
 
 		//logo
 		ofxSVG logo_svg;
 		float logo_scale = 1.0;
-		string image = "logo_lines4.svg";
+		string image = "logo_lines5.svg";
 		vector<pair <ofVec2f, ofVec2f>> logo_vectors; 
 		int logo_left, logo_right, logo_top, logo_bottom;
 

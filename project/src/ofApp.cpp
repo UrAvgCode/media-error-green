@@ -186,7 +186,7 @@ void ofApp::create_logo_vectors() {
 				ofVec2f direction = end - start;
 				direction.normalize();
 
-				// Anpassung der Richtung: Richtung von oben rechts nach unten links erzwingen
+				// Anpassung der Richtung: Richtung von rechts nach links erzwingen
 				if (direction.x > 0 ) {
 					direction *= -1; // Drehe den Vektor um
 				}
