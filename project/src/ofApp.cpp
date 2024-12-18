@@ -48,6 +48,7 @@ void ofApp::update() {
 		}
 	}
 
+	// calculates particle movement in parallel threads
 	std::for_each(std::execution::par_unseq, particles.begin(), particles.end(), [&](Particle& particle) {
 		particle.apply_repulsion(particles, repulsion_radius, repulsion_strength);
 
