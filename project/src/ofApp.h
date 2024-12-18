@@ -32,7 +32,7 @@ public:
 	//logo
 	ofxSVG logo_svg;
 	const float logo_scale = 1.0;
-	string image = "logo_lines4.svg";
+	string image = "logo_lines5.svg";
 	std::vector<pair <ofVec2f, ofVec2f>> logo_vectors;
 	int logo_left, logo_right, logo_top, logo_bottom;
 

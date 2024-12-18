@@ -36,10 +36,10 @@ void ofApp::update() {
 			float posX = x * resolution;
 			float posY = y * resolution;
 
-			// Pr¸fen, ob der aktuelle Punkt innerhalb des Logo-Bereichs liegt
+			// Pr√ºfen, ob der aktuelle Punkt innerhalb des Logo-Bereichs liegt
 			if (posX >= logo_position.x - logo_width / 2 && posX <= logo_position.x + logo_width / 2 &&
 				posY >= logo_position.y - logo_height / 2 && posY <= logo_position.y + logo_height / 2) {
-				// ‹berspringen, wenn innerhalb des Logos
+				// √úberspringen, wenn innerhalb des Logos
 				continue;
 			}
 
@@ -129,7 +129,7 @@ void ofApp::create_logo_vectors() {
 		vector<ofPolyline> outlines = path.getOutline();
 
 		for (auto& outline : outlines) {
-			outline = outline.getResampledBySpacing(1); // Resample f¸r gleichm‰ﬂige Punkte
+			outline = outline.getResampledBySpacing(1); // Resample f√ºr gleichm√§√üige Punkte
 			for (auto& point : outline) {
 				point *= logo_scale;
 			}
@@ -149,7 +149,7 @@ void ofApp::create_logo_vectors() {
 		vector<ofPolyline> outlines = path.getOutline();
 
 		for (auto& outline : outlines) {
-			outline = outline.getResampledBySpacing(1); // Optional: Punkte gleichm‰ﬂig verteilen
+			outline = outline.getResampledBySpacing(1); // Optional: Punkte gleichm√§√üig verteilen
 			for (int j = 0; j < outline.size() - 1; j++) {
 				ofVec2f start = ofVec2f(outline[j]) * logo_scale + offset;
 				ofVec2f end = ofVec2f(outline[j + 1]) * logo_scale + offset;
@@ -158,8 +158,8 @@ void ofApp::create_logo_vectors() {
 				ofVec2f direction = end - start;
 				direction.normalize();
 
-				// Anpassung der Richtung: Richtung von oben rechts nach unten links erzwingen
-				if (direction.x > 0) {
+				// Anpassung der Richtung: Richtung von rechts nach links erzwingen
+				if (direction.x > 0 ) {
 					direction *= -1; // Drehe den Vektor um
 				}
 
