@@ -23,7 +23,7 @@ jobs:
     - name: Run setup script
       shell: bash
       working-directory: ./scripts
-      run: ./script.sh
+      run: ./setup.sh
 
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v1.0.2
