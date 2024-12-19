@@ -35,3 +35,15 @@ jobs:
     - name: Build
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} ${{env.SOLUTION_FILE_PATH}}
+
+    - name: Upload build artifacts (intro)
+      uses: actions/upload-artifact@v4
+      with:
+        name: intro-build-artifacts
+        path: ${{env.GITHUB_WORKSPACE}}/intro/bin
+
+    - name: Upload build artifacts (core)
+      uses: actions/upload-artifact@v4
+      with:
+        name: core-build-artifacts
+        path: ${{env.GITHUB_WORKSPACE}}/core/bin
