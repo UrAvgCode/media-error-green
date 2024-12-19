@@ -16,7 +16,7 @@ Particle::Particle(float x, float y) : position(ofVec2f(x, y)), velocity(ofVec2f
     for (std::size_t i = 0; i < max_trail_length; ++i) {
         vertices[i] = static_cast<ofPoint>(position);
 
-        float alpha = 255.0f - (255.0f / max_trail_length) * i;
+        float alpha = ofMap(static_cast<float>(i), 0, static_cast<float>(max_trail_length), 255, 0);
         colors[i] = ofColor(0, 255, 0, alpha);
     }
 }
@@ -48,14 +48,20 @@ void Particle::move_vertices() {
 }
 
 void Particle::wrap_position() {
-    if (position.x < 0)
-        position.x = ofGetWidth();
-    if (position.x > ofGetWidth())
+    const auto width = static_cast<float>(ofGetWidth());
+    const auto height = static_cast<float>(ofGetHeight());
+
+    if (position.x < 0) {
+        position.x = width;
+    } else if (position.x > width) {
         position.x = 0;
-    if (position.y < 0)
-        position.y = ofGetHeight();
-    if (position.y > ofGetHeight())
+    }
+
+    if (position.y < 0) {
+        position.y = height;
+    } else if (position.y > height) {
         position.y = 0;
+    }
 
     for (auto &vertex: mesh.getVertices()) {
         vertex = static_cast<ofPoint>(position);
@@ -63,9 +69,12 @@ void Particle::wrap_position() {
 }
 
 bool Particle::is_outside_of_screen() const {
+    const auto width = static_cast<float>(ofGetWidth());
+    const auto height = static_cast<float>(ofGetHeight());
+
     for (std::size_t i = 0; i < mesh.getNumVertices(); ++i) {
         auto vertex = mesh.getVertex(i);
-        if (vertex.x >= 0 && vertex.x <= ofGetWidth() && vertex.y >= 0 && vertex.y <= ofGetHeight()) {
+        if (vertex.x >= 0 && vertex.x <= width && vertex.y >= 0 && vertex.y <= height) {
             return false;
         }
     }
