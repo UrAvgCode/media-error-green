@@ -38,12 +38,12 @@ void ofApp::update() {
     for (int y = 0; y < rows; y++) {
         for (int x = 0; x < cols; x++) {
 
-            float posX = x * resolution;
-            float posY = y * resolution;
+            float pos_x = x * resolution;
+            float pos_y = y * resolution;
 
             // Prüfen, ob der aktuelle Punkt innerhalb des Logo-Bereichs liegt
-            if (posX >= logo_position.x - logo_width / 2 && posX <= logo_position.x + logo_width / 2 &&
-                posY >= logo_position.y - logo_height / 2 && posY <= logo_position.y + logo_height / 2) {
+            if (pos_x >= logo_position.x - logo_width / 2 && pos_x <= logo_position.x + logo_width / 2 &&
+                pos_y >= logo_position.y - logo_height / 2 && pos_y <= logo_position.y + logo_height / 2) {
                 // Überspringen, wenn innerhalb des Logos
                 continue;
             }
