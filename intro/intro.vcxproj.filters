@@ -52,6 +52,9 @@
     <ClCompile Include="..\openFrameworks\addons\ofxSvg\src\ofxSvg.cpp">
       <Filter>addons\ofxSvg\src</Filter>
     </ClCompile>
+    <ClCompile Include="src\Particle.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
@@ -306,11 +309,11 @@
     <Filter Include="include">
       <UniqueIdentifier>{4d828552-0eec-452a-99d1-50a9dbd0faa5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="resources">
+      <UniqueIdentifier>{3c9d5652-10b9-4f80-9e82-9b5949c6cf9a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\ofApp.h">
-      <Filter>src</Filter>
-    </ClInclude>
     <ClInclude Include="..\addons\ofxAzureKinect\src\ofxAzureKinect\BodyTracker.h">
       <Filter>addons\ofxAzureKinect\src\ofxAzureKinect</Filter>
     </ClInclude>
@@ -1613,8 +1616,43 @@
     <ClInclude Include="include\ofApp.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="include\Particle.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="icon.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="resources\logo_filled.png">
+      <Filter>resources</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="resources\logo_lines1.svg">
+      <Filter>resources</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="resources\logo_lines2.svg">
+      <Filter>resources</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="resources\logo_lines3.svg">
+      <Filter>resources</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="resources\logo_lines4.svg">
+      <Filter>resources</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="resources\logo_lines5.svg">
+      <Filter>resources</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="resources\meLogoPlain.svg">
+      <Filter>resources</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="resources\path1.svg">
+      <Filter>resources</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="resources\rotateGreen.png">
+      <Filter>resources</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="resources\rotateGreen1.png">
+      <Filter>resources</Filter>
+    </CopyFileToFolders>
   </ItemGroup>
 </Project>
