@@ -1,0 +1,56 @@
+name: MSBuild
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  SOLUTION_FILE_PATH: ./app.sln
+  BUILD_CONFIGURATION: Release
+
+  AZUREKINECT_SDK: C:\Program Files\Azure Kinect SDK v1.4.2
+  AZUREKINECT_BODY_SDK: C:\Program Files\Azure Kinect Body Tracking SDK
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Run setup script
+      run: ./scripts/setup.sh
+
+    - name: Install Azure Kinect SDK
+      run: |
+        curl -L -o AzureKinectSDK.exe https://download.microsoft.com/download/d/c/1/dc1f8a76-1ef2-4a1a-ac89-a7e22b3da491/Azure%20Kinect%20SDK%201.4.2.exe
+        start /wait AzureKinectSDK.exe /quiet /norestart
+
+    - name: Install Azure Kinect Body Tracking SDK
+      run: |
+        curl -L -o AzureKinectBodyTrackingSDK.msi https://download.microsoft.com/download/b/4/6/b469e83e-7884-4bd9-a284-1959cd2c0b76/Azure%20Kinect%20Body%20Tracking%20SDK%201.1.2.msi
+        msiexec /i AzureKinectBodyTrackingSDK.msi /quiet /norestart
+
+    - name: Set environment variables and update PATH
+      run: |
+        echo "AZUREKINECT_SDK=${{env.AZUREKINECT_SDK}}" >> $GITHUB_ENV
+        echo "AZUREKINECT_BODY_SDK=${{env.AZUREKINECT_BODY_SDK}}" >> $GITHUB_ENV
+        echo "${{env.AZUREKINECT_SDK}}\\sdk\\windows-desktop\\amd64\\release\\bin" >> $GITHUB_PATH
+        echo "${{env.AZUREKINECT_BODY_SDK}}\\sdk\\windows-desktop\\amd64\\release\\bin" >> $GITHUB_PATH
+        echo "${{env.AZUREKINECT_BODY_SDK}}\\tools" >> $GITHUB_PATH
+
+    - name: Add MSBuild to PATH
+      uses: microsoft/setup-msbuild@v1.0.2
+
+    - name: Restore NuGet packages
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: nuget restore ${{env.SOLUTION_FILE_PATH}}
+
+    - name: Build
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} ${{env.SOLUTION_FILE_PATH}}
