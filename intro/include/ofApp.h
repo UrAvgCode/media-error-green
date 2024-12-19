@@ -36,9 +36,9 @@ public:
     std::vector<pair<ofVec2f, ofVec2f>> logo_vectors;
     int logo_left, logo_right, logo_top, logo_bottom;
 
-    const ofVec2f logo_position = {ofGetWidth() / 2, ofGetHeight() / 2};
-    const float logo_width = logo_svg.getWidth() * logo_scale;
-    const float logo_height = logo_svg.getHeight() * logo_scale;
+    ofVec2f logo_position;
+    float logo_width;
+    float logo_height;
 
     void setup() override;
     void update() override;

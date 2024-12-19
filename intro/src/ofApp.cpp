@@ -14,6 +14,10 @@ void ofApp::setup() {
     z_offset = 0.0;
 
     logo_svg.load(image);
+    logo_position = ofVec2f(ofGetWidth() / 2, ofGetHeight() / 2);
+    logo_width = logo_svg.getWidth() * logo_scale;
+    logo_height = logo_svg.getHeight() * logo_scale;
+
     logo_left = screen_width / 2 - logo_svg.getWidth() / 2;
     logo_right = screen_width / 2 + logo_svg.getWidth() / 2;
     logo_top = screen_height / 2 - logo_svg.getHeight() / 2;
@@ -22,7 +26,7 @@ void ofApp::setup() {
     create_logo_vectors();
 
     for (int i = 0; i < num_particles; i++) {
-        particles.push_back(Particle(ofRandom(ofGetWidth()), ofRandom(ofGetHeight())));
+        particles.emplace_back(ofRandom(ofGetWidth()), ofRandom(ofGetHeight()));
     }
 }
 
@@ -166,7 +170,7 @@ void ofApp::create_logo_vectors() {
                     direction *= -1; // Drehe den Vektor um
                 }
 
-                logo_vectors.push_back(std::make_pair(start, direction));
+                logo_vectors.emplace_back(start, direction);
             }
         }
     }
