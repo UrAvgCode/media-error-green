@@ -308,9 +308,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\ofApp.h">
-      <Filter>src</Filter>
-    </ClInclude>
     <ClInclude Include="..\addons\ofxAzureKinect\src\ofxAzureKinect\BodyTracker.h">
       <Filter>addons\ofxAzureKinect\src\ofxAzureKinect</Filter>
     </ClInclude>
@@ -1616,5 +1613,10 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="icon.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+    <None Include="dnn_model_2_0_op11.onnx" />
+    <None Include="dnn_model_2_0_lite_op11.onnx" />
   </ItemGroup>
 </Project>
