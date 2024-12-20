@@ -54,3 +54,4 @@ jobs:
       with:
         name: build-artifacts
         path: ./artifacts/
+        retention-days: 1
