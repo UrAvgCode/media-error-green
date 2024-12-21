@@ -19,9 +19,17 @@ jobs:
     continue-on-error: true
     steps:
     - uses: actions/checkout@v4
-    - uses: actions/setup-python@v5
-    - run: pip install cpplint
-    - run: cpplint --output=vs7 --linelength=120 --filter=-whitespace,-legal/copyright --recursive .
+
+    - name: Install python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.13'
+
+    - name: Install cpplint
+      run: pip install cpplint
+
+    - name: Run cpplint
+      run: cpplint --output=vs7 --linelength=120 --filter=-whitespace,-legal/copyright --recursive .
 
   build:
     runs-on: windows-latest
