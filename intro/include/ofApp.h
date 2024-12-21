@@ -5,6 +5,8 @@
 
 #include "Particle.h"
 
+#include <string>
+#include <utility>
 #include <vector>
 
 class ofApp : public ofBaseApp {

@@ -1,6 +1,8 @@
 #include "ofApp.h"
 #include "ofMain.h"
 
+#include <memory>
+
 //========================================================================
 int main() {
     ofGLWindowSettings settings;
