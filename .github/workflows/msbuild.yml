@@ -20,7 +20,7 @@ jobs:
     - uses: actions/checkout@v4
     - uses: actions/setup-python@v5
     - run: pip install cpplint
-    - run: cpplint --filter=-whitespace,-legal/copyright --linelength=120 --recursive .
+    - run: cpplint --output=vs7 --linelength=120 --filter=-whitespace,-legal/copyright --recursive .
 
   build:
     runs-on: windows-latest
