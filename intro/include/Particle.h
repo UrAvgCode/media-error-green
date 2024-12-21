@@ -6,7 +6,7 @@
 #include <vector>
 
 class Particle {
-public:
+  public:
     const std::size_t max_trail_length = 50;
     const float max_speed = 4.0f;
 
@@ -24,7 +24,7 @@ public:
     bool is_outside_of_screen() const;
     void apply_repulsion(std::vector<Particle> &particles, float repulsion_radius, float repulsion_strength);
 
-protected:
+  protected:
     ofMesh mesh;
 
     void move_vertices();

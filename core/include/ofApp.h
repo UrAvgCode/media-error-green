@@ -4,7 +4,7 @@
 
 class ofApp : public ofBaseApp {
 
-public:
+  public:
     void setup() override;
     void update() override;
     void draw() override;
