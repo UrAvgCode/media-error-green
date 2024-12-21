@@ -5,10 +5,12 @@
 
 #include "Particle.h"
 
+#include <string>
+#include <utility>
 #include <vector>
 
 class ofApp : public ofBaseApp {
-public:
+  public:
     const int screen_width = ofGetWidth();
     const int screen_height = ofGetHeight();
 

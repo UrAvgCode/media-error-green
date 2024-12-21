@@ -4,6 +4,7 @@
 
 #include <algorithm>
 #include <execution>
+#include <vector>
 
 //--------------------------------------------------------------
 void ofApp::setup() {
