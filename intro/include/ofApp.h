@@ -36,11 +36,14 @@ class ofApp : public ofBaseApp {
     const float logo_scale = 1.0;
     string image = "logo_lines5.svg";
     std::vector<pair<ofVec2f, ofVec2f>> logo_vectors;
-    int logo_left, logo_right, logo_top, logo_bottom;
 
     ofVec2f logo_position;
     float logo_width;
     float logo_height;
+    int logo_left, logo_right, logo_top, logo_bottom;
+    ofVec2f logo_center;
+    float logo_radius;
+    int logo_margin = 10;
 
     void setup() override;
     void update() override;

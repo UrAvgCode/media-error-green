@@ -29,6 +29,20 @@ void ofApp::setup() {
     for (int i = 0; i < num_particles; i++) {
         particles.emplace_back(ofRandom(ofGetWidth()), ofRandom(ofGetHeight()));
     }
+
+    // Berechne die Bounding Box des Logos
+    ofRectangle boundingBoxLogo;
+    for (int i = 0; i < logo_svg.getNumPath(); i++) {
+        ofPath path = logo_svg.getPathAt(i);
+        vector<ofPolyline> outlines = path.getOutline();
+        for (auto &outline: outlines) {
+            boundingBoxLogo.growToInclude(outline.getBoundingBox());
+        }
+    }
+
+    // Mittelpunkt und Radius des Kreises berechnen
+    logo_center = ofVec2f(boundingBoxLogo.getCenter().x + logo_left, boundingBoxLogo.getCenter().y + logo_top);
+    logo_radius = (std::max(boundingBoxLogo.getWidth(), boundingBoxLogo.getHeight()) / 2.0f) + logo_margin;
 }
 
 //--------------------------------------------------------------
@@ -42,9 +56,16 @@ void ofApp::update() {
             float pos_x = x * resolution;
             float pos_y = y * resolution;
 
-            // Prüfen, ob der aktuelle Punkt innerhalb des Logo-Bereichs liegt
-            if (pos_x >= logo_position.x - logo_width / 2 && pos_x <= logo_position.x + logo_width / 2 &&
-                pos_y >= logo_position.y - logo_height / 2 && pos_y <= logo_position.y + logo_height / 2) {
+            //// Prüfen, ob der aktuelle Punkt innerhalb des Logo-Bereichs liegt
+            //if (pos_x >= logo_position.x - logo_width / 2 && pos_x <= logo_position.x + logo_width / 2 &&
+            //    pos_y >= logo_position.y - logo_height / 2 && pos_y <= logo_position.y + logo_height / 2) {
+            //    // Überspringen, wenn innerhalb des Logos
+            //    continue;
+            //}
+
+            // Prüfen, ob der aktuelle Punkt innerhalb des Logo-Kreises liegt
+            float distance_to_logo_center = ofVec2f(pos_x, pos_y).distance(logo_center);
+            if (distance_to_logo_center <= logo_radius) {
                 // Überspringen, wenn innerhalb des Logos
                 continue;
             }
@@ -56,7 +77,13 @@ void ofApp::update() {
 
     // calculates particle movement in parallel threads
     std::for_each(std::execution::par_unseq, particles.begin(), particles.end(), [&](Particle &particle) {
-        particle.apply_repulsion(particles, repulsion_radius, repulsion_strength);
+        // Berechne die Distanz zum Mittelpunkt des Logos
+        float distance_to_logo = particle.position.distance(logo_center);
+
+        // Wende Repulsion nur an, wenn der Partikel innerhalb des Kreises ist
+        if (distance_to_logo <= logo_radius) {
+            particle.apply_repulsion(particles, repulsion_radius, repulsion_strength);
+        }
 
         auto x_index = static_cast<int>(particle.position.x / resolution);
         auto y_index = static_cast<int>(particle.position.y / resolution);
@@ -102,16 +129,16 @@ void ofApp::draw() {
     ofPopMatrix();
 
 
-    //// visualized flowing field
-    // for (int y = 0; y < rows; y++) {
-    //	for (int x = 0; x < cols; x++) {
-    //		ofVec2f vec = flow_field[y * cols + x];
-    //		ofPushMatrix();
-    //		ofTranslate(x * resolution, y * resolution);
-    //		ofDrawLine(0, 0, vec.x * resolution * 0.5, vec.y * resolution * 0.5);
-    //		ofPopMatrix();
-    //	}
-    // }
+    // visualized flowing field
+     for (int y = 0; y < rows; y++) {
+    	for (int x = 0; x < cols; x++) {
+    		ofVec2f vec = flow_field[y * cols + x];
+    		ofPushMatrix();
+    		ofTranslate(x * resolution, y * resolution);
+    		ofDrawLine(0, 0, vec.x * resolution * 0.5, vec.y * resolution * 0.5);
+    		ofPopMatrix();
+    	}
+     }
 
     // draw particles
     for (auto &particle: particles) {
