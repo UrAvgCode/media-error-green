@@ -27,7 +27,7 @@ class Particle {
   protected:
     ofMesh mesh;
 
-    void move_vertices();
+    void move_vertices(ofVec2f logo_center, float logo_radius);
     void wrap_position();
     void Particle::set_color(const ofColor &color);
 };

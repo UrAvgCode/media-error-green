@@ -31,7 +31,7 @@ void Particle::update(ofVec2f logo_center, float logo_radius) {
     acceleration = {0, 0};
 
     position += velocity;
-    move_vertices();
+    move_vertices(logo_center, logo_radius);
 
     // Prüfen, ob das Partikel im Logo-Radius liegt
     if (position.distance(logo_center) <= logo_radius) {
@@ -47,13 +47,26 @@ void Particle::update(ofVec2f logo_center, float logo_radius) {
 
 void Particle::draw() { mesh.draw(); }
 
-void Particle::move_vertices() {
+void Particle::move_vertices(ofVec2f logo_center, float logo_radius) {
     auto &vertices = mesh.getVertices();
+    auto &colors = mesh.getColors();
     for (std::size_t i = vertices.size() - 1; i > 0; --i) {
         vertices[i] = vertices[i - 1];
+        //colors[i] = colors[i - 1];
     }
 
     vertices[0] = static_cast<ofPoint>(position);
+
+    // Setze die Farbe jedes Vertices basierend auf seiner Position
+    for (std::size_t i = 0; i < vertices.size(); ++i) {
+        float distance_to_logo = ofVec2f(vertices[i]).distance(logo_center);
+        if (distance_to_logo <= logo_radius) {
+            colors[i] = ofColor(255, 255, 255); // Weiß
+        } else {
+            float alpha = ofMap(static_cast<float>(i), 0, static_cast<float>(vertices.size()), 255, 0);
+            colors[i] = ofColor(0, 255, 0, alpha); // Standardfarbe Grün mit abnehmender Transparenz
+        }
+    }
 }
 
 void Particle::wrap_position() {
