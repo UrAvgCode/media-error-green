@@ -16,7 +16,7 @@ class Particle {
 
     Particle(float x, float y);
 
-    void update();
+    void update(ofVec2f logo_center, float logo_radius);
     void draw();
 
     void apply_force(ofVec2f force);
@@ -29,4 +29,5 @@ class Particle {
 
     void move_vertices();
     void wrap_position();
+    void Particle::set_color(const ofColor &color);
 };

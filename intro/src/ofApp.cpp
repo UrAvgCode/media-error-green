@@ -77,10 +77,8 @@ void ofApp::update() {
 
     // calculates particle movement in parallel threads
     std::for_each(std::execution::par_unseq, particles.begin(), particles.end(), [&](Particle &particle) {
-        // Berechne die Distanz zum Mittelpunkt des Logos
+        
         float distance_to_logo = particle.position.distance(logo_center);
-
-        // Wende Repulsion nur an, wenn der Partikel innerhalb des Kreises ist
         if (distance_to_logo <= logo_radius) {
             particle.apply_repulsion(particles, repulsion_radius, repulsion_strength);
         }
@@ -115,7 +113,7 @@ void ofApp::update() {
 
     // updating particles
     for (auto &particle: particles) {
-        particle.update();
+        particle.update(logo_center, logo_radius);
     }
 }
 

@@ -25,13 +25,20 @@ Particle::Particle(float x, float y) : position(ofVec2f(x, y)), velocity(ofVec2f
 
 void Particle::apply_force(ofVec2f force) { acceleration += force; }
 
-void Particle::update() {
+void Particle::update(ofVec2f logo_center, float logo_radius) {
     velocity += acceleration;
     velocity.limit(max_speed);
     acceleration = {0, 0};
 
     position += velocity;
     move_vertices();
+
+    // Prüfen, ob das Partikel im Logo-Radius liegt
+    if (position.distance(logo_center) <= logo_radius) {
+        set_color(ofColor(255, 255, 255)); // Weiß
+    } else {
+        set_color(ofColor(0, 255, 0)); // Standardfarbe Grün
+    }
 
     if (is_outside_of_screen()) {
         wrap_position();
@@ -103,4 +110,13 @@ void Particle::apply_repulsion(const std::vector<Particle> &particles, float rep
                         ofMap(distance, 0, repulsion_radius, repulsion_strength, 0); // Kraft nimmt mit Entfernung ab
                 return diff * force;
             });
+}
+
+void Particle::set_color(const ofColor &color) {
+    auto &colors = mesh.getColors();
+    for (std::size_t i = 0; i < colors.size(); ++i) {
+        float alpha = colors[i].a; // Behalte den Alpha-Wert
+        colors[i] = color;
+        colors[i].a = alpha; // Setze Alpha wieder zurück
+    }
 }
