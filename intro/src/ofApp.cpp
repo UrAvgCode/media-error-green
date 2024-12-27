@@ -113,7 +113,7 @@ void ofApp::update() {
 
     // updating particles
     for (auto &particle: particles) {
-        particle.update(logo_center, logo_radius);
+        particle.update(logo_vectors, logo_tolerance);
     }
 }
 

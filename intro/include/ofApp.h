@@ -25,11 +25,13 @@ class ofApp : public ofBaseApp {
     // particles
     std::vector<Particle> particles;
     const int num_particles = 2000;
-    const float repulsion_radius = 20;
+    const float repulsion_radius = 25;
     const float repulsion_strength = 5;
 
     const float attraction_radius = 20;
     const float attraction_strength = 1000;
+
+    float logo_tolerance = 10.0f;
 
     // logo
     ofxSVG logo_svg;

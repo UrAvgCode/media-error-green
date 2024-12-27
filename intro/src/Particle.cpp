@@ -14,6 +14,7 @@ Particle::Particle(float x, float y) : position(ofVec2f(x, y)), velocity(ofVec2f
 
     vertices.resize(max_trail_length);
     colors.resize(max_trail_length);
+    on_logo_status.resize(max_trail_length, false); // Initialisiere den Status als "nicht auf Logo"
 
     for (std::size_t i = 0; i < max_trail_length; ++i) {
         vertices[i] = static_cast<ofPoint>(position);
@@ -25,20 +26,17 @@ Particle::Particle(float x, float y) : position(ofVec2f(x, y)), velocity(ofVec2f
 
 void Particle::apply_force(ofVec2f force) { acceleration += force; }
 
-void Particle::update(ofVec2f logo_center, float logo_radius) {
+void Particle::update(const std::vector<std::pair<ofVec2f, ofVec2f>> &logo_vectors, float logo_tolerance) {
     velocity += acceleration;
     velocity.limit(max_speed);
     acceleration = {0, 0};
 
     position += velocity;
-    move_vertices(logo_center, logo_radius);
 
-    // Prüfen, ob das Partikel im Logo-Radius liegt
-    if (position.distance(logo_center) <= logo_radius) {
-        set_color(ofColor(255, 255, 255)); // Weiß
-    } else {
-        set_color(ofColor(0, 255, 0)); // Standardfarbe Grün
-    }
+    // Prüfen, ob der Partikel auf einem Logo-Vektor ist
+    is_on_logo = check_if_on_logo(logo_vectors, logo_tolerance);
+
+    move_vertices();
 
     if (is_outside_of_screen()) {
         wrap_position();
@@ -47,24 +45,24 @@ void Particle::update(ofVec2f logo_center, float logo_radius) {
 
 void Particle::draw() { mesh.draw(); }
 
-void Particle::move_vertices(ofVec2f logo_center, float logo_radius) {
+void Particle::move_vertices() {
     auto &vertices = mesh.getVertices();
     auto &colors = mesh.getColors();
     for (std::size_t i = vertices.size() - 1; i > 0; --i) {
         vertices[i] = vertices[i - 1];
-        //colors[i] = colors[i - 1];
+        on_logo_status[i] = on_logo_status[i - 1]; // Verschiebe den Logo-Status
     }
 
     vertices[0] = static_cast<ofPoint>(position);
+    on_logo_status[0] = is_on_logo;
 
-    // Setze die Farbe jedes Vertices basierend auf seiner Position
+    // Farben aktualisieren
     for (std::size_t i = 0; i < vertices.size(); ++i) {
-        float distance_to_logo = ofVec2f(vertices[i]).distance(logo_center);
-        if (distance_to_logo <= logo_radius) {
-            colors[i] = ofColor(255, 255, 255); // Weiß
+        if (on_logo_status[i]) {
+            colors[i] = ofColor(255, 255, 255); // Weiß, wenn auf Logo
         } else {
             float alpha = ofMap(static_cast<float>(i), 0, static_cast<float>(vertices.size()), 255, 0);
-            colors[i] = ofColor(0, 255, 0, alpha); // Standardfarbe Grün mit abnehmender Transparenz
+            colors[i] = ofColor(0, 255, 0, alpha); // Grün sonst
         }
     }
 }
@@ -132,4 +130,14 @@ void Particle::set_color(const ofColor &color) {
         colors[i] = color;
         colors[i].a = alpha; // Setze Alpha wieder zurück
     }
+}
+
+// Prüft, ob sich der Partikel auf einem Logo-Vektor befindet
+bool Particle::check_if_on_logo(const std::vector<std::pair<ofVec2f, ofVec2f>> &logo_vectors, float logo_tolerance) {
+    for (const auto &logo_vec: logo_vectors) {
+        if (position.distance(logo_vec.first) < logo_tolerance) {
+            return true;
+        }
+    }
+    return false;
 }
