@@ -42,7 +42,7 @@ void ofApp::setup() {
 
     // Mittelpunkt und Radius des Kreises berechnen
     logo_center = ofVec2f(boundingBoxLogo.getCenter().x + logo_left, boundingBoxLogo.getCenter().y + logo_top);
-    logo_radius = (std::max(boundingBoxLogo.getWidth(), boundingBoxLogo.getHeight()) / 2.0f) + logo_margin;
+    logo_radius = (std::max(boundingBoxLogo.getWidth(), boundingBoxLogo.getHeight()) / 2.0f);
 }
 
 //--------------------------------------------------------------
@@ -65,7 +65,7 @@ void ofApp::update() {
 
             // Prüfen, ob der aktuelle Punkt innerhalb des Logo-Kreises liegt
             float distance_to_logo_center = ofVec2f(pos_x, pos_y).distance(logo_center);
-            if (distance_to_logo_center <= logo_radius) {
+            if (distance_to_logo_center <= logo_radius + logo_margin) {
                 // Überspringen, wenn innerhalb des Logos
                 continue;
             }
@@ -129,16 +129,16 @@ void ofApp::draw() {
     ofPopMatrix();
 
 
-    // visualized flowing field
-     for (int y = 0; y < rows; y++) {
-    	for (int x = 0; x < cols; x++) {
-    		ofVec2f vec = flow_field[y * cols + x];
-    		ofPushMatrix();
-    		ofTranslate(x * resolution, y * resolution);
-    		ofDrawLine(0, 0, vec.x * resolution * 0.5, vec.y * resolution * 0.5);
-    		ofPopMatrix();
-    	}
-     }
+    //// visualized flowing field
+    // for (int y = 0; y < rows; y++) {
+    //	for (int x = 0; x < cols; x++) {
+    //		ofVec2f vec = flow_field[y * cols + x];
+    //		ofPushMatrix();
+    //		ofTranslate(x * resolution, y * resolution);
+    //		ofDrawLine(0, 0, vec.x * resolution * 0.5, vec.y * resolution * 0.5);
+    //		ofPopMatrix();
+    //	}
+    // }
 
     // draw particles
     for (auto &particle: particles) {

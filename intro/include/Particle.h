@@ -7,7 +7,7 @@
 
 class Particle {
   public:
-    const std::size_t max_trail_length = 50;
+    const std::size_t max_trail_length = 100;
     const float max_speed = 4.0f;
 
     ofVec2f position;

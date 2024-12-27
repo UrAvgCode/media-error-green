@@ -25,7 +25,7 @@ class ofApp : public ofBaseApp {
     // particles
     std::vector<Particle> particles;
     const int num_particles = 2000;
-    const float repulsion_radius = 10;
+    const float repulsion_radius = 20;
     const float repulsion_strength = 5;
 
     const float attraction_radius = 20;
@@ -34,7 +34,7 @@ class ofApp : public ofBaseApp {
     // logo
     ofxSVG logo_svg;
     const float logo_scale = 1.0;
-    string image = "logo_lines5.svg";
+    string image = "logo_lines3.svg";
     std::vector<pair<ofVec2f, ofVec2f>> logo_vectors;
 
     ofVec2f logo_position;
