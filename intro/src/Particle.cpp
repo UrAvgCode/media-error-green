@@ -58,11 +58,11 @@ void Particle::move_vertices() {
 
     // Farben aktualisieren
     for (std::size_t i = 0; i < vertices.size(); ++i) {
+        float alpha = ofMap(static_cast<float>(i), 0, static_cast<float>(vertices.size()), 255, 0);
         if (on_logo_status[i]) {
-            colors[i] = ofColor(255, 255, 255); // Weiß, wenn auf Logo
+            colors[i] = ofColor(0, 255, 0, alpha); // Weiß, wenn auf Logo
         } else {
-            float alpha = ofMap(static_cast<float>(i), 0, static_cast<float>(vertices.size()), 255, 0);
-            colors[i] = ofColor(0, 255, 0, alpha); // Grün sonst
+            colors[i] = ofColor(0, 100, 0, alpha); // Grün sonst
         }
     }
 }
