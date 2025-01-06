@@ -28,7 +28,7 @@ class ofApp : public ofBaseApp {
     const float repulsion_radius = 25;
     const float repulsion_strength = 5;
 
-    const float attraction_radius = 20;
+    const float attraction_radius = 30;
     const float attraction_strength = 1000;
 
     float logo_tolerance = 10.0f;

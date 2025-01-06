@@ -134,9 +134,11 @@ void Particle::set_color(const ofColor &color) {
 
 // Prüft, ob sich der Partikel auf einem Logo-Vektor befindet
 bool Particle::check_if_on_logo(const std::vector<std::pair<ofVec2f, ofVec2f>> &logo_vectors, float logo_tolerance) {
-    for (const auto &logo_vec: logo_vectors) {
-        if (position.distance(logo_vec.first) < logo_tolerance) {
-            return true;
+    if (position.distance(logo_center) < logo_radius) {
+        for (const auto &logo_vec: logo_vectors) {
+            if (position.distance(logo_vec.first) < logo_tolerance) {
+                return true;
+            }
         }
     }
     return false;

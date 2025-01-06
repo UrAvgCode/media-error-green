@@ -7,8 +7,12 @@
 
 class Particle {
   public:
+    static inline ofVec2f logo_center{};
+    static inline float logo_radius{};
+
     const std::size_t max_trail_length = 100;
     const float max_speed = 4.0f;
+
     bool is_on_logo = false; // Gibt an, ob sich der Partikel auf einem Logo-Vektor befindet
     std::vector<bool> on_logo_status; // Status für jeden Vertex
 

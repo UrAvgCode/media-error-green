@@ -10,6 +10,7 @@
 void ofApp::setup() {
     ofSetFrameRate(60);
     ofSetVerticalSync(true);
+    ofBackground(0x000000);
 
     flow_field.resize(cols * rows); // initialize vector field
     z_offset = 0.0;
@@ -43,6 +44,8 @@ void ofApp::setup() {
     // Mittelpunkt und Radius des Kreises berechnen
     logo_center = ofVec2f(boundingBoxLogo.getCenter().x + logo_left, boundingBoxLogo.getCenter().y + logo_top);
     logo_radius = (std::max(boundingBoxLogo.getWidth(), boundingBoxLogo.getHeight()) / 2.0f);
+    Particle::logo_center = logo_center;
+    Particle::logo_radius = logo_radius;
 }
 
 //--------------------------------------------------------------
