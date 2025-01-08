@@ -2,6 +2,9 @@
 
 //--------------------------------------------------------------
 void CoreApp::setup() {
+    ofSetFrameRate(60);
+    ofSetVerticalSync(true);
+
     intro_app.setup();
     tracking_app.setup();
     current_app = &intro_app;

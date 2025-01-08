@@ -1,15 +1,43 @@
 #include "tracking_app.h"
 
 //--------------------------------------------------------------
-void TrackingApp::setup() {}
+void TrackingApp::setup() {
+    // ofSetLogLevel(OF_LOG_VERBOSE);
+
+    ofLogNotice(__FUNCTION__) << "Found " << ofxAzureKinect::Device::getInstalledCount() << " installed devices.";
+
+    if (kinectDevice.open()) {
+        auto kinectSettings = ofxAzureKinect::DeviceSettings();
+        kinectSettings.syncImages = false;
+        kinectSettings.updateWorld = false;
+        kinectDevice.startCameras(kinectSettings);
+    }
+}
 
 //--------------------------------------------------------------
-void TrackingApp::update() {}
+void TrackingApp::exit() { kinectDevice.close(); }
+
+//--------------------------------------------------------------
+void TrackingApp::update() {
+    if (kinectDevice.isFrameNew()) {
+        kinectFps.newFrame();
+    }
+}
 
 //--------------------------------------------------------------
 void TrackingApp::draw() {
-    ofSetColor(0xFFFFFF);
-    ofDrawRectangle(100, 100, 100, 100);
+    ofBackground(128);
+
+    if (kinectDevice.isStreaming()) {
+        kinectDevice.getColorTex().draw(0, 0, 1280, 720);
+        kinectDevice.getDepthTex().draw(1280, 0, 360, 360);
+        kinectDevice.getIrTex().draw(1280, 360, 360, 360);
+    }
+
+    std::ostringstream oss;
+    oss << std::fixed << std::setprecision(2) << "APP: " << ofGetFrameRate() << " FPS" << std::endl
+        << "K4A: " << kinectFps.getFps() << " FPS";
+    ofDrawBitmapStringHighlight(oss.str(), 10, 20);
 }
 
 //--------------------------------------------------------------

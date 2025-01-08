@@ -1,11 +1,13 @@
 #pragma once
 
 #include "ofMain.h"
+#include "ofxAzureKinect.h"
 
 class TrackingApp : public ofBaseApp {
 
   public:
     void setup() override;
+    void exit() override;
     void update() override;
     void draw() override;
 
@@ -20,4 +22,8 @@ class TrackingApp : public ofBaseApp {
     void windowResized(int w, int h) override;
     void dragEvent(ofDragInfo dragInfo) override;
     void gotMessage(ofMessage msg) override;
+
+  private:
+    ofxAzureKinect::Device kinectDevice;
+    ofFpsCounter kinectFps;
 };

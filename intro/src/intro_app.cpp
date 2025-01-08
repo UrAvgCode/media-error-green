@@ -8,10 +8,6 @@
 
 //--------------------------------------------------------------
 void IntroApp::setup() {
-    ofSetFrameRate(60);
-    ofSetVerticalSync(true);
-    ofBackground(0x000000);
-
     flow_field.resize(cols * rows); // initialize vector field
     z_offset = 0.0;
 
@@ -65,11 +61,11 @@ void IntroApp::update() {
             float pos_y = y * resolution;
 
             //// Prüfen, ob der aktuelle Punkt innerhalb des Logo-Bereichs liegt
-            //if (pos_x >= logo_position.x - logo_width / 2 && pos_x <= logo_position.x + logo_width / 2 &&
-            //    pos_y >= logo_position.y - logo_height / 2 && pos_y <= logo_position.y + logo_height / 2) {
-            //    // Überspringen, wenn innerhalb des Logos
-            //    continue;
-            //}
+            // if (pos_x >= logo_position.x - logo_width / 2 && pos_x <= logo_position.x + logo_width / 2 &&
+            //     pos_y >= logo_position.y - logo_height / 2 && pos_y <= logo_position.y + logo_height / 2) {
+            //     // Überspringen, wenn innerhalb des Logos
+            //     continue;
+            // }
 
             // Prüfen, ob der aktuelle Punkt innerhalb des Logo-Kreises liegt
             float distance_to_logo_center = ofVec2f(pos_x, pos_y).distance(logo_center);
@@ -126,6 +122,8 @@ void IntroApp::update() {
 
 //--------------------------------------------------------------
 void IntroApp::draw() {
+    ofBackground(0);
+
     ofPushMatrix();
     ofTranslate(ofGetWidth() / 2, ofGetHeight() / 2);
     ofScale(0.5, 0.5);
@@ -151,7 +149,7 @@ void IntroApp::draw() {
     }
 
     // drawing logo_vectors
-    ofSetColor(0, 255, 0); // green
+    // ofSetColor(0, 255, 0); // green
     /*for (auto &logo_vec: all_logo_vectors) {
          ofDrawLine(logo_vec.first, logo_vec.first + logo_vec.second * 10);
     }*/
