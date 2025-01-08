@@ -9,7 +9,7 @@
 #include <utility>
 #include <vector>
 
-class ofApp : public ofBaseApp {
+class IntroApp : public ofBaseApp {
   public:
     const int screen_width = ofGetWidth();
     const int screen_height = ofGetHeight();

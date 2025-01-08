@@ -1,4 +1,4 @@
-#include "ofApp.h"
+#include "intro_app.h"
 
 #include <ofVec2f.h>
 
@@ -7,7 +7,7 @@
 #include <vector>
 
 //--------------------------------------------------------------
-void ofApp::setup() {
+void IntroApp::setup() {
     ofSetFrameRate(60);
     ofSetVerticalSync(true);
     ofBackground(0x000000);
@@ -54,7 +54,7 @@ void ofApp::setup() {
 }
 
 //--------------------------------------------------------------
-void ofApp::update() {
+void IntroApp::update() {
     z_offset += 0.01; // animation offset gets increased
 
     // vectors get calculated by Perlin noise
@@ -125,7 +125,7 @@ void ofApp::update() {
 }
 
 //--------------------------------------------------------------
-void ofApp::draw() {
+void IntroApp::draw() {
     ofPushMatrix();
     ofTranslate(ofGetWidth() / 2, ofGetHeight() / 2);
     ofScale(0.5, 0.5);
@@ -157,7 +157,7 @@ void ofApp::draw() {
     }*/
 }
 
-void ofApp::create_logo_vectors() {
+void IntroApp::create_logo_vectors() {
 
     // SVG-Bounding-Box berechnen
     ofRectangle bounding_box;
@@ -209,7 +209,7 @@ void ofApp::create_logo_vectors() {
     }
 }
 
-void ofApp::create_logo_in_outs_vectors() {
+void IntroApp::create_logo_in_outs_vectors() {
 
     // SVG-Bounding-Box berechnen
     ofRectangle bounding_box;
@@ -262,34 +262,34 @@ void ofApp::create_logo_in_outs_vectors() {
 }
 
 //--------------------------------------------------------------
-void ofApp::keyPressed(int key) {}
+void IntroApp::keyPressed(int key) {}
 
 //--------------------------------------------------------------
-void ofApp::keyReleased(int key) {}
+void IntroApp::keyReleased(int key) {}
 
 //--------------------------------------------------------------
-void ofApp::mouseMoved(int x, int y) {}
+void IntroApp::mouseMoved(int x, int y) {}
 
 //--------------------------------------------------------------
-void ofApp::mouseDragged(int x, int y, int button) {}
+void IntroApp::mouseDragged(int x, int y, int button) {}
 
 //--------------------------------------------------------------
-void ofApp::mousePressed(int x, int y, int button) {}
+void IntroApp::mousePressed(int x, int y, int button) {}
 
 //--------------------------------------------------------------
-void ofApp::mouseReleased(int x, int y, int button) {}
+void IntroApp::mouseReleased(int x, int y, int button) {}
 
 //--------------------------------------------------------------
-void ofApp::mouseEntered(int x, int y) {}
+void IntroApp::mouseEntered(int x, int y) {}
 
 //--------------------------------------------------------------
-void ofApp::mouseExited(int x, int y) {}
+void IntroApp::mouseExited(int x, int y) {}
 
 //--------------------------------------------------------------
-void ofApp::windowResized(int w, int h) {}
+void IntroApp::windowResized(int w, int h) {}
 
 //--------------------------------------------------------------
-void ofApp::gotMessage(ofMessage msg) {}
+void IntroApp::gotMessage(ofMessage msg) {}
 
 //--------------------------------------------------------------
-void ofApp::dragEvent(ofDragInfo dragInfo) {}
+void IntroApp::dragEvent(ofDragInfo dragInfo) {}

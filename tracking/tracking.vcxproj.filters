@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <ClCompile Include="src\tracking_app.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
     <ClCompile Include="src\main.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -48,12 +51,6 @@
     </ClCompile>
     <ClCompile Include="..\openFrameworks\addons\ofxSvg\src\ofxSvg.cpp">
       <Filter>addons\ofxSvg\src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\intro_app.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\particle.cpp">
-      <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -307,10 +304,7 @@
       <UniqueIdentifier>{9F8D8504--B3B-E-46-FB-8-E46-0244142DCFDC}</UniqueIdentifier>
     </Filter>
     <Filter Include="include">
-      <UniqueIdentifier>{4d828552-0eec-452a-99d1-50a9dbd0faa5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="resources">
-      <UniqueIdentifier>{3c9d5652-10b9-4f80-9e82-9b5949c6cf9a}</UniqueIdentifier>
+      <UniqueIdentifier>{f73316e9-2b57-4c57-ae72-6d98426232c4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1613,56 +1607,12 @@
     <ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\svgtiny\svgtiny\include\svgtiny.h">
       <Filter>addons\ofxSvg\libs\svgtiny\svgtiny\include</Filter>
     </ClInclude>
-    <ClInclude Include="include\intro_app.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\particle.h">
+    <ClInclude Include="include\tracking_app.h">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="icon.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <CopyFileToFolders Include="resources\logo_filled.png">
-      <Filter>resources</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="resources\logo_lines1.svg">
-      <Filter>resources</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="resources\logo_lines2.svg">
-      <Filter>resources</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="resources\logo_lines3.svg">
-      <Filter>resources</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="resources\logo_lines4.svg">
-      <Filter>resources</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="resources\logo_lines5.svg">
-      <Filter>resources</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="resources\meLogoPlain.svg">
-      <Filter>resources</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="resources\path1.svg">
-      <Filter>resources</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="resources\rotateGreen.png">
-      <Filter>resources</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="resources\rotateGreen1.png">
-      <Filter>resources</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="resources\logo_lines7.svg">
-      <Filter>resources</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="resources\logo_lines6.svg">
-      <Filter>resources</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="resources\logo_in_and_outs.svg">
-      <Filter>resources</Filter>
-    </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -1,4 +1,4 @@
-#include "ofApp.h"
+#include "core_app.h"
 #include "ofMain.h"
 
 #include <memory>
@@ -11,6 +11,6 @@ int main() {
 
     auto window = ofCreateWindow(settings);
 
-    ofRunApp(window, make_shared<ofApp>());
+    ofRunApp(window, make_shared<CoreApp>());
     ofRunMainLoop();
 }

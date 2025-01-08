@@ -1,43 +1,43 @@
-#include "ofApp.h"
+#include "tracking_app.h"
 
 //--------------------------------------------------------------
-void ofApp::setup() {}
+void TrackingApp::setup() {}
 
 //--------------------------------------------------------------
-void ofApp::update() {}
+void TrackingApp::update() {}
 
 //--------------------------------------------------------------
-void ofApp::draw() {}
+void TrackingApp::draw() {}
 
 //--------------------------------------------------------------
-void ofApp::keyPressed(int key) {}
+void TrackingApp::keyPressed(int key) {}
 
 //--------------------------------------------------------------
-void ofApp::keyReleased(int key) {}
+void TrackingApp::keyReleased(int key) {}
 
 //--------------------------------------------------------------
-void ofApp::mouseMoved(int x, int y) {}
+void TrackingApp::mouseMoved(int x, int y) {}
 
 //--------------------------------------------------------------
-void ofApp::mouseDragged(int x, int y, int button) {}
+void TrackingApp::mouseDragged(int x, int y, int button) {}
 
 //--------------------------------------------------------------
-void ofApp::mousePressed(int x, int y, int button) {}
+void TrackingApp::mousePressed(int x, int y, int button) {}
 
 //--------------------------------------------------------------
-void ofApp::mouseReleased(int x, int y, int button) {}
+void TrackingApp::mouseReleased(int x, int y, int button) {}
 
 //--------------------------------------------------------------
-void ofApp::mouseEntered(int x, int y) {}
+void TrackingApp::mouseEntered(int x, int y) {}
 
 //--------------------------------------------------------------
-void ofApp::mouseExited(int x, int y) {}
+void TrackingApp::mouseExited(int x, int y) {}
 
 //--------------------------------------------------------------
-void ofApp::windowResized(int w, int h) {}
+void TrackingApp::windowResized(int w, int h) {}
 
 //--------------------------------------------------------------
-void ofApp::gotMessage(ofMessage msg) {}
+void TrackingApp::gotMessage(ofMessage msg) {}
 
 //--------------------------------------------------------------
-void ofApp::dragEvent(ofDragInfo dragInfo) {}
+void TrackingApp::dragEvent(ofDragInfo dragInfo) {}

@@ -106,8 +106,8 @@
     <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\intro_app.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\ofApp.cpp" />
     <ClCompile Include="..\addons\ofxAzureKinect\src\ofxAzureKinect\BodyTracker.cpp" />
     <ClCompile Include="..\addons\ofxAzureKinect\src\ofxAzureKinect\Device.cpp" />
     <ClCompile Include="..\addons\ofxAzureKinect\src\ofxAzureKinect\Playback.cpp" />
@@ -121,7 +121,7 @@
     <ClCompile Include="..\openFrameworks\addons\ofxOpenCv\src\ofxCvImage.cpp" />
     <ClCompile Include="..\openFrameworks\addons\ofxOpenCv\src\ofxCvShortImage.cpp" />
     <ClCompile Include="..\openFrameworks\addons\ofxSvg\src\ofxSvg.cpp" />
-    <ClCompile Include="src\Particle.cpp" />
+    <ClCompile Include="src\particle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\addons\ofxAzureKinect\src\ofxAzureKinect\BodyTracker.h" />
@@ -557,8 +557,8 @@
     <ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\libxml2\libxml2\include\libxml\xpathInternals.h" />
     <ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\libxml2\libxml2\include\libxml\xpointer.h" />
     <ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\svgtiny\svgtiny\include\svgtiny.h" />
-    <ClInclude Include="include\ofApp.h" />
-    <ClInclude Include="include\Particle.h" />
+    <ClInclude Include="include\intro_app.h" />
+    <ClInclude Include="include\particle.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="$(OF_ROOT)\libs\openFrameworksCompiled\project\vs\openframeworksLib.vcxproj">
