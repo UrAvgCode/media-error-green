@@ -35,9 +35,13 @@ class ofApp : public ofBaseApp {
 
     // logo
     ofxSVG logo_svg;
+    ofxSVG logo_in_outs_svg;
     const float logo_scale = 1.0;
-    string image = "logo_lines6.svg";
+    string logo_image = "logo_lines4.svg";
+    string logo_in_outs_image = "logo_in_and_outs.svg";
     std::vector<pair<ofVec2f, ofVec2f>> logo_vectors;
+    std::vector<pair<ofVec2f, ofVec2f>> logo_in_outs_vectors;
+    std::vector<std::pair<ofVec2f, ofVec2f>> all_logo_vectors;
 
     ofVec2f logo_position;
     float logo_width;
@@ -45,13 +49,14 @@ class ofApp : public ofBaseApp {
     int logo_left, logo_right, logo_top, logo_bottom;
     ofVec2f logo_center;
     float logo_radius;
-    int logo_margin = 10;
+    int logo_margin = 30;
 
     void setup() override;
     void update() override;
     void draw() override;
 
     void create_logo_vectors();
+    void create_logo_in_outs_vectors();
 
     void keyPressed(int key) override;
     void keyReleased(int key) override;
