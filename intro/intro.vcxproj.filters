@@ -1654,6 +1654,12 @@
     <CopyFileToFolders Include="resources\rotateGreen1.png">
       <Filter>resources</Filter>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="resources\logo_lines7.svg">
+      <Filter>resources</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="resources\logo_lines6.svg">
+      <Filter>resources</Filter>
+    </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -80,7 +80,6 @@ void ofApp::update() {
 
     // calculates particle movement in parallel threads
     std::for_each(std::execution::par_unseq, particles.begin(), particles.end(), [&](Particle &particle) {
-        
         float distance_to_logo = particle.position.distance(logo_center);
         if (distance_to_logo <= logo_radius) {
             particle.apply_repulsion(particles, repulsion_radius, repulsion_strength);
