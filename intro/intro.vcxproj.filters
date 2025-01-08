@@ -1654,9 +1654,16 @@
     <CopyFileToFolders Include="resources\rotateGreen1.png">
       <Filter>resources</Filter>
     </CopyFileToFolders>
+<<<<<<< HEAD
     <CopyFileToFolders Include="resources\logo_lines6.svg" />
     <CopyFileToFolders Include="resources\logo_lines7.svg" />
     <CopyFileToFolders Include="resources\logo_in_and_outs.svg">
+=======
+    <CopyFileToFolders Include="resources\logo_lines7.svg">
+      <Filter>resources</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="resources\logo_lines6.svg">
+>>>>>>> 1fb02c16c3e9104259bc1e9cc31882ea2a76121f
       <Filter>resources</Filter>
     </CopyFileToFolders>
   </ItemGroup>
