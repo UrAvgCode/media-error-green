@@ -1,6 +1,8 @@
 #pragma once
 
+#include "intro_app.h"
 #include "ofMain.h"
+#include "tracking_app.h"
 
 class CoreApp : public ofBaseApp {
 
@@ -20,4 +22,9 @@ class CoreApp : public ofBaseApp {
     void windowResized(int w, int h) override;
     void dragEvent(ofDragInfo dragInfo) override;
     void gotMessage(ofMessage msg) override;
+
+  private:
+    IntroApp intro_app;
+    TrackingApp tracking_app;
+    ofBaseApp *current_app;
 };

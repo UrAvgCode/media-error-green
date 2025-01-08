@@ -7,7 +7,10 @@ void TrackingApp::setup() {}
 void TrackingApp::update() {}
 
 //--------------------------------------------------------------
-void TrackingApp::draw() {}
+void TrackingApp::draw() {
+    ofSetColor(0xFFFFFF);
+    ofDrawRectangle(100, 100, 100, 100);
+}
 
 //--------------------------------------------------------------
 void TrackingApp::keyPressed(int key) {}

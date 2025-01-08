@@ -1,5 +1,5 @@
-#include "core_app.h"
 #include "ofMain.h"
+#include "core_app.h"
 
 #include <memory>
 

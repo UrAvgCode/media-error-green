@@ -1,16 +1,28 @@
 #include "core_app.h"
 
 //--------------------------------------------------------------
-void CoreApp::setup() {}
+void CoreApp::setup() {
+    intro_app.setup();
+    tracking_app.setup();
+    current_app = &intro_app;
+}
 
 //--------------------------------------------------------------
-void CoreApp::update() {}
+void CoreApp::update() { current_app->update(); }
 
 //--------------------------------------------------------------
-void CoreApp::draw() {}
+void CoreApp::draw() { current_app->draw(); }
 
 //--------------------------------------------------------------
-void CoreApp::keyPressed(int key) {}
+void CoreApp::keyPressed(int key) {
+    if (key == 's') {
+        if (current_app == &intro_app) {
+            current_app = &tracking_app;
+        } else {
+            current_app = &intro_app;
+        }
+    }
+}
 
 //--------------------------------------------------------------
 void CoreApp::keyReleased(int key) {}
