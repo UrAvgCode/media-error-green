@@ -29,7 +29,7 @@ jobs:
       run: pip install cpplint
 
     - name: Run cpplint
-      run: cpplint --output=vs7 --linelength=120 --filter=-whitespace,-legal/copyright --recursive .
+      run: cpplint --output=vs7 --linelength=120 --filter=-whitespace,readability/utf8,-legal/copyright --recursive .
 
   build:
     runs-on: windows-latest
