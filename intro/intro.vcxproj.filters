@@ -1654,10 +1654,17 @@
     <CopyFileToFolders Include="resources\rotateGreen1.png">
       <Filter>resources</Filter>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="resources\logo_lines7.svg">
+      <Filter>resources</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="resources\logo_lines6.svg">
+      <Filter>resources</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="resources\logo_in_and_outs.svg">
+      <Filter>resources</Filter>
+    </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="dnn_model_2_0_op11.onnx" />
-    <None Include="dnn_model_2_0_lite_op11.onnx" />
   </ItemGroup>
 </Project>

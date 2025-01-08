@@ -25,28 +25,38 @@ class ofApp : public ofBaseApp {
     // particles
     std::vector<Particle> particles;
     const int num_particles = 2000;
-    const float repulsion_radius = 10;
+    const float repulsion_radius = 25;
     const float repulsion_strength = 5;
 
-    const float attraction_radius = 20;
+    const float attraction_radius = 30;
     const float attraction_strength = 1000;
+
+    float logo_tolerance = 10.0f;
 
     // logo
     ofxSVG logo_svg;
+    ofxSVG logo_in_outs_svg;
     const float logo_scale = 1.0;
-    string image = "logo_lines5.svg";
+    string logo_image = "logo_lines4.svg";
+    string logo_in_outs_image = "logo_in_and_outs.svg";
     std::vector<pair<ofVec2f, ofVec2f>> logo_vectors;
-    int logo_left, logo_right, logo_top, logo_bottom;
+    std::vector<pair<ofVec2f, ofVec2f>> logo_in_outs_vectors;
+    std::vector<std::pair<ofVec2f, ofVec2f>> all_logo_vectors;
 
     ofVec2f logo_position;
     float logo_width;
     float logo_height;
+    int logo_left, logo_right, logo_top, logo_bottom;
+    ofVec2f logo_center;
+    float logo_radius;
+    int logo_margin = 30;
 
     void setup() override;
     void update() override;
     void draw() override;
 
     void create_logo_vectors();
+    void create_logo_in_outs_vectors();
 
     void keyPressed(int key) override;
     void keyReleased(int key) override;
