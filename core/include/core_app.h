@@ -1,8 +1,9 @@
 #pragma once
 
-#include "intro_app.h"
-#include "ofMain.h"
-#include "tracking_app.h"
+#include <ofMain.h>
+
+#include <intro_app.h>
+#include <tracking_app.h>
 
 class CoreApp : public ofBaseApp {
 

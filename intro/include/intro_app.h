@@ -1,13 +1,13 @@
 #pragma once
 
-#include "ofMain.h"
-#include "ofxSvg.h"
-
-#include "Particle.h"
-
 #include <string>
 #include <utility>
 #include <vector>
+
+#include <ofMain.h>
+#include <ofxSvg.h>
+
+#include "particle.h"
 
 class IntroApp : public ofBaseApp {
   public:

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "ofMain.h"
-#include "ofxAzureKinect.h"
+#include <ofMain.h>
+#include <ofxAzureKinect.h>
 
 class TrackingApp : public ofBaseApp {
 

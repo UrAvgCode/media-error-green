@@ -1,10 +1,11 @@
 #include "intro_app.h"
 
-#include <ofVec2f.h>
-
 #include <algorithm>
 #include <execution>
 #include <vector>
+
+#include <ofVec2f.h>
+
 
 //--------------------------------------------------------------
 void IntroApp::setup() {

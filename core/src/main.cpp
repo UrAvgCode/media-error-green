@@ -1,9 +1,9 @@
-#include "ofMain.h"
-#include "core_app.h"
-
 #include <memory>
 
-//========================================================================
+#include <ofMain.h>
+
+#include "core_app.h"
+
 int main() {
     ofGLWindowSettings settings;
     settings.setSize(1024, 768);
