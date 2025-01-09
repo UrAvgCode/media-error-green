@@ -1,17 +1,14 @@
-#include "ofApp.h"
-
-#include <ofVec2f.h>
+#include "intro_app.h"
 
 #include <algorithm>
 #include <execution>
 #include <vector>
 
-//--------------------------------------------------------------
-void ofApp::setup() {
-    ofSetFrameRate(60);
-    ofSetVerticalSync(true);
-    ofBackground(0x000000);
+#include <ofVec2f.h>
 
+
+//--------------------------------------------------------------
+void IntroApp::setup() {
     flow_field.resize(cols * rows); // initialize vector field
     z_offset = 0.0;
 
@@ -54,7 +51,7 @@ void ofApp::setup() {
 }
 
 //--------------------------------------------------------------
-void ofApp::update() {
+void IntroApp::update() {
     z_offset += 0.01; // animation offset gets increased
 
     // vectors get calculated by Perlin noise
@@ -65,11 +62,11 @@ void ofApp::update() {
             float pos_y = y * resolution;
 
             //// Prüfen, ob der aktuelle Punkt innerhalb des Logo-Bereichs liegt
-            //if (pos_x >= logo_position.x - logo_width / 2 && pos_x <= logo_position.x + logo_width / 2 &&
-            //    pos_y >= logo_position.y - logo_height / 2 && pos_y <= logo_position.y + logo_height / 2) {
-            //    // Überspringen, wenn innerhalb des Logos
-            //    continue;
-            //}
+            // if (pos_x >= logo_position.x - logo_width / 2 && pos_x <= logo_position.x + logo_width / 2 &&
+            //     pos_y >= logo_position.y - logo_height / 2 && pos_y <= logo_position.y + logo_height / 2) {
+            //     // Überspringen, wenn innerhalb des Logos
+            //     continue;
+            // }
 
             // Prüfen, ob der aktuelle Punkt innerhalb des Logo-Kreises liegt
             float distance_to_logo_center = ofVec2f(pos_x, pos_y).distance(logo_center);
@@ -125,7 +122,9 @@ void ofApp::update() {
 }
 
 //--------------------------------------------------------------
-void ofApp::draw() {
+void IntroApp::draw() {
+    ofBackground(0);
+
     ofPushMatrix();
     ofTranslate(ofGetWidth() / 2, ofGetHeight() / 2);
     ofScale(0.5, 0.5);
@@ -151,13 +150,13 @@ void ofApp::draw() {
     }
 
     // drawing logo_vectors
-    ofSetColor(0, 255, 0); // green
+    // ofSetColor(0, 255, 0); // green
     /*for (auto &logo_vec: all_logo_vectors) {
          ofDrawLine(logo_vec.first, logo_vec.first + logo_vec.second * 10);
     }*/
 }
 
-void ofApp::create_logo_vectors() {
+void IntroApp::create_logo_vectors() {
 
     // SVG-Bounding-Box berechnen
     ofRectangle bounding_box;
@@ -209,7 +208,7 @@ void ofApp::create_logo_vectors() {
     }
 }
 
-void ofApp::create_logo_in_outs_vectors() {
+void IntroApp::create_logo_in_outs_vectors() {
 
     // SVG-Bounding-Box berechnen
     ofRectangle bounding_box;
@@ -262,34 +261,34 @@ void ofApp::create_logo_in_outs_vectors() {
 }
 
 //--------------------------------------------------------------
-void ofApp::keyPressed(int key) {}
+void IntroApp::keyPressed(int key) {}
 
 //--------------------------------------------------------------
-void ofApp::keyReleased(int key) {}
+void IntroApp::keyReleased(int key) {}
 
 //--------------------------------------------------------------
-void ofApp::mouseMoved(int x, int y) {}
+void IntroApp::mouseMoved(int x, int y) {}
 
 //--------------------------------------------------------------
-void ofApp::mouseDragged(int x, int y, int button) {}
+void IntroApp::mouseDragged(int x, int y, int button) {}
 
 //--------------------------------------------------------------
-void ofApp::mousePressed(int x, int y, int button) {}
+void IntroApp::mousePressed(int x, int y, int button) {}
 
 //--------------------------------------------------------------
-void ofApp::mouseReleased(int x, int y, int button) {}
+void IntroApp::mouseReleased(int x, int y, int button) {}
 
 //--------------------------------------------------------------
-void ofApp::mouseEntered(int x, int y) {}
+void IntroApp::mouseEntered(int x, int y) {}
 
 //--------------------------------------------------------------
-void ofApp::mouseExited(int x, int y) {}
+void IntroApp::mouseExited(int x, int y) {}
 
 //--------------------------------------------------------------
-void ofApp::windowResized(int w, int h) {}
+void IntroApp::windowResized(int w, int h) {}
 
 //--------------------------------------------------------------
-void ofApp::gotMessage(ofMessage msg) {}
+void IntroApp::gotMessage(ofMessage msg) {}
 
 //--------------------------------------------------------------
-void ofApp::dragEvent(ofDragInfo dragInfo) {}
+void IntroApp::dragEvent(ofDragInfo dragInfo) {}

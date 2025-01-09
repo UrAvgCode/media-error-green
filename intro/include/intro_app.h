@@ -1,15 +1,15 @@
 #pragma once
 
-#include "ofMain.h"
-#include "ofxSvg.h"
-
-#include "Particle.h"
-
 #include <string>
 #include <utility>
 #include <vector>
 
-class ofApp : public ofBaseApp {
+#include <ofMain.h>
+#include <ofxSvg.h>
+
+#include "particle.h"
+
+class IntroApp : public ofBaseApp {
   public:
     const int screen_width = ofGetWidth();
     const int screen_height = ofGetHeight();

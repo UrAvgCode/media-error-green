@@ -49,12 +49,14 @@
     <LinkIncremental>true</LinkIncremental>
     <GenerateManifest>true</GenerateManifest>
     <EnableClangTidyCodeAnalysis>true</EnableClangTidyCodeAnalysis>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\tracking\include\;..\intro\include;</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>bin\</OutDir>
     <IntDir>obj\$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <EnableClangTidyCodeAnalysis>true</EnableClangTidyCodeAnalysis>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\tracking\include\;..\intro\include;</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -79,6 +81,11 @@
       <ForceFileOutput>MultiplyDefinedSymbolOnly</ForceFileOutput>
     </Link>
     <PostBuildEvent />
+    <PostBuildEvent>
+      <Command>xcopy /Y /I /S "$(SolutionDir)intro\bin\*.*" "$(TargetDir)"
+xcopy /Y /I /S "$(SolutionDir)tracking\bin\*.*" "$(TargetDir)"
+del "$(TargetDir)\*.lib"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -104,10 +111,15 @@
       <ForceFileOutput>MultiplyDefinedSymbolOnly</ForceFileOutput>
     </Link>
     <PostBuildEvent />
+    <PostBuildEvent>
+      <Command>xcopy /Y /I /S "$(SolutionDir)intro\bin\*.*" "$(TargetDir)"
+xcopy /Y /I /S "$(SolutionDir)tracking\bin\*.*" "$(TargetDir)"
+del "$(TargetDir)\*.lib"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\core_app.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\ofApp.cpp" />
     <ClCompile Include="..\addons\ofxAzureKinect\src\ofxAzureKinect\BodyTracker.cpp" />
     <ClCompile Include="..\addons\ofxAzureKinect\src\ofxAzureKinect\Device.cpp" />
     <ClCompile Include="..\addons\ofxAzureKinect\src\ofxAzureKinect\Playback.cpp" />
@@ -556,11 +568,17 @@
     <ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\libxml2\libxml2\include\libxml\xpathInternals.h" />
     <ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\libxml2\libxml2\include\libxml\xpointer.h" />
     <ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\svgtiny\svgtiny\include\svgtiny.h" />
-    <ClInclude Include="include\ofApp.h" />
+    <ClInclude Include="include\core_app.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="$(OF_ROOT)\libs\openFrameworksCompiled\project\vs\openframeworksLib.vcxproj">
       <Project>{5837595d-aca9-485c-8e76-729040ce4b0b}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\intro\intro.vcxproj">
+      <Project>{c5507010-398f-47f2-b28b-40bc6d8812bc}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\tracking\tracking.vcxproj">
+      <Project>{58132289-d202-40f1-ad7e-ec2cb45664b1}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

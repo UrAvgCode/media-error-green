@@ -1,9 +1,9 @@
-#include "ofApp.h"
-#include "ofMain.h"
-
 #include <memory>
 
-//========================================================================
+#include <ofMain.h>
+
+#include "core_app.h"
+
 int main() {
     ofGLWindowSettings settings;
     settings.setSize(1024, 768);
@@ -11,6 +11,6 @@ int main() {
 
     auto window = ofCreateWindow(settings);
 
-    ofRunApp(window, make_shared<ofApp>());
+    ofRunApp(window, make_shared<CoreApp>());
     ofRunMainLoop();
 }

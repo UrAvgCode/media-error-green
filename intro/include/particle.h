@@ -1,9 +1,10 @@
 #pragma once
+
+#include <vector>
+
 #include <ofMath.h>
 #include <ofMesh.h>
 #include <ofVec2f.h>
-
-#include <vector>
 
 class Particle {
   public:

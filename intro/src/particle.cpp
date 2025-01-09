@@ -1,11 +1,11 @@
-#include "Particle.h"
-
-#include <ofGLProgrammableRenderer.h>
+#include "particle.h"
 
 #include <algorithm>
 #include <execution>
 #include <functional>
 #include <vector>
+
+#include <ofGLProgrammableRenderer.h>
 
 Particle::Particle(float x, float y) : position(ofVec2f(x, y)), velocity(ofVec2f(0, 0)), acceleration(ofVec2f(0, 0)) {
     mesh.setMode(OF_PRIMITIVE_LINE_STRIP);
