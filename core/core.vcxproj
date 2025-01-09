@@ -82,7 +82,9 @@
     </Link>
     <PostBuildEvent />
     <PostBuildEvent>
-      <Command>xcopy /Y /I /S "$(SolutionDir)intro\bin\*.*" "$(TargetDir)"</Command>
+      <Command>xcopy /Y /I /S "$(SolutionDir)intro\bin\*.*" "$(TargetDir)"
+xcopy /Y /I /S "$(SolutionDir)tracking\bin\*.*" "$(TargetDir)"
+del "$(TargetDir)\*.lib"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -110,7 +112,9 @@
     </Link>
     <PostBuildEvent />
     <PostBuildEvent>
-      <Command>xcopy /Y /I /S "$(SolutionDir)intro\bin\*.*" "$(TargetDir)"</Command>
+      <Command>xcopy /Y /I /S "$(SolutionDir)intro\bin\*.*" "$(TargetDir)"
+xcopy /Y /I /S "$(SolutionDir)tracking\bin\*.*" "$(TargetDir)"
+del "$(TargetDir)\*.lib"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
