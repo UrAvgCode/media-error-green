@@ -60,15 +60,9 @@ jobs:
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} ${{env.SOLUTION_FILE_PATH}}
 
-    - name: Create and copy build artifacts
-      run: |
-        mkdir -p artifacts
-        cp -r ./intro/bin/* ./artifacts/
-        cp -r ./core/bin/* ./artifacts/
-
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
       with:
         name: build-artifacts
-        path: ./artifacts/
+        path: ./core/bin/
         retention-days: 1
