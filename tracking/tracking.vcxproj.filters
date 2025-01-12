@@ -4,9 +4,6 @@
     <ClCompile Include="src\tracking_app.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\main.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="..\addons\ofxAzureKinect\src\ofxAzureKinect\BodyTracker.cpp">
       <Filter>addons\ofxAzureKinect\src\ofxAzureKinect</Filter>
     </ClCompile>
@@ -1619,6 +1616,18 @@
       <Filter>shaders</Filter>
     </CopyFileToFolders>
     <CopyFileToFolders Include="shaders\render.vert">
+      <Filter>shaders</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\blur.frag">
+      <Filter>shaders</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\blur.vert">
+      <Filter>shaders</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\chromatic.frag">
+      <Filter>shaders</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\chromatic.vert">
       <Filter>shaders</Filter>
     </CopyFileToFolders>
   </ItemGroup>
