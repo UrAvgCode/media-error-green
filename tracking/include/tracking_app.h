@@ -1,29 +1,36 @@
 #pragma once
 
-#include <ofMain.h>
-#include <ofxAzureKinect.h>
+#include "ofMain.h"
+
+#include "ofxAzureKinect.h"
 
 class TrackingApp : public ofBaseApp {
-
   public:
-    void setup() override;
-    void exit() override;
-    void update() override;
-    void draw() override;
+    void setup();
+    void exit();
 
-    void keyPressed(int key) override;
-    void keyReleased(int key) override;
-    void mouseMoved(int x, int y) override;
-    void mouseDragged(int x, int y, int button) override;
-    void mousePressed(int x, int y, int button) override;
-    void mouseReleased(int x, int y, int button) override;
-    void mouseEntered(int x, int y) override;
-    void mouseExited(int x, int y) override;
-    void windowResized(int w, int h) override;
-    void dragEvent(ofDragInfo dragInfo) override;
-    void gotMessage(ofMessage msg) override;
+    void update();
+    void draw();
+
+    void keyPressed(int key);
+    void keyReleased(int key);
+    void mouseMoved(int x, int y);
+    void mouseDragged(int x, int y, int button);
+    void mousePressed(int x, int y, int button);
+    void mouseReleased(int x, int y, int button);
+    void mouseEntered(int x, int y);
+    void mouseExited(int x, int y);
+    void windowResized(int w, int h);
+    void dragEvent(ofDragInfo dragInfo);
+    void gotMessage(ofMessage msg);
 
   private:
     ofxAzureKinect::Device kinectDevice;
-    ofFpsCounter kinectFps;
+
+    ofEasyCam camera;
+
+    ofVbo pointsVbo;
+    ofShader shader;
+
+    ofVboMesh skeletonMesh;
 };

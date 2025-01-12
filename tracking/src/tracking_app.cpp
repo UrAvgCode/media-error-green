@@ -1,5 +1,7 @@
 #include "tracking_app.h"
 
+#include <vector>
+
 //--------------------------------------------------------------
 void TrackingApp::setup() {
     // ofSetLogLevel(OF_LOG_VERBOSE);
@@ -7,36 +9,206 @@ void TrackingApp::setup() {
     ofLogNotice(__FUNCTION__) << "Found " << ofxAzureKinect::Device::getInstalledCount() << " installed devices.";
 
     if (kinectDevice.open()) {
-        auto kinectSettings = ofxAzureKinect::DeviceSettings();
-        kinectSettings.syncImages = false;
-        kinectSettings.updateWorld = false;
-        kinectDevice.startCameras(kinectSettings);
+        auto deviceSettings = ofxAzureKinect::DeviceSettings();
+        deviceSettings.syncImages = false;
+        deviceSettings.depthMode = K4A_DEPTH_MODE_NFOV_UNBINNED;
+        deviceSettings.updateIr = false;
+        deviceSettings.updateColor = true;
+        deviceSettings.colorResolution = K4A_COLOR_RESOLUTION_1080P;
+        deviceSettings.updateWorld = true;
+        deviceSettings.updateVbo = false;
+        kinectDevice.startCameras(deviceSettings);
+
+        auto bodyTrackerSettings = ofxAzureKinect::BodyTrackerSettings();
+        bodyTrackerSettings.sensorOrientation = K4ABT_SENSOR_ORIENTATION_DEFAULT;
+        bodyTrackerSettings.processingMode = K4ABT_TRACKER_PROCESSING_MODE_CPU;
+        kinectDevice.startBodyTracker(bodyTrackerSettings);
     }
+
+    // Load shader.
+    auto shaderSettings = ofShaderSettings();
+    shaderSettings.shaderFiles[GL_VERTEX_SHADER] = "shaders/render.vert";
+    shaderSettings.shaderFiles[GL_FRAGMENT_SHADER] = "shaders/render.frag";
+    shaderSettings.intDefines["BODY_INDEX_MAP_BACKGROUND"] = K4ABT_BODY_INDEX_MAP_BACKGROUND;
+    shaderSettings.bindDefaults = true;
+    if (shader.setup(shaderSettings)) {
+        ofLogNotice(__FUNCTION__) << "Success loading shader!";
+    }
+
+    // Setup vbo.
+    std::vector<glm::vec3> verts(1);
+    pointsVbo.setVertexData(verts.data(), verts.size(), GL_STATIC_DRAW);
 }
 
 //--------------------------------------------------------------
 void TrackingApp::exit() { kinectDevice.close(); }
 
 //--------------------------------------------------------------
-void TrackingApp::update() {
-    if (kinectDevice.isFrameNew()) {
-        kinectFps.newFrame();
-    }
-}
+void TrackingApp::update() {}
 
 //--------------------------------------------------------------
 void TrackingApp::draw() {
-    ofBackground(128);
+    ofBackground(0);
 
-    if (kinectDevice.isStreaming()) {
-        kinectDevice.getColorTex().draw(0, 0, 1280, 720);
-        kinectDevice.getDepthTex().draw(1280, 0, 360, 360);
-        kinectDevice.getIrTex().draw(1280, 360, 360, 360);
+    camera.begin();
+    {
+        ofPushMatrix();
+        {
+            ofRotateXDeg(180);
+
+            ofEnableDepthTest();
+
+            const auto &bodySkeletons = kinectDevice.getBodySkeletons();
+
+            constexpr int kMaxBodies = 6;
+            int bodyIDs[kMaxBodies];
+            int i = 0;
+            while (i < bodySkeletons.size()) {
+                bodyIDs[i] = bodySkeletons[i].id;
+                ++i;
+            }
+            while (i < kMaxBodies) {
+                bodyIDs[i] = 0;
+                ++i;
+            }
+
+            shader.begin();
+            {
+                shader.setUniformTexture("uDepthTex", kinectDevice.getDepthTex(), 1);
+                shader.setUniformTexture("uBodyIndexTex", kinectDevice.getBodyIndexTex(), 2);
+                shader.setUniformTexture("uWorldTex", kinectDevice.getDepthToWorldTex(), 3);
+                shader.setUniform2i("uFrameSize", kinectDevice.getDepthTex().getWidth(),
+                                    kinectDevice.getDepthTex().getHeight());
+                shader.setUniform1iv("uBodyIDs", bodyIDs, kMaxBodies);
+
+                int numPoints = kinectDevice.getDepthTex().getWidth() * kinectDevice.getDepthTex().getHeight();
+                pointsVbo.drawInstanced(GL_POINTS, 0, 1, numPoints);
+            }
+            shader.end();
+
+            ofDisableDepthTest();
+
+            for (const auto &skeleton: bodySkeletons) {
+                // Draw joints.
+                for (int i = 0; i < K4ABT_JOINT_COUNT; ++i) {
+                    auto joint = skeleton.joints[i];
+                    ofPushMatrix();
+                    {
+                        glm::mat4 transform = glm::translate(joint.position) * glm::toMat4(joint.orientation);
+                        ofMultMatrix(transform);
+
+                        ofDrawAxis(50.0f);
+
+                        if (joint.confidenceLevel >= K4ABT_JOINT_CONFIDENCE_MEDIUM) {
+                            ofSetColor(ofColor::green);
+                        } else if (joint.confidenceLevel >= K4ABT_JOINT_CONFIDENCE_LOW) {
+                            ofSetColor(ofColor::yellow);
+                        } else {
+                            ofSetColor(ofColor::red);
+                        }
+
+                        ofDrawSphere(10.0f);
+                    }
+                    ofPopMatrix();
+                }
+
+                // Draw connections.
+                skeletonMesh.setMode(OF_PRIMITIVE_LINES);
+                auto &vertices = skeletonMesh.getVertices();
+                vertices.resize(50);
+                int vdx = 0;
+
+                // Spine.
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_PELVIS].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SPINE_NAVEL].position);
+
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SPINE_NAVEL].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SPINE_CHEST].position);
+
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SPINE_CHEST].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_NECK].position);
+
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_NECK].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_HEAD].position);
+
+                // Head.
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_HEAD].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_NOSE].position);
+
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_NOSE].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_EYE_LEFT].position);
+
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_EYE_LEFT].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_EAR_LEFT].position);
+
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_NOSE].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_EYE_RIGHT].position);
+
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_EYE_RIGHT].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_EAR_RIGHT].position);
+
+                // Left Leg.
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_PELVIS].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_HIP_LEFT].position);
+
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_HIP_LEFT].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_KNEE_LEFT].position);
+
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_KNEE_LEFT].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ANKLE_LEFT].position);
+
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ANKLE_LEFT].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_FOOT_LEFT].position);
+
+                // Right leg.
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_PELVIS].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_HIP_RIGHT].position);
+
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_HIP_RIGHT].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_KNEE_RIGHT].position);
+
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_KNEE_RIGHT].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ANKLE_RIGHT].position);
+
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ANKLE_RIGHT].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_FOOT_RIGHT].position);
+
+                // Left arm.
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_NECK].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_CLAVICLE_LEFT].position);
+
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_CLAVICLE_LEFT].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SHOULDER_LEFT].position);
+
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SHOULDER_LEFT].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ELBOW_LEFT].position);
+
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ELBOW_LEFT].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_WRIST_LEFT].position);
+
+                // Right arm.
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_NECK].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_CLAVICLE_RIGHT].position);
+
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_CLAVICLE_RIGHT].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SHOULDER_RIGHT].position);
+
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SHOULDER_RIGHT].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ELBOW_RIGHT].position);
+
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ELBOW_RIGHT].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_WRIST_RIGHT].position);
+
+                skeletonMesh.draw();
+            }
+        }
+        ofPopMatrix();
     }
+    camera.end();
 
     std::ostringstream oss;
-    oss << std::fixed << std::setprecision(2) << "APP: " << ofGetFrameRate() << " FPS" << std::endl
-        << "K4A: " << kinectFps.getFps() << " FPS";
+    oss << ofToString(ofGetFrameRate(), 2) + " FPS" << std::endl;
+    oss << "Joint Smoothing: " << kinectDevice.getBodyTracker().jointSmoothing;
     ofDrawBitmapStringHighlight(oss.str(), 10, 20);
 }
 
@@ -50,7 +222,11 @@ void TrackingApp::keyReleased(int key) {}
 void TrackingApp::mouseMoved(int x, int y) {}
 
 //--------------------------------------------------------------
-void TrackingApp::mouseDragged(int x, int y, int button) {}
+void TrackingApp::mouseDragged(int x, int y, int button) {
+    if (button == 1) {
+        kinectDevice.getBodyTracker().jointSmoothing = ofMap(x, 0, ofGetWidth(), 0.0f, 1.0f, true);
+    }
+}
 
 //--------------------------------------------------------------
 void TrackingApp::mousePressed(int x, int y, int button) {}
