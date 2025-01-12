@@ -1,5 +1,7 @@
 #include "tracking_app.h"
 
+#include <vector>
+
 //--------------------------------------------------------------
 void TrackingApp::setup() {
     // ofSetLogLevel(OF_LOG_VERBOSE);
