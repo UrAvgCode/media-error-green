@@ -12,7 +12,7 @@ void TrackingApp::setup() {
         deviceSettings.depthMode = K4A_DEPTH_MODE_NFOV_UNBINNED;
         deviceSettings.updateIr = false;
         deviceSettings.updateColor = true;
-        // deviceSettings.colorResolution = K4A_COLOR_RESOLUTION_1080P;
+        deviceSettings.colorResolution = K4A_COLOR_RESOLUTION_1080P;
         deviceSettings.updateWorld = true;
         deviceSettings.updateVbo = false;
         kinectDevice.startCameras(deviceSettings);
