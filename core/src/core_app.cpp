@@ -14,7 +14,16 @@ void CoreApp::setup() {
 void CoreApp::update() { current_app->update(); }
 
 //--------------------------------------------------------------
-void CoreApp::draw() { current_app->draw(); }
+void CoreApp::draw() {
+    current_app->draw();
+    draw_fps_counter();
+}
+
+void CoreApp::draw_fps_counter() {
+    std::ostringstream oss;
+    oss << ofToString(ofGetFrameRate(), 2) + " FPS" << std::endl;
+    ofDrawBitmapStringHighlight(oss.str(), 10, 20);
+}
 
 //--------------------------------------------------------------
 void CoreApp::keyPressed(int key) {

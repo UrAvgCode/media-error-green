@@ -6,7 +6,6 @@
 #include <tracking_app.h>
 
 class CoreApp : public ofBaseApp {
-
   public:
     void setup() override;
     void update() override;
@@ -25,6 +24,8 @@ class CoreApp : public ofBaseApp {
     void gotMessage(ofMessage msg) override;
 
   private:
+    void draw_fps_counter();
+
     IntroApp intro_app;
     TrackingApp tracking_app;
     ofBaseApp *current_app;
