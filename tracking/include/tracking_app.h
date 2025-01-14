@@ -36,6 +36,7 @@ class TrackingApp : public ofBaseApp {
     ofVboMesh skeleton_mesh;
 
     ofShader shader;
+    ofShader chromatic_shader;
 
     ofFbo fbo;
 };

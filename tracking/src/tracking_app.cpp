@@ -26,7 +26,7 @@ void TrackingApp::setup() {
         kinect_device.startBodyTracker(body_tracker_settings);
     }
 
-    // Load shader.
+    // Load shaders.
     auto shader_settings = ofShaderSettings();
     shader_settings.shaderFiles[GL_VERTEX_SHADER] = "shaders/render.vert";
     shader_settings.shaderFiles[GL_FRAGMENT_SHADER] = "shaders/render.frag";
@@ -35,6 +35,8 @@ void TrackingApp::setup() {
     if (shader.setup(shader_settings)) {
         ofLogNotice(__FUNCTION__) << "Success loading shader!";
     }
+
+    chromatic_shader.load("shaders/chromatic");
 
     // Setup vbo.
     std::vector<glm::vec3> verts(1);
@@ -99,7 +101,17 @@ void TrackingApp::draw() {
     }
     fbo.end();
 
-    fbo.draw(0, 0);
+    chromatic_shader.begin();
+    {
+        const float aberration = 20;
+        chromatic_shader.setUniform1f("aberration_amount", aberration);
+        chromatic_shader.setUniform1f("time", static_cast<float>(ofGetElapsedTimeMillis()) / 50.0f);
+        chromatic_shader.setUniform1f("rand1", static_cast<float>(rand() % static_cast<int>(fbo.getHeight())));
+        chromatic_shader.setUniform1f("rand2", static_cast<float>(rand() % static_cast<int>(fbo.getHeight())));
+
+        fbo.draw(0, 0);
+    }
+    chromatic_shader.end();
 }
 
 void TrackingApp::draw_skeleton(const std::vector<ofxAzureKinect::BodySkeleton> &body_skeletons) {
