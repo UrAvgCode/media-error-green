@@ -41,7 +41,7 @@ void main()
         ray.x != 0 && ray.y != 0)
     {
         int bodyID = uBodyIDs[bodyIndex];
-        vColor = COLORS[bodyID % 6];
+        vColor = vec4(0.0, 255.0, 0.0, 1.0); // COLORS[bodyID % 6];
     }
     else
     {

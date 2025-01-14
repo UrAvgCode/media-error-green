@@ -1,8 +1,8 @@
 #pragma once
 
-#include "ofMain.h"
+#include <ofMain.h>
 
-#include "ofxAzureKinect.h"
+#include <ofxAzureKinect.h>
 
 class TrackingApp : public ofBaseApp {
   public:
@@ -25,6 +25,8 @@ class TrackingApp : public ofBaseApp {
     void gotMessage(ofMessage msg);
 
   private:
+    void draw_skeleton(const std::vector<ofxAzureKinect::BodySkeleton> &bodySkeletons);
+
     ofxAzureKinect::Device kinectDevice;
 
     ofEasyCam camera;
