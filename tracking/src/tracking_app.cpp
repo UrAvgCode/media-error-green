@@ -8,40 +8,40 @@ void TrackingApp::setup() {
 
     ofLogNotice(__FUNCTION__) << "Found " << ofxAzureKinect::Device::getInstalledCount() << " installed devices.";
 
-    if (kinectDevice.open()) {
-        auto deviceSettings = ofxAzureKinect::DeviceSettings();
-        deviceSettings.syncImages = true;
-        deviceSettings.depthMode = K4A_DEPTH_MODE_NFOV_UNBINNED;
-        deviceSettings.updateIr = false;
-        deviceSettings.updateColor = true;
-        deviceSettings.colorResolution = K4A_COLOR_RESOLUTION_1080P;
-        deviceSettings.updateWorld = true;
-        deviceSettings.updateVbo = false;
-        kinectDevice.startCameras(deviceSettings);
+    if (kinect_device.open()) {
+        auto device_settings = ofxAzureKinect::DeviceSettings();
+        device_settings.syncImages = true;
+        device_settings.depthMode = K4A_DEPTH_MODE_NFOV_UNBINNED;
+        device_settings.updateIr = false;
+        device_settings.updateColor = true;
+        device_settings.colorResolution = K4A_COLOR_RESOLUTION_1080P;
+        device_settings.updateWorld = true;
+        device_settings.updateVbo = false;
+        kinect_device.startCameras(device_settings);
 
-        auto bodyTrackerSettings = ofxAzureKinect::BodyTrackerSettings();
-        bodyTrackerSettings.sensorOrientation = K4ABT_SENSOR_ORIENTATION_DEFAULT;
-        bodyTrackerSettings.processingMode = K4ABT_TRACKER_PROCESSING_MODE_CPU;
-        kinectDevice.startBodyTracker(bodyTrackerSettings);
+        auto body_tracker_settings = ofxAzureKinect::BodyTrackerSettings();
+        body_tracker_settings.sensorOrientation = K4ABT_SENSOR_ORIENTATION_DEFAULT;
+        body_tracker_settings.processingMode = K4ABT_TRACKER_PROCESSING_MODE_CPU;
+        kinect_device.startBodyTracker(body_tracker_settings);
     }
 
     // Load shader.
-    auto shaderSettings = ofShaderSettings();
-    shaderSettings.shaderFiles[GL_VERTEX_SHADER] = "shaders/render.vert";
-    shaderSettings.shaderFiles[GL_FRAGMENT_SHADER] = "shaders/render.frag";
-    shaderSettings.intDefines["BODY_INDEX_MAP_BACKGROUND"] = K4ABT_BODY_INDEX_MAP_BACKGROUND;
-    shaderSettings.bindDefaults = true;
-    if (shader.setup(shaderSettings)) {
+    auto shader_settings = ofShaderSettings();
+    shader_settings.shaderFiles[GL_VERTEX_SHADER] = "shaders/render.vert";
+    shader_settings.shaderFiles[GL_FRAGMENT_SHADER] = "shaders/render.frag";
+    shader_settings.intDefines["BODY_INDEX_MAP_BACKGROUND"] = K4ABT_BODY_INDEX_MAP_BACKGROUND;
+    shader_settings.bindDefaults = true;
+    if (shader.setup(shader_settings)) {
         ofLogNotice(__FUNCTION__) << "Success loading shader!";
     }
 
     // Setup vbo.
     std::vector<glm::vec3> verts(1);
-    pointsVbo.setVertexData(verts.data(), verts.size(), GL_STATIC_DRAW);
+    points_vbo.setVertexData(verts.data(), static_cast<int>(verts.size()), GL_STATIC_DRAW);
 }
 
 //--------------------------------------------------------------
-void TrackingApp::exit() { kinectDevice.close(); }
+void TrackingApp::exit() { kinect_device.close(); }
 
 //--------------------------------------------------------------
 void TrackingApp::update() {}
@@ -58,53 +58,47 @@ void TrackingApp::draw() {
 
             ofEnableDepthTest();
 
-            const auto &bodySkeletons = kinectDevice.getBodySkeletons();
+            const auto &body_skeletons = kinect_device.getBodySkeletons();
 
-            constexpr int kMaxBodies = 6;
-            int bodyIDs[kMaxBodies];
+            constexpr int k_max_bodies = 6;
+            int body_ids[k_max_bodies];
             int i = 0;
-            while (i < bodySkeletons.size()) {
-                bodyIDs[i] = bodySkeletons[i].id;
+            while (i < body_skeletons.size()) {
+                body_ids[i] = body_skeletons[i].id;
                 ++i;
             }
-            while (i < kMaxBodies) {
-                bodyIDs[i] = 0;
+            while (i < k_max_bodies) {
+                body_ids[i] = 0;
                 ++i;
             }
 
             shader.begin();
             {
-                shader.setUniformTexture("uDepthTex", kinectDevice.getDepthTex(), 1);
-                shader.setUniformTexture("uBodyIndexTex", kinectDevice.getBodyIndexTex(), 2);
-                shader.setUniformTexture("uWorldTex", kinectDevice.getDepthToWorldTex(), 3);
-                shader.setUniform2i("uFrameSize", kinectDevice.getDepthTex().getWidth(),
-                                    kinectDevice.getDepthTex().getHeight());
-                shader.setUniform1iv("uBodyIDs", bodyIDs, kMaxBodies);
+                shader.setUniformTexture("uDepthTex", kinect_device.getDepthTex(), 1);
+                shader.setUniformTexture("uBodyIndexTex", kinect_device.getBodyIndexTex(), 2);
+                shader.setUniformTexture("uWorldTex", kinect_device.getDepthToWorldTex(), 3);
+                shader.setUniform2i("uFrameSize", kinect_device.getDepthTex().getWidth(),
+                                    kinect_device.getDepthTex().getHeight());
+                shader.setUniform1iv("uBodyIDs", body_ids, k_max_bodies);
 
-                int numPoints = kinectDevice.getDepthTex().getWidth() * kinectDevice.getDepthTex().getHeight();
-                pointsVbo.drawInstanced(GL_POINTS, 0, 1, numPoints);
+                int num_points = kinect_device.getDepthTex().getWidth() * kinect_device.getDepthTex().getHeight();
+                points_vbo.drawInstanced(GL_POINTS, 0, 1, num_points);
             }
             shader.end();
 
             ofDisableDepthTest();
 
-            // draw_skeleton(bodySkeletons);
+            // draw_skeleton(body_skeletons);
         }
         ofPopMatrix();
     }
     camera.end();
-
-    std::ostringstream oss;
-    oss << ofToString(ofGetFrameRate(), 2) + " FPS" << std::endl;
-    oss << "Joint Smoothing: " << kinectDevice.getBodyTracker().jointSmoothing;
-    ofDrawBitmapStringHighlight(oss.str(), 10, 20);
 }
 
-void TrackingApp::draw_skeleton(const std::vector<ofxAzureKinect::BodySkeleton> &bodySkeletons) {
-    for (const auto &skeleton: bodySkeletons) {
+void TrackingApp::draw_skeleton(const std::vector<ofxAzureKinect::BodySkeleton> &body_skeletons) {
+    for (const auto &skeleton: body_skeletons) {
         // Draw joints.
-        for (int i = 0; i < K4ABT_JOINT_COUNT; ++i) {
-            auto joint = skeleton.joints[i];
+        for (const auto &joint: skeleton.joints) {
             ofPushMatrix();
             {
                 glm::mat4 transform = glm::translate(joint.position) * glm::toMat4(joint.orientation);
@@ -126,8 +120,8 @@ void TrackingApp::draw_skeleton(const std::vector<ofxAzureKinect::BodySkeleton> 
         }
 
         // Draw connections.
-        skeletonMesh.setMode(OF_PRIMITIVE_LINES);
-        auto &vertices = skeletonMesh.getVertices();
+        skeleton_mesh.setMode(OF_PRIMITIVE_LINES);
+        auto &vertices = skeleton_mesh.getVertices();
         vertices.resize(50);
         int vdx = 0;
 
@@ -212,7 +206,7 @@ void TrackingApp::draw_skeleton(const std::vector<ofxAzureKinect::BodySkeleton> 
         vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ELBOW_RIGHT].position);
         vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_WRIST_RIGHT].position);
 
-        skeletonMesh.draw();
+        skeleton_mesh.draw();
     }
 }
 
@@ -228,7 +222,7 @@ void TrackingApp::mouseMoved(int x, int y) {}
 //--------------------------------------------------------------
 void TrackingApp::mouseDragged(int x, int y, int button) {
     if (button == 1) {
-        kinectDevice.getBodyTracker().jointSmoothing = ofMap(x, 0, ofGetWidth(), 0.0f, 1.0f, true);
+        kinect_device.getBodyTracker().jointSmoothing = ofMap(x, 0, ofGetWidth(), 0.0f, 1.0f, true);
     }
 }
 
