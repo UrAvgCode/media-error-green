@@ -1,7 +1,8 @@
 #pragma once
 
-#include <ofMain.h>
+#include <vector>
 
+#include <ofMain.h>
 #include <ofxAzureKinect.h>
 
 class TrackingApp : public ofBaseApp {
