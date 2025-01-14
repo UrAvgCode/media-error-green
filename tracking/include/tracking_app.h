@@ -32,7 +32,9 @@ class TrackingApp : public ofBaseApp {
     ofEasyCam camera;
 
     ofVbo points_vbo;
+    ofVboMesh skeleton_mesh;
+
     ofShader shader;
 
-    ofVboMesh skeleton_mesh;
+    ofFbo fbo;
 };

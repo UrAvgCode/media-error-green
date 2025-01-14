@@ -38,6 +38,9 @@ void TrackingApp::setup() {
     // Setup vbo.
     std::vector<glm::vec3> verts(1);
     points_vbo.setVertexData(verts.data(), static_cast<int>(verts.size()), GL_STATIC_DRAW);
+
+    // Setup fbo
+    fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGBA);
 }
 
 //--------------------------------------------------------------
@@ -48,51 +51,58 @@ void TrackingApp::update() {}
 
 //--------------------------------------------------------------
 void TrackingApp::draw() {
-    ofBackground(0);
-
-    camera.begin();
+    fbo.begin();
     {
-        ofPushMatrix();
+        ofClear(0);
+        ofBackground(0);
+
+        camera.begin();
         {
-            ofRotateXDeg(180);
-
-            ofEnableDepthTest();
-
-            const auto &body_skeletons = kinect_device.getBodySkeletons();
-
-            constexpr int k_max_bodies = 6;
-            int body_ids[k_max_bodies];
-            int i = 0;
-            while (i < body_skeletons.size()) {
-                body_ids[i] = body_skeletons[i].id;
-                ++i;
-            }
-            while (i < k_max_bodies) {
-                body_ids[i] = 0;
-                ++i;
-            }
-
-            shader.begin();
+            ofPushMatrix();
             {
-                shader.setUniformTexture("uDepthTex", kinect_device.getDepthTex(), 1);
-                shader.setUniformTexture("uBodyIndexTex", kinect_device.getBodyIndexTex(), 2);
-                shader.setUniformTexture("uWorldTex", kinect_device.getDepthToWorldTex(), 3);
-                shader.setUniform2i("uFrameSize", kinect_device.getDepthTex().getWidth(),
-                                    kinect_device.getDepthTex().getHeight());
-                shader.setUniform1iv("uBodyIDs", body_ids, k_max_bodies);
+                ofRotateXDeg(180);
 
-                int num_points = kinect_device.getDepthTex().getWidth() * kinect_device.getDepthTex().getHeight();
-                points_vbo.drawInstanced(GL_POINTS, 0, 1, num_points);
+                ofEnableDepthTest();
+
+                const auto &body_skeletons = kinect_device.getBodySkeletons();
+
+                constexpr int k_max_bodies = 6;
+                int body_ids[k_max_bodies];
+                int i = 0;
+                while (i < body_skeletons.size()) {
+                    body_ids[i] = body_skeletons[i].id;
+                    ++i;
+                }
+                while (i < k_max_bodies) {
+                    body_ids[i] = 0;
+                    ++i;
+                }
+
+                shader.begin();
+                {
+                    shader.setUniformTexture("uDepthTex", kinect_device.getDepthTex(), 1);
+                    shader.setUniformTexture("uBodyIndexTex", kinect_device.getBodyIndexTex(), 2);
+                    shader.setUniformTexture("uWorldTex", kinect_device.getDepthToWorldTex(), 3);
+                    shader.setUniform2i("uFrameSize", kinect_device.getDepthTex().getWidth(),
+                                        kinect_device.getDepthTex().getHeight());
+                    shader.setUniform1iv("uBodyIDs", body_ids, k_max_bodies);
+
+                    int num_points = kinect_device.getDepthTex().getWidth() * kinect_device.getDepthTex().getHeight();
+                    points_vbo.drawInstanced(GL_POINTS, 0, 1, num_points);
+                }
+                shader.end();
+
+                ofDisableDepthTest();
+
+                // draw_skeleton(body_skeletons);
             }
-            shader.end();
-
-            ofDisableDepthTest();
-
-            // draw_skeleton(body_skeletons);
+            ofPopMatrix();
         }
-        ofPopMatrix();
+        camera.end();
     }
-    camera.end();
+    fbo.end();
+
+    fbo.draw(0, 0);
 }
 
 void TrackingApp::draw_skeleton(const std::vector<ofxAzureKinect::BodySkeleton> &body_skeletons) {
