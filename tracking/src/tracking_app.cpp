@@ -1,5 +1,6 @@
 #include "tracking_app.h"
 
+#include <algorithm>
 #include <vector>
 
 //--------------------------------------------------------------
@@ -66,28 +67,24 @@ void TrackingApp::draw() {
 
                 const auto &body_skeletons = kinect_device.getBodySkeletons();
 
-                constexpr int k_max_bodies = 6;
-                int body_ids[k_max_bodies];
-                int i = 0;
-                while (i < body_skeletons.size()) {
-                    body_ids[i] = body_skeletons[i].id;
-                    ++i;
-                }
-                while (i < k_max_bodies) {
-                    body_ids[i] = 0;
-                    ++i;
+                const std::size_t k_max_bodies = 6;
+                auto body_ids = std::vector<int>(k_max_bodies, 0);
+                for (std::size_t i = 0; i < std::min(body_skeletons.size(), k_max_bodies); ++i) {
+                    body_ids[i] = static_cast<int>(body_skeletons[i].id);
                 }
 
                 shader.begin();
                 {
+                    const auto frame_width = static_cast<int>(kinect_device.getDepthTex().getWidth());
+                    const auto frame_height = static_cast<int>(kinect_device.getDepthTex().getWidth());
+
                     shader.setUniformTexture("uDepthTex", kinect_device.getDepthTex(), 1);
                     shader.setUniformTexture("uBodyIndexTex", kinect_device.getBodyIndexTex(), 2);
                     shader.setUniformTexture("uWorldTex", kinect_device.getDepthToWorldTex(), 3);
-                    shader.setUniform2i("uFrameSize", kinect_device.getDepthTex().getWidth(),
-                                        kinect_device.getDepthTex().getHeight());
-                    shader.setUniform1iv("uBodyIDs", body_ids, k_max_bodies);
+                    shader.setUniform2i("uFrameSize", frame_width, frame_height);
+                    shader.setUniform1iv("uBodyIDs", body_ids.data(), k_max_bodies);
 
-                    int num_points = kinect_device.getDepthTex().getWidth() * kinect_device.getDepthTex().getHeight();
+                    const int num_points = frame_width * frame_height;
                     points_vbo.drawInstanced(GL_POINTS, 0, 1, num_points);
                 }
                 shader.end();
