@@ -10,7 +10,7 @@ void TrackingApp::setup() {
 
     if (kinectDevice.open()) {
         auto deviceSettings = ofxAzureKinect::DeviceSettings();
-        deviceSettings.syncImages = false;
+        deviceSettings.syncImages = true;
         deviceSettings.depthMode = K4A_DEPTH_MODE_NFOV_UNBINNED;
         deviceSettings.updateIr = false;
         deviceSettings.updateColor = true;
