@@ -125,7 +125,7 @@ void TrackingApp::draw() {
     draw_bounding_box();
     camera.begin();
     { 
-        //draw_body_outline_2D(kinect_device.getBodySkeletons(), camera);
+        draw_body_outline_2D(kinect_device.getBodySkeletons(), camera);
     }
     camera.end();
     
@@ -280,54 +280,9 @@ void TrackingApp::draw_bounding_box() {
 
                     // If at least one valid joint was found, draw the bounding box
                     if (valid_skeleton) {
-                        // Front depth of the bounding box (min z-value)
-                        float front_depth = min_bounds.z;
-
-                        // Project 3D points of the bounding box to 2D
-                        std::vector<ofPoint> projected_points;
-                        projected_points.push_back(
-                                camera.worldToScreen(ofVec3f(min_bounds.x, min_bounds.y, front_depth)));
-                        projected_points.push_back(
-                                camera.worldToScreen(ofVec3f(max_bounds.x, min_bounds.y, front_depth)));
-                        projected_points.push_back(
-                                camera.worldToScreen(ofVec3f(max_bounds.x, max_bounds.y, front_depth)));
-                        projected_points.push_back(
-                                camera.worldToScreen(ofVec3f(min_bounds.x, max_bounds.y, front_depth)));
-
-                        // Apply offset (for 2D outline)
-                        std::vector<ofPoint> expanded_hull;
-                        for (size_t i = 0; i < projected_points.size(); ++i) {
-                            const ofPoint &current = projected_points[i];
-                            const ofPoint &next = projected_points[(i + 1) % projected_points.size()];
-
-                            // Compute the edge normal in 2D
-                            ofVec2f edge = ofVec2f(next.x - current.x, next.y - current.y);
-                            ofVec2f normal(-edge.y, edge.x); // Perpendicular to the edge
-                            normal.normalize();
-
-                            // Move the point outward by the offset distance
-                            expanded_hull.emplace_back(current.x + normal.x * offset_distance,
-                                                       current.y + normal.y * offset_distance);
-                        }
-
-                        // Draw the expanded hull at the front depth (in 3D)
-                        ofPushStyle();
-                        ofSetColor(255, 0, 0); // Red outline
-                        ofNoFill();
-                        ofBeginShape();
-                        for (const auto &point: expanded_hull) {
-                            // Project 2D points back into 3D using the front depth
-                            ofVec3f world_point = camera.screenToWorld(
-                                    ofVec3f(point.x, point.y, camera.worldToScreen(ofVec3f(0, 0, front_depth)).z));
-                            ofVertex(world_point.x, world_point.y, world_point.z);
-                        }
-                        ofEndShape(true); // Close the shape
-                        ofPopStyle();
-
-                        // Optionally, draw the bounding box itself in 3D for reference
                         ofPushStyle();
                         ofNoFill();
-                        ofSetColor(255, 255, 255); // White line for bounding box
+                        ofSetColor(255, 0, 0); // Red line
                         ofDrawBox((min_bounds + max_bounds) / 2, // Center of the box
                                   max_bounds.x - min_bounds.x, // Width
                                   max_bounds.y - min_bounds.y, // Height
@@ -344,120 +299,7 @@ void TrackingApp::draw_bounding_box() {
    
 }
 
-void TrackingApp::draw_skeleton(const std::vector<ofxAzureKinect::BodySkeleton> &body_skeletons) {
-    for (const auto &skeleton: body_skeletons) {
-        // Draw joints.
-        for (const auto &joint: skeleton.joints) {
-            ofPushMatrix();
-            {
-                glm::mat4 transform = glm::translate(joint.position) * glm::toMat4(joint.orientation);
-                ofMultMatrix(transform);
 
-                ofDrawAxis(50.0f);
-
-                if (joint.confidenceLevel >= K4ABT_JOINT_CONFIDENCE_MEDIUM) {
-                    ofSetColor(ofColor::green);
-                } else if (joint.confidenceLevel >= K4ABT_JOINT_CONFIDENCE_LOW) {
-                    ofSetColor(ofColor::yellow);
-                } else {
-                    ofSetColor(ofColor::red);
-                }
-
-                ofDrawSphere(10.0f);
-            }
-            ofPopMatrix();
-        }
-
-        // Draw connections.
-        skeleton_mesh.setMode(OF_PRIMITIVE_LINES);
-        auto &vertices = skeleton_mesh.getVertices();
-        vertices.resize(50);
-        int vdx = 0;
-
-        // Spine.
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_PELVIS].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SPINE_NAVEL].position);
-
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SPINE_NAVEL].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SPINE_CHEST].position);
-
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SPINE_CHEST].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_NECK].position);
-
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_NECK].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_HEAD].position);
-
-        // Head.
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_HEAD].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_NOSE].position);
-
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_NOSE].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_EYE_LEFT].position);
-
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_EYE_LEFT].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_EAR_LEFT].position);
-
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_NOSE].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_EYE_RIGHT].position);
-
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_EYE_RIGHT].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_EAR_RIGHT].position);
-
-        // Left Leg.
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_PELVIS].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_HIP_LEFT].position);
-
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_HIP_LEFT].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_KNEE_LEFT].position);
-
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_KNEE_LEFT].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ANKLE_LEFT].position);
-
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ANKLE_LEFT].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_FOOT_LEFT].position);
-
-        // Right leg.
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_PELVIS].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_HIP_RIGHT].position);
-
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_HIP_RIGHT].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_KNEE_RIGHT].position);
-
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_KNEE_RIGHT].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ANKLE_RIGHT].position);
-
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ANKLE_RIGHT].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_FOOT_RIGHT].position);
-
-        // Left arm.
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_NECK].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_CLAVICLE_LEFT].position);
-
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_CLAVICLE_LEFT].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SHOULDER_LEFT].position);
-
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SHOULDER_LEFT].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ELBOW_LEFT].position);
-
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ELBOW_LEFT].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_WRIST_LEFT].position);
-
-        // Right arm.
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_NECK].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_CLAVICLE_RIGHT].position);
-
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_CLAVICLE_RIGHT].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SHOULDER_RIGHT].position);
-
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SHOULDER_RIGHT].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ELBOW_RIGHT].position);
-
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ELBOW_RIGHT].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_WRIST_RIGHT].position);
-
-        skeleton_mesh.draw();
-    }
-}
 
 
 //--------------------------------------------------------------
