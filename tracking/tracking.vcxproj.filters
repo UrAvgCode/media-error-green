@@ -43,6 +43,9 @@
     <ClCompile Include="..\openFrameworks\addons\ofxSvg\src\ofxSvg.cpp">
       <Filter>addons\ofxSvg\src</Filter>
     </ClCompile>
+    <ClCompile Include="src\ofxConvexHull.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
@@ -1602,6 +1605,9 @@
       <Filter>addons\ofxSvg\libs\svgtiny\svgtiny\include</Filter>
     </ClInclude>
     <ClInclude Include="include\tracking_app.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ofxConvexHull.h">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>

@@ -106,6 +106,7 @@
     <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\ofxConvexHull.cpp" />
     <ClCompile Include="src\tracking_app.cpp" />
     <ClCompile Include="..\addons\ofxAzureKinect\src\ofxAzureKinect\BodyTracker.cpp" />
     <ClCompile Include="..\addons\ofxAzureKinect\src\ofxAzureKinect\Device.cpp" />
@@ -555,6 +556,7 @@
     <ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\libxml2\libxml2\include\libxml\xpathInternals.h" />
     <ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\libxml2\libxml2\include\libxml\xpointer.h" />
     <ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\svgtiny\svgtiny\include\svgtiny.h" />
+    <ClInclude Include="include\ofxConvexHull.h" />
     <ClInclude Include="include\tracking_app.h" />
   </ItemGroup>
   <ItemGroup>
