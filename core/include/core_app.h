@@ -29,4 +29,12 @@ class CoreApp : public ofBaseApp {
     IntroApp intro_app;
     TrackingApp tracking_app;
     ofBaseApp *current_app;
+    ofBaseApp *inactive_app;
+
+    ofFbo current_app_fbo;
+    ofFbo inactive_app_fbo;
+    ofShader transition_shader;
+
+    std::uint32_t max_transition_frames = 120;
+    std::uint32_t transition_frame;
 };

@@ -7,9 +7,6 @@
     <ClCompile Include="src\main.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\ofApp.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="..\addons\ofxAzureKinect\src\ofxAzureKinect\BodyTracker.cpp">
       <Filter>addons\ofxAzureKinect\src\ofxAzureKinect</Filter>
     </ClCompile>
@@ -305,6 +302,9 @@
     </Filter>
     <Filter Include="include">
       <UniqueIdentifier>{f73316e9-2b57-4c57-ae72-6d98426232c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shaders">
+      <UniqueIdentifier>{4c5f9425-aa90-43b3-a07f-69a9e6eb0f12}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1616,5 +1616,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="shaders\transition.frag">
+      <Filter>shaders</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\transition.vert">
+      <Filter>shaders</Filter>
+    </CopyFileToFolders>
   </ItemGroup>
 </Project>
