@@ -35,6 +35,6 @@ class CoreApp : public ofBaseApp {
     ofFbo inactive_app_fbo;
     ofShader transition_shader;
 
-    std::uint32_t max_transition_frames = 120;
+    std::uint32_t max_transition_frames = 60;
     std::uint32_t transition_frame;
 };
