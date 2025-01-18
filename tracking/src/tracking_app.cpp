@@ -101,17 +101,24 @@ void TrackingApp::draw() {
     }
     fbo.end();
 
-    chromatic_shader.begin();
+    ofPushMatrix();
     {
-        const float aberration = 20;
-        chromatic_shader.setUniform1f("aberration_amount", aberration);
-        chromatic_shader.setUniform1f("time", static_cast<float>(ofGetElapsedTimeMillis()) / 50.0f);
-        chromatic_shader.setUniform1f("rand1", static_cast<float>(rand() % static_cast<int>(fbo.getHeight())));
-        chromatic_shader.setUniform1f("rand2", static_cast<float>(rand() % static_cast<int>(fbo.getHeight())));
+        ofTranslate(fbo.getWidth(), 0);
+        ofScale(-1, 1);
 
-        fbo.draw(0, 0);
+        chromatic_shader.begin();
+        {
+            const float aberration = 20;
+            chromatic_shader.setUniform1f("aberration_amount", aberration);
+            chromatic_shader.setUniform1f("time", static_cast<float>(ofGetElapsedTimeMillis()) / 50.0f);
+            chromatic_shader.setUniform1f("rand1", static_cast<float>(rand() % static_cast<int>(fbo.getHeight())));
+            chromatic_shader.setUniform1f("rand2", static_cast<float>(rand() % static_cast<int>(fbo.getHeight())));
+
+            fbo.draw(0, 0);
+        }
+        chromatic_shader.end();
     }
-    chromatic_shader.end();
+    ofPopMatrix();
 }
 
 void TrackingApp::draw_skeleton(const std::vector<ofxAzureKinect::BodySkeleton> &body_skeletons) {
