@@ -27,6 +27,7 @@ class TrackingApp : public ofBaseApp {
 
   private:
     void draw_skeleton(const std::vector<ofxAzureKinect::BodySkeleton> &body_skeletons);
+    void draw_bounding_box();
 
     ofxAzureKinect::Device kinect_device;
 
