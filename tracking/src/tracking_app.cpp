@@ -93,6 +93,42 @@ void TrackingApp::draw() {
 
                 ofDisableDepthTest();
 
+                // draw_skeleton(body_skeletons);
+            }
+            ofPopMatrix();
+        }
+        camera.end();
+    }
+    fbo.end();
+
+    ofPushMatrix();
+    {
+
+        chromatic_shader.begin();
+        {
+            const float aberration = 20;
+            chromatic_shader.setUniform1f("aberration_amount", aberration);
+            chromatic_shader.setUniform1f("time", static_cast<float>(ofGetElapsedTimeMillis()) / 50.0f);
+            chromatic_shader.setUniform1f("rand1", static_cast<float>(rand() % static_cast<int>(fbo.getHeight())));
+            chromatic_shader.setUniform1f("rand2", static_cast<float>(rand() % static_cast<int>(fbo.getHeight())));
+
+            fbo.draw(0, 0);
+        }
+        chromatic_shader.end();
+    }
+    ofPopMatrix();
+
+    // Draw bounding boxes directly on the screen, outside the FBO
+    ofPushMatrix();
+    {
+        camera.begin();
+        {
+            ofPushMatrix();
+            {
+                ofRotateXDeg(180);
+
+                const auto &body_skeletons = kinect_device.getBodySkeletons();
+
                 for (const auto &skeleton: body_skeletons) {
                     // Initialize bounding box limits
                     ofVec3f min_bounds(FLT_MAX, FLT_MAX, FLT_MAX);
@@ -130,32 +166,10 @@ void TrackingApp::draw() {
                         ofPopStyle();
                     }
                 }
-
-
-                // draw_skeleton(body_skeletons);
             }
             ofPopMatrix();
         }
         camera.end();
-    }
-    fbo.end();
-
-    ofPushMatrix();
-    {
-        ofTranslate(fbo.getWidth(), 0);
-        ofScale(-1, 1);
-
-        chromatic_shader.begin();
-        {
-            const float aberration = 20;
-            chromatic_shader.setUniform1f("aberration_amount", aberration);
-            chromatic_shader.setUniform1f("time", static_cast<float>(ofGetElapsedTimeMillis()) / 50.0f);
-            chromatic_shader.setUniform1f("rand1", static_cast<float>(rand() % static_cast<int>(fbo.getHeight())));
-            chromatic_shader.setUniform1f("rand2", static_cast<float>(rand() % static_cast<int>(fbo.getHeight())));
-
-            fbo.draw(0, 0);
-        }
-        chromatic_shader.end();
     }
     ofPopMatrix();
 }
