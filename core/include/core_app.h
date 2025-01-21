@@ -1,5 +1,7 @@
 #pragma once
 
+#include <random>
+
 #include <ofMain.h>
 
 #include <intro_app.h>
@@ -24,7 +26,7 @@ class CoreApp : public ofBaseApp {
     void gotMessage(ofMessage msg) override;
 
   private:
-    void draw_fps_counter();
+    static void draw_fps_counter();
 
     IntroApp intro_app;
     TrackingApp tracking_app;
@@ -35,6 +37,9 @@ class CoreApp : public ofBaseApp {
     ofFbo inactive_app_fbo;
     ofShader transition_shader;
 
-    std::uint32_t max_transition_frames = 60;
     std::uint32_t transition_frame;
+    const std::uint32_t max_transition_frames = 30;
+
+    std::mt19937 generator;
+    std::uniform_int_distribution<int> distribution;
 };

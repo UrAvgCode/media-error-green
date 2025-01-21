@@ -1,13 +1,18 @@
 #include "core_app.h"
 
 #include <cmath>
+#include <random>
 
 //--------------------------------------------------------------
 void CoreApp::setup() {
     ofSetFrameRate(60);
     ofSetVerticalSync(true);
 
-    transition_frame = 0;
+    transition_frame = max_transition_frames;
+
+    std::random_device random;
+    generator = std::mt19937(random());
+    distribution = std::uniform_int_distribution<int>(0, ofGetHeight());
 
     current_app_fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGBA);
     inactive_app_fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGBA);
@@ -24,15 +29,15 @@ void CoreApp::update() { current_app->update(); }
 
 //--------------------------------------------------------------
 void CoreApp::draw() {
-    current_app_fbo.begin();
-    current_app->draw();
-    current_app_fbo.end();
-
     if (transition_frame > max_transition_frames) {
-        current_app_fbo.draw(0, 0);
+        current_app->draw();
     } else {
         ++transition_frame;
-        auto progress = std::pow(static_cast<float>(transition_frame) / static_cast<float>(max_transition_frames), 10);
+        auto progress = std::powf(static_cast<float>(transition_frame) / max_transition_frames, 10);
+
+        current_app_fbo.begin();
+        current_app->draw();
+        current_app_fbo.end();
 
         inactive_app_fbo.begin();
         inactive_app->draw();
@@ -42,10 +47,8 @@ void CoreApp::draw() {
         {
             transition_shader.setUniformTexture("transition_tex", inactive_app_fbo.getTexture(), 1);
             transition_shader.setUniform1f("progress", progress);
-            transition_shader.setUniform1f("rand1",
-                                           static_cast<float>(rand() % static_cast<int>(current_app_fbo.getHeight())));
-            transition_shader.setUniform1f("rand2",
-                                           static_cast<float>(rand() % static_cast<int>(current_app_fbo.getHeight())));
+            transition_shader.setUniform1i("rand1", distribution(generator));
+            transition_shader.setUniform1i("rand2", distribution(generator));
             current_app_fbo.draw(0, 0);
         }
         transition_shader.end();

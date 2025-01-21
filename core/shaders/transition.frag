@@ -4,8 +4,8 @@ uniform sampler2DRect tex0;
 uniform sampler2DRect transition_tex;
 
 uniform float progress;
-uniform float rand1;
-uniform float rand2;
+uniform int rand1;
+uniform int rand2;
 
 in vec2 vTexCoord;
 out vec4 fragColor;
