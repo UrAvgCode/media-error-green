@@ -1,5 +1,6 @@
 #pragma once
 
+#include <chrono>
 #include <random>
 
 #include <ofMain.h>
@@ -37,8 +38,8 @@ class CoreApp : public ofBaseApp {
     ofFbo inactive_app_fbo;
     ofShader transition_shader;
 
-    std::uint32_t transition_frame;
-    const std::uint32_t max_transition_frames = 30;
+    const std::chrono::milliseconds transition_duration = 500ms;
+    std::chrono::steady_clock::time_point transition_start_time;
 
     std::mt19937 generator;
     std::uniform_int_distribution<int> distribution;

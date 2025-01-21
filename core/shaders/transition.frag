@@ -13,22 +13,23 @@ out vec4 fragColor;
 void main() {
     vec3 current_color = texture(tex0, vTexCoord).rgb;
 
+    const float glitch_width = 50;
+    const float glitch_height = 8;
+
     vec2 offset = vec2(0, 0);
 
-    float glitch_width = 50;
-    float glitch_height = 8;
-
     if (vTexCoord.y < rand1 + glitch_height && vTexCoord.y > rand1 - glitch_height) {
-        offset.x += glitch_width * (1.0 - progress);
+        offset.x += glitch_width;
     }
 
     if (vTexCoord.y < rand2 + glitch_height && vTexCoord.y > rand2 - glitch_height) {
-        offset.x -= glitch_width * (1.0 - progress);
+        offset.x -= glitch_width;
     }
 
     vec3 transition_color = texture(transition_tex, vTexCoord + offset).rgb;
 
-    vec3 color = (progress * current_color) + ((1.0 - progress) * transition_color);
+    float fade = pow(progress, 10.0);
+    vec3 color = mix(transition_color, current_color, fade);
 
     float alpha = 1.0;
     fragColor = vec4(color, alpha);

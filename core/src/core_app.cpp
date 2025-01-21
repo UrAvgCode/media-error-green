@@ -1,14 +1,9 @@
 #include "core_app.h"
 
-#include <cmath>
-#include <random>
-
 //--------------------------------------------------------------
 void CoreApp::setup() {
     ofSetFrameRate(60);
     ofSetVerticalSync(true);
-
-    transition_frame = max_transition_frames;
 
     std::random_device random;
     generator = std::mt19937(random());
@@ -29,12 +24,11 @@ void CoreApp::update() { current_app->update(); }
 
 //--------------------------------------------------------------
 void CoreApp::draw() {
-    if (transition_frame > max_transition_frames) {
-        current_app->draw();
-    } else {
-        ++transition_frame;
-        auto progress = std::powf(static_cast<float>(transition_frame) / max_transition_frames, 10);
+    auto current_time = std::chrono::steady_clock::now();
+    auto elapsed_time = std::chrono::duration_cast<std::chrono::milliseconds>(current_time - transition_start_time);
+    auto progress = static_cast<float>(elapsed_time.count()) / static_cast<float>(transition_duration.count());
 
+    if (progress < 1.0f) {
         current_app_fbo.begin();
         current_app->draw();
         current_app_fbo.end();
@@ -52,6 +46,8 @@ void CoreApp::draw() {
             current_app_fbo.draw(0, 0);
         }
         transition_shader.end();
+    } else {
+        current_app->draw();
     }
 
     draw_fps_counter();
@@ -66,7 +62,7 @@ void CoreApp::draw_fps_counter() {
 //--------------------------------------------------------------
 void CoreApp::keyPressed(int key) {
     if (key == 's') {
-        transition_frame = 0;
+        transition_start_time = std::chrono::steady_clock::now();
 
         auto temp = current_app;
         current_app = inactive_app;
