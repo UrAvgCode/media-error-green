@@ -25,6 +25,8 @@ class TrackingApp : public ofBaseApp {
     void dragEvent(ofDragInfo dragInfo) override;
     void gotMessage(ofMessage msg) override;
 
+    ofxAzureKinect::Device *get_kinect_device();
+
   private:
     void draw_skeleton(const std::vector<ofxAzureKinect::BodySkeleton> &body_skeletons);
 

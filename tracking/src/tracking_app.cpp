@@ -272,3 +272,5 @@ void TrackingApp::gotMessage(ofMessage msg) {}
 
 //--------------------------------------------------------------
 void TrackingApp::dragEvent(ofDragInfo dragInfo) {}
+
+ofxAzureKinect::Device *TrackingApp::get_kinect_device() { return &kinect_device; }

@@ -29,6 +29,8 @@ class CoreApp : public ofBaseApp {
   private:
     static void draw_fps_counter();
 
+    ofxAzureKinect::Device *kinect_device;
+
     IntroApp intro_app;
     TrackingApp tracking_app;
     ofBaseApp *current_app;

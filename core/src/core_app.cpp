@@ -17,10 +17,28 @@ void CoreApp::setup() {
     tracking_app.setup();
     current_app = &intro_app;
     inactive_app = &tracking_app;
+
+    kinect_device = tracking_app.get_kinect_device();
 }
 
 //--------------------------------------------------------------
-void CoreApp::update() { current_app->update(); }
+void CoreApp::update() {
+    const auto &body_skeletons = kinect_device->getBodySkeletons();
+
+    if (current_app == &intro_app && !body_skeletons.empty()) {
+        transition_start_time = std::chrono::steady_clock::now();
+
+        current_app = &tracking_app;
+        inactive_app = &intro_app;
+    } else if (current_app == &tracking_app && body_skeletons.empty()) {
+        transition_start_time = std::chrono::steady_clock::now();
+
+        current_app = &intro_app;
+        inactive_app = &tracking_app;
+    }
+
+    current_app->update();
+}
 
 //--------------------------------------------------------------
 void CoreApp::draw() {
@@ -60,15 +78,7 @@ void CoreApp::draw_fps_counter() {
 }
 
 //--------------------------------------------------------------
-void CoreApp::keyPressed(int key) {
-    if (key == 's') {
-        transition_start_time = std::chrono::steady_clock::now();
-
-        auto temp = current_app;
-        current_app = inactive_app;
-        inactive_app = temp;
-    }
-}
+void CoreApp::keyPressed(int key) {}
 
 //--------------------------------------------------------------
 void CoreApp::keyReleased(int key) {}
