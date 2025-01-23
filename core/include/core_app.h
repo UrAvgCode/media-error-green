@@ -1,12 +1,12 @@
 #pragma once
 
+#include <intro_app.h>
+#include <tracking_app.h>
+
 #include <chrono>
 #include <random>
 
 #include <ofMain.h>
-
-#include <intro_app.h>
-#include <tracking_app.h>
 
 class CoreApp : public ofBaseApp {
   public:

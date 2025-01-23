@@ -41,4 +41,7 @@ class TrackingApp : public ofBaseApp {
     ofShader chromatic_shader;
 
     ofFbo fbo;
+
+    std::mt19937 generator;
+    std::uniform_int_distribution<int> distribution;
 };

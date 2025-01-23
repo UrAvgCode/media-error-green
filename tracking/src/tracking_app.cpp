@@ -44,6 +44,11 @@ void TrackingApp::setup() {
 
     // Setup fbo
     fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGBA);
+
+    // setup random generator
+    std::random_device random;
+    generator = std::mt19937(random());
+    distribution = std::uniform_int_distribution<int>(0, ofGetHeight());
 }
 
 //--------------------------------------------------------------
@@ -111,8 +116,8 @@ void TrackingApp::draw() {
             const float aberration = 20;
             chromatic_shader.setUniform1f("aberration_amount", aberration);
             chromatic_shader.setUniform1f("time", static_cast<float>(ofGetElapsedTimeMillis()) / 50.0f);
-            chromatic_shader.setUniform1f("rand1", static_cast<float>(rand() % static_cast<int>(fbo.getHeight())));
-            chromatic_shader.setUniform1f("rand2", static_cast<float>(rand() % static_cast<int>(fbo.getHeight())));
+            chromatic_shader.setUniform1i("rand1", distribution(generator));
+            chromatic_shader.setUniform1i("rand2", distribution(generator));
 
             fbo.draw(0, 0);
         }
