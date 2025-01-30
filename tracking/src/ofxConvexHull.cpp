@@ -75,7 +75,7 @@ bool ofxConvexHull::isRightTurn(ofPoint a, ofPoint b, ofPoint c) {
     return ((b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x)) >= 0;
 }
 
-float ofxConvexHull::getArea(vector<ofPoint> &hull) {
+float ofxConvexHull::getArea(const vector<ofPoint> &hull) {
     float area = 0;
     for (int i = 0; i < hull.size(); i++) {
         area += (hull[i].x * hull[(i + 1) % hull.size()].y - hull[i].y * hull[(i + 1) % hull.size()].x);
