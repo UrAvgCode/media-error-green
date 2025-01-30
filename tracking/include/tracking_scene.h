@@ -9,13 +9,13 @@
 
 class TrackingScene : public Scene {
   public:
+    TrackingScene(ofxAzureKinect::Device *device);
+
     void setup() override;
     void exit();
 
     void update() override;
     void draw() override;
-
-    ofxAzureKinect::Device *get_kinect_device();
 
   private:
     void draw_skeleton(const std::vector<ofxAzureKinect::BodySkeleton> &body_skeletons);
@@ -23,7 +23,7 @@ class TrackingScene : public Scene {
     std::vector<ofVec2f> calculate_convex_hull(const std::vector<ofVec2f> &points);
     void draw_body_outline_2D(const std::vector<ofxAzureKinect::BodySkeleton> &body_skeletons, const ofCamera &camera);
 
-    ofxAzureKinect::Device kinect_device;
+    ofxAzureKinect::Device *kinect_device;
 
     ofEasyCam camera;
 

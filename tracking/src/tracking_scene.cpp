@@ -4,29 +4,10 @@
 #include <algorithm>
 #include <vector>
 
+TrackingScene::TrackingScene(ofxAzureKinect::Device *device) : kinect_device(device) {}
+
 //--------------------------------------------------------------
 void TrackingScene::setup() {
-    // ofSetLogLevel(OF_LOG_VERBOSE);
-
-    ofLogNotice(__FUNCTION__) << "Found " << ofxAzureKinect::Device::getInstalledCount() << " installed devices.";
-
-    if (kinect_device.open()) {
-        auto device_settings = ofxAzureKinect::DeviceSettings();
-        device_settings.syncImages = true;
-        device_settings.depthMode = K4A_DEPTH_MODE_NFOV_UNBINNED;
-        device_settings.updateIr = false;
-        device_settings.updateColor = true;
-        device_settings.colorResolution = K4A_COLOR_RESOLUTION_1080P;
-        device_settings.updateWorld = true;
-        device_settings.updateVbo = false;
-        kinect_device.startCameras(device_settings);
-
-        auto body_tracker_settings = ofxAzureKinect::BodyTrackerSettings();
-        body_tracker_settings.sensorOrientation = K4ABT_SENSOR_ORIENTATION_DEFAULT;
-        body_tracker_settings.processingMode = K4ABT_TRACKER_PROCESSING_MODE_CPU;
-        kinect_device.startBodyTracker(body_tracker_settings);
-    }
-
     // Load shaders.
     auto shader_settings = ofShaderSettings();
     shader_settings.shaderFiles[GL_VERTEX_SHADER] = "shaders/render.vert";
@@ -53,9 +34,6 @@ void TrackingScene::setup() {
 }
 
 //--------------------------------------------------------------
-void TrackingScene::exit() { kinect_device.close(); }
-
-//--------------------------------------------------------------
 void TrackingScene::update() {}
 
 //--------------------------------------------------------------
@@ -73,7 +51,7 @@ void TrackingScene::draw() {
 
                 ofEnableDepthTest();
 
-                const auto &body_skeletons = kinect_device.getBodySkeletons();
+                const auto &body_skeletons = kinect_device->getBodySkeletons();
 
                 const std::size_t k_max_bodies = 6;
                 auto body_ids = std::vector<int>(k_max_bodies, 0);
@@ -83,12 +61,12 @@ void TrackingScene::draw() {
 
                 shader.begin();
                 {
-                    const auto frame_width = static_cast<int>(kinect_device.getDepthTex().getWidth());
-                    const auto frame_height = static_cast<int>(kinect_device.getDepthTex().getWidth());
+                    const auto frame_width = static_cast<int>(kinect_device->getDepthTex().getWidth());
+                    const auto frame_height = static_cast<int>(kinect_device->getDepthTex().getWidth());
 
-                    shader.setUniformTexture("uDepthTex", kinect_device.getDepthTex(), 1);
-                    shader.setUniformTexture("uBodyIndexTex", kinect_device.getBodyIndexTex(), 2);
-                    shader.setUniformTexture("uWorldTex", kinect_device.getDepthToWorldTex(), 3);
+                    shader.setUniformTexture("uDepthTex", kinect_device->getDepthTex(), 1);
+                    shader.setUniformTexture("uBodyIndexTex", kinect_device->getBodyIndexTex(), 2);
+                    shader.setUniformTexture("uWorldTex", kinect_device->getDepthToWorldTex(), 3);
                     shader.setUniform2i("uFrameSize", frame_width, frame_height);
                     shader.setUniform1iv("uBodyIDs", body_ids.data(), k_max_bodies);
 
@@ -127,12 +105,12 @@ void TrackingScene::draw() {
     // Draw bounding boxes directly on the screen, outside the FBO
     draw_bounding_box();
     camera.begin();
-    { draw_body_outline_2D(kinect_device.getBodySkeletons(), camera); }
+    { draw_body_outline_2D(kinect_device->getBodySkeletons(), camera); }
     camera.end();
 }
 
 void TrackingScene::draw_body_outline_2D(const std::vector<ofxAzureKinect::BodySkeleton> &body_skeletons,
-                                       const ofCamera &camera) {
+                                         const ofCamera &camera) {
     ofxConvexHull convex_hull_calculator; // Instantiate the convex hull object
     const float offset_distance = 0.1f; // Offset in meters (10 cm)
 
@@ -251,7 +229,7 @@ void TrackingScene::draw_bounding_box() {
             {
                 ofRotateXDeg(180);
 
-                const auto &body_skeletons = kinect_device.getBodySkeletons();
+                const auto &body_skeletons = kinect_device->getBodySkeletons();
 
                 for (const auto &skeleton: body_skeletons) {
                     // Initialize bounding box limits
@@ -297,5 +275,3 @@ void TrackingScene::draw_bounding_box() {
     }
     ofPopMatrix();
 }
-
-ofxAzureKinect::Device *TrackingScene::get_kinect_device() { return &kinect_device; }

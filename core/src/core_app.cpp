@@ -1,9 +1,30 @@
 #include "core_app.h"
 
+CoreApp::CoreApp() : tracking_scene(&kinect_device) {}
+
 //--------------------------------------------------------------
 void CoreApp::setup() {
     ofSetFrameRate(60);
     ofSetVerticalSync(true);
+
+    ofLogNotice(__FUNCTION__) << "Found " << ofxAzureKinect::Device::getInstalledCount() << " installed devices.";
+
+    if (kinect_device.open()) {
+        auto device_settings = ofxAzureKinect::DeviceSettings();
+        device_settings.syncImages = true;
+        device_settings.depthMode = K4A_DEPTH_MODE_NFOV_UNBINNED;
+        device_settings.updateIr = false;
+        device_settings.updateColor = true;
+        device_settings.colorResolution = K4A_COLOR_RESOLUTION_1080P;
+        device_settings.updateWorld = true;
+        device_settings.updateVbo = false;
+        kinect_device.startCameras(device_settings);
+
+        auto body_tracker_settings = ofxAzureKinect::BodyTrackerSettings();
+        body_tracker_settings.sensorOrientation = K4ABT_SENSOR_ORIENTATION_DEFAULT;
+        body_tracker_settings.processingMode = K4ABT_TRACKER_PROCESSING_MODE_CPU;
+        kinect_device.startBodyTracker(body_tracker_settings);
+    }
 
     std::random_device random;
     generator = std::mt19937(random());
@@ -17,13 +38,14 @@ void CoreApp::setup() {
     tracking_scene.setup();
     current_scene = &intro_scene;
     inactive_scene = &tracking_scene;
-
-    kinect_device = tracking_scene.get_kinect_device();
 }
 
 //--------------------------------------------------------------
+void CoreApp::exit() { kinect_device.close(); }
+
+//--------------------------------------------------------------
 void CoreApp::update() {
-    const auto &body_skeletons = kinect_device->getBodySkeletons();
+    const auto &body_skeletons = kinect_device.getBodySkeletons();
 
     if (current_scene == &intro_scene && !body_skeletons.empty()) {
         transition_start_time = std::chrono::steady_clock::now();

@@ -1,7 +1,7 @@
 #pragma once
 
-#include <scene.h>
 #include <intro_scene.h>
+#include <scene.h>
 #include <tracking_scene.h>
 
 #include <chrono>
@@ -11,7 +11,11 @@
 
 class CoreApp : public ofBaseApp {
   public:
+    CoreApp();
+
     void setup() override;
+    void exit() override;
+
     void update() override;
     void draw() override;
 
@@ -30,7 +34,7 @@ class CoreApp : public ofBaseApp {
   private:
     static void draw_fps_counter();
 
-    ofxAzureKinect::Device *kinect_device;
+    ofxAzureKinect::Device kinect_device;
 
     IntroScene intro_scene;
     TrackingScene tracking_scene;
