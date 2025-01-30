@@ -4,10 +4,7 @@
 #include <algorithm>
 #include <vector>
 
-TrackingScene::TrackingScene(ofxAzureKinect::Device *device) : kinect_device(device) {}
-
-//--------------------------------------------------------------
-void TrackingScene::setup() {
+TrackingScene::TrackingScene(ofxAzureKinect::Device *device) : kinect_device(device) {
     // Load shaders.
     auto shader_settings = ofShaderSettings();
     shader_settings.shaderFiles[GL_VERTEX_SHADER] = "shaders/render.vert";

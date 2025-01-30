@@ -6,9 +6,7 @@
 
 #include <ofVec2f.h>
 
-
-//--------------------------------------------------------------
-void IntroScene::setup() {
+IntroScene::IntroScene() {
     flow_field.resize(cols * rows); // initialize vector field
     z_offset = 0.0;
 

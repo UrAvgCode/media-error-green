@@ -12,6 +12,12 @@
 
 class IntroScene : public Scene {
   public:
+    IntroScene();
+
+    void update() override;
+    void draw() override;
+
+  private:
     const int screen_width = ofGetWidth();
     const int screen_height = ofGetHeight();
 
@@ -51,10 +57,6 @@ class IntroScene : public Scene {
     ofVec2f logo_center;
     float logo_radius;
     int logo_margin = 30;
-
-    void setup() override;
-    void update() override;
-    void draw() override;
 
     void create_logo_vectors();
     void create_logo_in_outs_vectors();

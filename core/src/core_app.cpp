@@ -1,6 +1,6 @@
 #include "core_app.h"
 
-CoreApp::CoreApp() : tracking_scene(&kinect_device) {}
+CoreApp::CoreApp() : tracking_scene(&kinect_device), current_scene(&intro_scene), inactive_scene(&tracking_scene) {}
 
 //--------------------------------------------------------------
 void CoreApp::setup() {
@@ -33,11 +33,6 @@ void CoreApp::setup() {
     current_app_fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGBA);
     inactive_app_fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGBA);
     transition_shader.load("shaders/transition");
-
-    intro_scene.setup();
-    tracking_scene.setup();
-    current_scene = &intro_scene;
-    inactive_scene = &tracking_scene;
 }
 
 //--------------------------------------------------------------

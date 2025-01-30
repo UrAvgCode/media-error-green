@@ -11,9 +11,6 @@ class TrackingScene : public Scene {
   public:
     TrackingScene(ofxAzureKinect::Device *device);
 
-    void setup() override;
-    void exit();
-
     void update() override;
     void draw() override;
 
