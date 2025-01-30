@@ -1,6 +1,8 @@
 #include "core_app.h"
 
-CoreApp::CoreApp() : tracking_scene(&kinect_device), current_scene(&intro_scene), inactive_scene(&tracking_scene) {}
+#include <utility>
+
+CoreApp::CoreApp() : tracking_scene({&kinect_device}), current_scene(&intro_scene), inactive_scene(&tracking_scene) {}
 
 //--------------------------------------------------------------
 void CoreApp::setup() {

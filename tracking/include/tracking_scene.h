@@ -9,7 +9,7 @@
 
 class TrackingScene : public Scene {
   public:
-    TrackingScene(ofxAzureKinect::Device *device);
+    explicit TrackingScene(ofxAzureKinect::Device *device);
 
     void update() override;
     void render() override;

@@ -14,9 +14,9 @@ class Scene {
     virtual void draw() {
         render();
         frame_buffer.draw(0, 0);
-    };
+    }
 
-    virtual ofFbo &get_frame_buffer() { return frame_buffer; };
+    virtual ofFbo &get_frame_buffer() { return frame_buffer; }
 
   protected:
     ofFbo frame_buffer;

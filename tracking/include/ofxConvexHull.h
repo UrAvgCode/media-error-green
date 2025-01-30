@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <vector>
+
 #include "ofPoint.h"
 #include "ofLog.h"
 
