@@ -49,12 +49,14 @@
     <LinkIncremental>true</LinkIncremental>
     <GenerateManifest>true</GenerateManifest>
     <EnableClangTidyCodeAnalysis>true</EnableClangTidyCodeAnalysis>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\shared\include\;</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>bin\</OutDir>
     <IntDir>obj\$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <EnableClangTidyCodeAnalysis>true</EnableClangTidyCodeAnalysis>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\shared\include\;</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -562,6 +564,9 @@
   <ItemGroup>
     <ProjectReference Include="$(OF_ROOT)\libs\openFrameworksCompiled\project\vs\openframeworksLib.vcxproj">
       <Project>{5837595d-aca9-485c-8e76-729040ce4b0b}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\shared\shared.vcxproj">
+      <Project>{3f340290-1602-4d89-b88f-2dc6bf8e5f43}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

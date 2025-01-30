@@ -259,36 +259,3 @@ void IntroApp::create_logo_in_outs_vectors() {
         }
     }
 }
-
-//--------------------------------------------------------------
-void IntroApp::keyPressed(int key) {}
-
-//--------------------------------------------------------------
-void IntroApp::keyReleased(int key) {}
-
-//--------------------------------------------------------------
-void IntroApp::mouseMoved(int x, int y) {}
-
-//--------------------------------------------------------------
-void IntroApp::mouseDragged(int x, int y, int button) {}
-
-//--------------------------------------------------------------
-void IntroApp::mousePressed(int x, int y, int button) {}
-
-//--------------------------------------------------------------
-void IntroApp::mouseReleased(int x, int y, int button) {}
-
-//--------------------------------------------------------------
-void IntroApp::mouseEntered(int x, int y) {}
-
-//--------------------------------------------------------------
-void IntroApp::mouseExited(int x, int y) {}
-
-//--------------------------------------------------------------
-void IntroApp::windowResized(int w, int h) {}
-
-//--------------------------------------------------------------
-void IntroApp::gotMessage(ofMessage msg) {}
-
-//--------------------------------------------------------------
-void IntroApp::dragEvent(ofDragInfo dragInfo) {}

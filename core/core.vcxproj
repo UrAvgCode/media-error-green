@@ -49,14 +49,14 @@
     <LinkIncremental>true</LinkIncremental>
     <GenerateManifest>true</GenerateManifest>
     <EnableClangTidyCodeAnalysis>true</EnableClangTidyCodeAnalysis>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\tracking\include\;..\intro\include;</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\shared\include\;..\tracking\include\;..\intro\include;</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>bin\</OutDir>
     <IntDir>obj\$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <EnableClangTidyCodeAnalysis>true</EnableClangTidyCodeAnalysis>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\tracking\include\;..\intro\include;</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\shared\include\;..\tracking\include\;..\intro\include;</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -576,6 +576,9 @@ del "$(TargetDir)\*.lib"</Command>
     </ProjectReference>
     <ProjectReference Include="..\intro\intro.vcxproj">
       <Project>{c5507010-398f-47f2-b28b-40bc6d8812bc}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\shared\shared.vcxproj">
+      <Project>{3f340290-1602-4d89-b88f-2dc6bf8e5f43}</Project>
     </ProjectReference>
     <ProjectReference Include="..\tracking\tracking.vcxproj">
       <Project>{58132289-d202-40f1-ad7e-ec2cb45664b1}</Project>

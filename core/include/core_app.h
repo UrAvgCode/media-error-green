@@ -1,5 +1,6 @@
 #pragma once
 
+#include <scene.h>
 #include <intro_app.h>
 #include <tracking_app.h>
 
@@ -33,8 +34,8 @@ class CoreApp : public ofBaseApp {
 
     IntroApp intro_app;
     TrackingApp tracking_app;
-    ofBaseApp *current_app;
-    ofBaseApp *inactive_app;
+    Scene *current_app;
+    Scene *inactive_app;
 
     ofFbo current_app_fbo;
     ofFbo inactive_app_fbo;

@@ -99,8 +99,6 @@ void TrackingApp::draw() {
 
                 ofDisableDepthTest();
 
-                
-
                 // draw_skeleton(body_skeletons);
             }
             ofPopMatrix();
@@ -129,15 +127,12 @@ void TrackingApp::draw() {
     // Draw bounding boxes directly on the screen, outside the FBO
     draw_bounding_box();
     camera.begin();
-    { 
-        draw_body_outline_2D(kinect_device.getBodySkeletons(), camera);
-    }
+    { draw_body_outline_2D(kinect_device.getBodySkeletons(), camera); }
     camera.end();
-    
-    
 }
 
-void TrackingApp::draw_body_outline_2D(const std::vector<ofxAzureKinect::BodySkeleton> &body_skeletons, const ofCamera &camera) {
+void TrackingApp::draw_body_outline_2D(const std::vector<ofxAzureKinect::BodySkeleton> &body_skeletons,
+                                       const ofCamera &camera) {
     ofxConvexHull convex_hull_calculator; // Instantiate the convex hull object
     const float offset_distance = 0.1f; // Offset in meters (10 cm)
 
@@ -301,47 +296,6 @@ void TrackingApp::draw_bounding_box() {
         camera.end();
     }
     ofPopMatrix();
-   
 }
-
-
-
-
-//--------------------------------------------------------------
-void TrackingApp::keyPressed(int key) {}
-
-//--------------------------------------------------------------
-void TrackingApp::keyReleased(int key) {}
-
-//--------------------------------------------------------------
-void TrackingApp::mouseMoved(int x, int y) {}
-
-//--------------------------------------------------------------
-void TrackingApp::mouseDragged(int x, int y, int button) {
-    if (button == 1) {
-        kinect_device.getBodyTracker().jointSmoothing = ofMap(x, 0, ofGetWidth(), 0.0f, 1.0f, true);
-    }
-}
-
-//--------------------------------------------------------------
-void TrackingApp::mousePressed(int x, int y, int button) {}
-
-//--------------------------------------------------------------
-void TrackingApp::mouseReleased(int x, int y, int button) {}
-
-//--------------------------------------------------------------
-void TrackingApp::mouseEntered(int x, int y) {}
-
-//--------------------------------------------------------------
-void TrackingApp::mouseExited(int x, int y) {}
-
-//--------------------------------------------------------------
-void TrackingApp::windowResized(int w, int h) {}
-
-//--------------------------------------------------------------
-void TrackingApp::gotMessage(ofMessage msg) {}
-
-//--------------------------------------------------------------
-void TrackingApp::dragEvent(ofDragInfo dragInfo) {}
 
 ofxAzureKinect::Device *TrackingApp::get_kinect_device() { return &kinect_device; }
