@@ -569,8 +569,14 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="jpeg_simulation.frag" />
-    <None Include="jpeg_simulation.vert" />
+    <CopyFileToFolders Include="jpeg_simulation.frag">
+      <FileType>Document</FileType>
+      <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">data/shaders/%(Filename)%(Extension)</DestinationFileName>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="jpeg_simulation.vert">
+      <FileType>Document</FileType>
+      <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">data/shaders/%(Filename)%(Extension)</DestinationFileName>
+    </CopyFileToFolders>
     <None Include="packages.config" />
     <CopyFileToFolders Include="shaders\render.frag">
       <FileType>Document</FileType>
