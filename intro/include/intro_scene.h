@@ -15,7 +15,7 @@ class IntroScene : public Scene {
     IntroScene();
 
     void update() override;
-    void draw() override;
+    void render() override;
 
   private:
     const int screen_width = ofGetWidth();

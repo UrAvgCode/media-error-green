@@ -119,39 +119,42 @@ void IntroScene::update() {
     }
 }
 
-//--------------------------------------------------------------
-void IntroScene::draw() {
-    ofBackground(0);
+void IntroScene::render() {
+    frame_buffer.begin();
+    {
+        ofClear(0);
 
-    ofPushMatrix();
-    ofTranslate(ofGetWidth() / 2, ofGetHeight() / 2);
-    ofScale(0.5, 0.5);
-    ofTranslate(-logo_svg.getHeight() / 2, -logo_svg.getHeight() / 2);
-    // logo_svg.draw();
-    ofPopMatrix();
+        // ofPushMatrix();
+        // ofTranslate(ofGetWidth() / 2, ofGetHeight() / 2);
+        // ofScale(0.5, 0.5);
+        // ofTranslate(-logo_svg.getHeight() / 2, -logo_svg.getHeight() / 2);
+        //  logo_svg.draw();
+        // ofPopMatrix();
 
 
-    //// visualized flowing field
-    // for (int y = 0; y < rows; y++) {
-    //	for (int x = 0; x < cols; x++) {
-    //		ofVec2f vec = flow_field[y * cols + x];
-    //		ofPushMatrix();
-    //		ofTranslate(x * resolution, y * resolution);
-    //		ofDrawLine(0, 0, vec.x * resolution * 0.5, vec.y * resolution * 0.5);
-    //		ofPopMatrix();
-    //	}
-    // }
+        //// visualized flowing field
+        // for (int y = 0; y < rows; y++) {
+        //	for (int x = 0; x < cols; x++) {
+        //		ofVec2f vec = flow_field[y * cols + x];
+        //		ofPushMatrix();
+        //		ofTranslate(x * resolution, y * resolution);
+        //		ofDrawLine(0, 0, vec.x * resolution * 0.5, vec.y * resolution * 0.5);
+        //		ofPopMatrix();
+        //	}
+        // }
 
-    // draw particles
-    for (auto &particle: particles) {
-        particle.draw();
+        // draw particles
+        for (auto &particle: particles) {
+            particle.draw();
+        }
+
+        // drawing logo_vectors
+        // ofSetColor(0, 255, 0); // green
+        /*for (auto &logo_vec: all_logo_vectors) {
+             ofDrawLine(logo_vec.first, logo_vec.first + logo_vec.second * 10);
+        }*/
     }
-
-    // drawing logo_vectors
-    // ofSetColor(0, 255, 0); // green
-    /*for (auto &logo_vec: all_logo_vectors) {
-         ofDrawLine(logo_vec.first, logo_vec.first + logo_vec.second * 10);
-    }*/
+    frame_buffer.end();
 }
 
 void IntroScene::create_logo_vectors() {

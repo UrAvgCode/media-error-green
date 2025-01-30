@@ -12,7 +12,7 @@ class TrackingScene : public Scene {
     TrackingScene(ofxAzureKinect::Device *device);
 
     void update() override;
-    void draw() override;
+    void render() override;
 
   private:
     void draw_skeleton(const std::vector<ofxAzureKinect::BodySkeleton> &body_skeletons);

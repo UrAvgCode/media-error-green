@@ -42,16 +42,10 @@ void CoreApp::exit() { kinect_device.close(); }
 void CoreApp::update() {
     const auto &body_skeletons = kinect_device.getBodySkeletons();
 
-    if (current_scene == &intro_scene && !body_skeletons.empty()) {
+    if ((current_scene == &intro_scene && !body_skeletons.empty()) ||
+        (current_scene == &tracking_scene && body_skeletons.empty())) {
         transition_start_time = std::chrono::steady_clock::now();
-
-        current_scene = &tracking_scene;
-        inactive_scene = &intro_scene;
-    } else if (current_scene == &tracking_scene && body_skeletons.empty()) {
-        transition_start_time = std::chrono::steady_clock::now();
-
-        current_scene = &intro_scene;
-        inactive_scene = &tracking_scene;
+        std::swap(current_scene, inactive_scene);
     }
 
     current_scene->update();
@@ -64,21 +58,16 @@ void CoreApp::draw() {
     auto progress = static_cast<float>(elapsed_time.count()) / static_cast<float>(transition_duration.count());
 
     if (progress < 1.0f) {
-        current_app_fbo.begin();
-        current_scene->draw();
-        current_app_fbo.end();
-
-        inactive_app_fbo.begin();
-        inactive_scene->draw();
-        inactive_app_fbo.end();
+        current_scene->render();
+        inactive_scene->render();
 
         transition_shader.begin();
         {
-            transition_shader.setUniformTexture("transition_tex", inactive_app_fbo.getTexture(), 1);
+            transition_shader.setUniformTexture("transition_tex", inactive_scene->get_frame_buffer().getTexture(), 1);
             transition_shader.setUniform1f("progress", progress);
             transition_shader.setUniform1i("rand1", distribution(generator));
             transition_shader.setUniform1i("rand2", distribution(generator));
-            current_app_fbo.draw(0, 0);
+            current_scene->get_frame_buffer().draw(0, 0);
         }
         transition_shader.end();
     } else {

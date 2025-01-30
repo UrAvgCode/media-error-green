@@ -33,8 +33,7 @@ TrackingScene::TrackingScene(ofxAzureKinect::Device *device) : kinect_device(dev
 //--------------------------------------------------------------
 void TrackingScene::update() {}
 
-//--------------------------------------------------------------
-void TrackingScene::draw() {
+void TrackingScene::render() {
     fbo.begin();
     {
         ofClear(0);
@@ -82,28 +81,32 @@ void TrackingScene::draw() {
     }
     fbo.end();
 
-    ofPushMatrix();
+    frame_buffer.begin();
     {
-
-        chromatic_shader.begin();
+        ofPushMatrix();
         {
-            const float aberration = 20;
-            chromatic_shader.setUniform1f("aberration_amount", aberration);
-            chromatic_shader.setUniform1f("time", static_cast<float>(ofGetElapsedTimeMillis()) / 50.0f);
-            chromatic_shader.setUniform1i("rand1", distribution(generator));
-            chromatic_shader.setUniform1i("rand2", distribution(generator));
 
-            fbo.draw(0, 0);
+            chromatic_shader.begin();
+            {
+                const float aberration = 20;
+                chromatic_shader.setUniform1f("aberration_amount", aberration);
+                chromatic_shader.setUniform1f("time", static_cast<float>(ofGetElapsedTimeMillis()) / 50.0f);
+                chromatic_shader.setUniform1i("rand1", distribution(generator));
+                chromatic_shader.setUniform1i("rand2", distribution(generator));
+
+                fbo.draw(0, 0);
+            }
+            chromatic_shader.end();
         }
-        chromatic_shader.end();
-    }
-    ofPopMatrix();
+        ofPopMatrix();
 
-    // Draw bounding boxes directly on the screen, outside the FBO
-    draw_bounding_box();
-    camera.begin();
-    { draw_body_outline_2D(kinect_device->getBodySkeletons(), camera); }
-    camera.end();
+        // Draw bounding boxes directly on the screen, outside the FBO
+        draw_bounding_box();
+        camera.begin();
+        { draw_body_outline_2D(kinect_device->getBodySkeletons(), camera); }
+        camera.end();
+    }
+    frame_buffer.end();
 }
 
 void TrackingScene::draw_body_outline_2D(const std::vector<ofxAzureKinect::BodySkeleton> &body_skeletons,
