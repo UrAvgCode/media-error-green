@@ -3,8 +3,8 @@
 uniform sampler2DRect tex0;
 uniform float aberration_amount;
 uniform float time;
-uniform float rand1;
-uniform float rand2;
+uniform int rand1;
+uniform int rand2;
 
 in vec2 vTexCoord;
 out vec4 fragColor;

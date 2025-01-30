@@ -25,6 +25,8 @@ class TrackingApp : public ofBaseApp {
     void dragEvent(ofDragInfo dragInfo) override;
     void gotMessage(ofMessage msg) override;
 
+    ofxAzureKinect::Device *get_kinect_device();
+
   private:
     void draw_skeleton(const std::vector<ofxAzureKinect::BodySkeleton> &body_skeletons);
     void draw_bounding_box();
@@ -42,4 +44,7 @@ class TrackingApp : public ofBaseApp {
     ofShader chromatic_shader;
 
     ofFbo fbo;
+
+    std::mt19937 generator;
+    std::uniform_int_distribution<int> distribution;
 };

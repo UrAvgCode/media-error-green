@@ -1,9 +1,12 @@
 #pragma once
 
-#include <ofMain.h>
-
 #include <intro_app.h>
 #include <tracking_app.h>
+
+#include <chrono>
+#include <random>
+
+#include <ofMain.h>
 
 class CoreApp : public ofBaseApp {
   public:
@@ -24,9 +27,22 @@ class CoreApp : public ofBaseApp {
     void gotMessage(ofMessage msg) override;
 
   private:
-    void draw_fps_counter();
+    static void draw_fps_counter();
+
+    ofxAzureKinect::Device *kinect_device;
 
     IntroApp intro_app;
     TrackingApp tracking_app;
     ofBaseApp *current_app;
+    ofBaseApp *inactive_app;
+
+    ofFbo current_app_fbo;
+    ofFbo inactive_app_fbo;
+    ofShader transition_shader;
+
+    const std::chrono::milliseconds transition_duration = 500ms;
+    std::chrono::steady_clock::time_point transition_start_time;
+
+    std::mt19937 generator;
+    std::uniform_int_distribution<int> distribution;
 };
