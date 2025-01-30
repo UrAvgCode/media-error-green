@@ -569,6 +569,8 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="jpeg_simulation.frag" />
+    <None Include="jpeg_simulation.vert" />
     <None Include="packages.config" />
     <CopyFileToFolders Include="shaders\render.frag">
       <FileType>Document</FileType>

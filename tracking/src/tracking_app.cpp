@@ -38,7 +38,9 @@ void TrackingApp::setup() {
 
     chromatic_shader.load("shaders/chromatic");
 
-    // Setup vbo.
+    jpeg_shader.load("shaders/jpeg_simulation");
+
+    // Setup vbo with single point.
     std::vector<glm::vec3> verts(1);
     points_vbo.setVertexData(verts.data(), static_cast<int>(verts.size()), GL_STATIC_DRAW);
 
@@ -56,8 +58,8 @@ void TrackingApp::update() {}
 void TrackingApp::draw() {
     fbo.begin();
     {
-        ofClear(0);
-        ofBackground(0);
+        ofClear(255,0,0,255);
+        ofBackground(0,0,0,255);
 
         camera.begin();
         {
@@ -87,6 +89,7 @@ void TrackingApp::draw() {
                     shader.setUniform1iv("uBodyIDs", body_ids.data(), k_max_bodies);
 
                     const int num_points = frame_width * frame_height;
+                    //draw using vbo for every point
                     points_vbo.drawInstanced(GL_POINTS, 0, 1, num_points);
                 }
                 shader.end();
@@ -108,17 +111,20 @@ void TrackingApp::draw() {
 
         chromatic_shader.begin();
         {
-            const float aberration = 20;
+            const float aberration = 10;
             chromatic_shader.setUniform1f("aberration_amount", aberration);
             chromatic_shader.setUniform1f("time", static_cast<float>(ofGetElapsedTimeMillis()) / 50.0f);
             chromatic_shader.setUniform1f("rand1", static_cast<float>(rand() % static_cast<int>(fbo.getHeight())));
             chromatic_shader.setUniform1f("rand2", static_cast<float>(rand() % static_cast<int>(fbo.getHeight())));
 
-            fbo.draw(0, 0);
+           fbo.draw(0, 0);
         }
         chromatic_shader.end();
+
+
     }
     ofPopMatrix();
+
 }
 
 void TrackingApp::draw_skeleton(const std::vector<ofxAzureKinect::BodySkeleton> &body_skeletons) {

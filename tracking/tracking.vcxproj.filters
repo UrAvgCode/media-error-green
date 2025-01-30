@@ -1610,6 +1610,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="jpeg_simulation.frag">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="jpeg_simulation.vert">
+      <Filter>shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="shaders\render.frag">

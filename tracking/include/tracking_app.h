@@ -39,6 +39,7 @@ class TrackingApp : public ofBaseApp {
 
     ofShader shader;
     ofShader chromatic_shader;
+    ofShader jpeg_shader;
 
     ofFbo fbo;
 };
