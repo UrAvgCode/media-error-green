@@ -1,4 +1,5 @@
 #include "tracking_app.h"
+#include "ofxConvexHull.h"
 
 #include <algorithm>
 #include <vector>
@@ -93,6 +94,8 @@ void TrackingApp::draw() {
 
                 ofDisableDepthTest();
 
+                
+
                 // draw_skeleton(body_skeletons);
             }
             ofPopMatrix();
@@ -103,8 +106,6 @@ void TrackingApp::draw() {
 
     ofPushMatrix();
     {
-        ofTranslate(fbo.getWidth(), 0);
-        ofScale(-1, 1);
 
         chromatic_shader.begin();
         {
@@ -119,122 +120,187 @@ void TrackingApp::draw() {
         chromatic_shader.end();
     }
     ofPopMatrix();
+
+    // Draw bounding boxes directly on the screen, outside the FBO
+    draw_bounding_box();
+    camera.begin();
+    { 
+        draw_body_outline_2D(kinect_device.getBodySkeletons(), camera);
+    }
+    camera.end();
+    
+    
 }
 
-void TrackingApp::draw_skeleton(const std::vector<ofxAzureKinect::BodySkeleton> &body_skeletons) {
+void TrackingApp::draw_body_outline_2D(const std::vector<ofxAzureKinect::BodySkeleton> &body_skeletons, const ofCamera &camera) {
+    ofxConvexHull convex_hull_calculator; // Instantiate the convex hull object
+    const float offset_distance = 0.1f; // Offset in meters (10 cm)
+
     for (const auto &skeleton: body_skeletons) {
-        // Draw joints.
+        std::vector<ofPoint> projected_points; // Use ofPoint for compatibility
+        float front_depth = FLT_MAX; // Start with the maximum possible value
+
+        // Collect valid joint positions and calculate the front depth
         for (const auto &joint: skeleton.joints) {
+            if (std::isfinite(joint.position.x) && std::isfinite(joint.position.y) && std::isfinite(joint.position.z)) {
+                ofVec3f world_position(joint.position.x, joint.position.y, joint.position.z);
+                ofVec3f screen_position = camera.worldToScreen(world_position);
+
+                // Add to the projected_points vector as ofPoint
+                projected_points.emplace_back(screen_position.x, screen_position.y);
+
+                // Track the minimum depth value (front of the bounding box)
+                front_depth = std::min(front_depth, world_position.z);
+            }
+        }
+
+        if (projected_points.size() > 2) {
+            // Compute the convex hull of the projected points
+            std::vector<ofPoint> hull = convex_hull_calculator.getConvexHull(projected_points);
+
+            // Expand the convex hull outward by offset_distance
+            std::vector<ofPoint> expanded_hull;
+            for (size_t i = 0; i < hull.size(); ++i) {
+                const ofPoint &current = hull[i];
+                const ofPoint &next = hull[(i + 1) % hull.size()];
+
+                // Compute the edge normal
+                ofVec2f edge = ofVec2f(next.x - current.x, next.y - current.y);
+                ofVec2f normal(-edge.y, edge.x); // Perpendicular to the edge
+                normal.normalize();
+
+                // Move the point outward by the offset distance
+                expanded_hull.emplace_back(current.x + normal.x * offset_distance,
+                                           current.y + normal.y * offset_distance);
+            }
+
+            // Draw the expanded hull at the front depth
+            ofPushStyle();
+            ofSetColor(255, 0, 0); // Red outline
+            ofNoFill();
+            ofBeginShape();
+            for (const auto &point: expanded_hull) {
+                // Project the 2D hull points back into 3D using the front depth
+                ofVec3f world_point = camera.screenToWorld(
+                        ofVec3f(point.x, point.y, camera.worldToScreen(ofVec3f(0, 0, front_depth)).z));
+                ofVertex(world_point.x, world_point.y, world_point.z);
+            }
+            ofEndShape(true); // Close the shape
+            ofPopStyle();
+        }
+    }
+}
+
+
+std::vector<ofVec2f> TrackingApp::calculate_convex_hull(const std::vector<ofVec2f> &points) {
+    // Ensure we have enough points to compute a hull
+    if (points.size() < 3) {
+        return points; // Convex hull is trivial for fewer than 3 points
+    }
+
+    // Find the point with the lowest Y-coordinate (and leftmost in case of a tie)
+    auto min_point = *std::min_element(points.begin(), points.end(), [](const ofVec2f &a, const ofVec2f &b) {
+        return (a.y < b.y) || (a.y == b.y && a.x < b.x);
+    });
+
+    // Sort points by polar angle with respect to `min_point`
+    std::vector<ofVec2f> sorted_points = points;
+    std::sort(sorted_points.begin(), sorted_points.end(), [&min_point](const ofVec2f &a, const ofVec2f &b) {
+        ofVec2f vec_a = a - min_point;
+        ofVec2f vec_b = b - min_point;
+        float cross = vec_a.x * vec_b.y - vec_a.y * vec_b.x; // Cross product
+        if (cross == 0) { // Collinear points: closer points come first
+            return vec_a.lengthSquared() < vec_b.lengthSquared();
+        }
+        return cross > 0; // Clockwise order
+    });
+
+    // Construct the convex hull using a stack
+    std::vector<ofVec2f> hull;
+    hull.push_back(sorted_points[0]); // Push first point
+    hull.push_back(sorted_points[1]); // Push second point
+
+    for (size_t i = 2; i < sorted_points.size(); ++i) {
+        while (hull.size() > 1) {
+            const ofVec2f &top = hull.back();
+            const ofVec2f &next_to_top = hull[hull.size() - 2];
+
+            // Check for a right turn (non-left turn) using the cross product
+            ofVec2f vec1 = top - next_to_top;
+            ofVec2f vec2 = sorted_points[i] - top;
+            if ((vec1.x * vec2.y - vec1.y * vec2.x) <= 0) { // Right turn or collinear
+                hull.pop_back(); // Remove the top point
+            } else {
+                break; // Left turn
+            }
+        }
+        hull.push_back(sorted_points[i]); // Push the current point
+    }
+
+    return hull;
+}
+
+void TrackingApp::draw_bounding_box() {
+    const float offset_distance = 0.1f; // Offset in meters (10 cm)
+
+    ofPushMatrix();
+    {
+        camera.begin();
+        {
             ofPushMatrix();
             {
-                glm::mat4 transform = glm::translate(joint.position) * glm::toMat4(joint.orientation);
-                ofMultMatrix(transform);
+                ofRotateXDeg(180);
 
-                ofDrawAxis(50.0f);
+                const auto &body_skeletons = kinect_device.getBodySkeletons();
 
-                if (joint.confidenceLevel >= K4ABT_JOINT_CONFIDENCE_MEDIUM) {
-                    ofSetColor(ofColor::green);
-                } else if (joint.confidenceLevel >= K4ABT_JOINT_CONFIDENCE_LOW) {
-                    ofSetColor(ofColor::yellow);
-                } else {
-                    ofSetColor(ofColor::red);
+                for (const auto &skeleton: body_skeletons) {
+                    // Initialize bounding box limits
+                    ofVec3f min_bounds(FLT_MAX, FLT_MAX, FLT_MAX);
+                    ofVec3f max_bounds(-FLT_MAX, -FLT_MAX, -FLT_MAX);
+
+                    bool valid_skeleton = false;
+
+                    // Iterate through all joints in the skeleton
+                    for (const auto &joint: skeleton.joints) {
+                        // Ensure joint position is valid
+                        if (std::isfinite(joint.position.x) && std::isfinite(joint.position.y) &&
+                            std::isfinite(joint.position.z)) {
+                            valid_skeleton = true; // At least one valid joint found
+
+                            // Update bounding box
+                            min_bounds.x = std::min(min_bounds.x, joint.position.x);
+                            min_bounds.y = std::min(min_bounds.y, joint.position.y);
+                            min_bounds.z = std::min(min_bounds.z, joint.position.z);
+
+                            max_bounds.x = std::max(max_bounds.x, joint.position.x);
+                            max_bounds.y = std::max(max_bounds.y, joint.position.y);
+                            max_bounds.z = std::max(max_bounds.z, joint.position.z);
+                        }
+                    }
+
+                    // If at least one valid joint was found, draw the bounding box
+                    if (valid_skeleton) {
+                        ofPushStyle();
+                        ofNoFill();
+                        ofSetColor(255, 0, 0); // Red line
+                        ofDrawBox((min_bounds + max_bounds) / 2, // Center of the box
+                                  max_bounds.x - min_bounds.x, // Width
+                                  max_bounds.y - min_bounds.y, // Height
+                                  max_bounds.z - min_bounds.z); // Depth
+                        ofPopStyle();
+                    }
                 }
-
-                ofDrawSphere(10.0f);
             }
             ofPopMatrix();
         }
-
-        // Draw connections.
-        skeleton_mesh.setMode(OF_PRIMITIVE_LINES);
-        auto &vertices = skeleton_mesh.getVertices();
-        vertices.resize(50);
-        int vdx = 0;
-
-        // Spine.
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_PELVIS].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SPINE_NAVEL].position);
-
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SPINE_NAVEL].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SPINE_CHEST].position);
-
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SPINE_CHEST].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_NECK].position);
-
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_NECK].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_HEAD].position);
-
-        // Head.
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_HEAD].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_NOSE].position);
-
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_NOSE].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_EYE_LEFT].position);
-
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_EYE_LEFT].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_EAR_LEFT].position);
-
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_NOSE].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_EYE_RIGHT].position);
-
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_EYE_RIGHT].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_EAR_RIGHT].position);
-
-        // Left Leg.
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_PELVIS].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_HIP_LEFT].position);
-
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_HIP_LEFT].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_KNEE_LEFT].position);
-
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_KNEE_LEFT].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ANKLE_LEFT].position);
-
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ANKLE_LEFT].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_FOOT_LEFT].position);
-
-        // Right leg.
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_PELVIS].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_HIP_RIGHT].position);
-
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_HIP_RIGHT].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_KNEE_RIGHT].position);
-
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_KNEE_RIGHT].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ANKLE_RIGHT].position);
-
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ANKLE_RIGHT].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_FOOT_RIGHT].position);
-
-        // Left arm.
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_NECK].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_CLAVICLE_LEFT].position);
-
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_CLAVICLE_LEFT].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SHOULDER_LEFT].position);
-
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SHOULDER_LEFT].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ELBOW_LEFT].position);
-
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ELBOW_LEFT].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_WRIST_LEFT].position);
-
-        // Right arm.
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_NECK].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_CLAVICLE_RIGHT].position);
-
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_CLAVICLE_RIGHT].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SHOULDER_RIGHT].position);
-
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SHOULDER_RIGHT].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ELBOW_RIGHT].position);
-
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ELBOW_RIGHT].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_WRIST_RIGHT].position);
-
-        skeleton_mesh.draw();
+        camera.end();
     }
+    ofPopMatrix();
+   
 }
+
+
+
 
 //--------------------------------------------------------------
 void TrackingApp::keyPressed(int key) {}
