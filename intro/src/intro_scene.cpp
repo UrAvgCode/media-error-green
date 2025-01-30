@@ -1,4 +1,4 @@
-#include "intro_app.h"
+#include "intro_scene.h"
 
 #include <algorithm>
 #include <execution>
@@ -8,7 +8,7 @@
 
 
 //--------------------------------------------------------------
-void IntroApp::setup() {
+void IntroScene::setup() {
     flow_field.resize(cols * rows); // initialize vector field
     z_offset = 0.0;
 
@@ -51,7 +51,7 @@ void IntroApp::setup() {
 }
 
 //--------------------------------------------------------------
-void IntroApp::update() {
+void IntroScene::update() {
     z_offset += 0.01; // animation offset gets increased
 
     // vectors get calculated by Perlin noise
@@ -122,7 +122,7 @@ void IntroApp::update() {
 }
 
 //--------------------------------------------------------------
-void IntroApp::draw() {
+void IntroScene::draw() {
     ofBackground(0);
 
     ofPushMatrix();
@@ -156,7 +156,7 @@ void IntroApp::draw() {
     }*/
 }
 
-void IntroApp::create_logo_vectors() {
+void IntroScene::create_logo_vectors() {
 
     // SVG-Bounding-Box berechnen
     ofRectangle bounding_box;
@@ -208,7 +208,7 @@ void IntroApp::create_logo_vectors() {
     }
 }
 
-void IntroApp::create_logo_in_outs_vectors() {
+void IntroScene::create_logo_in_outs_vectors() {
 
     // SVG-Bounding-Box berechnen
     ofRectangle bounding_box;

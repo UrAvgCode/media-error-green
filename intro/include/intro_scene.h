@@ -10,7 +10,7 @@
 #include <scene.h>
 #include "particle.h"
 
-class IntroApp : public Scene {
+class IntroScene : public Scene {
   public:
     const int screen_width = ofGetWidth();
     const int screen_height = ofGetHeight();

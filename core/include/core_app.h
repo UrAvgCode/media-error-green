@@ -1,8 +1,8 @@
 #pragma once
 
 #include <scene.h>
-#include <intro_app.h>
-#include <tracking_app.h>
+#include <intro_scene.h>
+#include <tracking_scene.h>
 
 #include <chrono>
 #include <random>
@@ -32,10 +32,10 @@ class CoreApp : public ofBaseApp {
 
     ofxAzureKinect::Device *kinect_device;
 
-    IntroApp intro_app;
-    TrackingApp tracking_app;
-    Scene *current_app;
-    Scene *inactive_app;
+    IntroScene intro_scene;
+    TrackingScene tracking_scene;
+    Scene *current_scene;
+    Scene *inactive_scene;
 
     ofFbo current_app_fbo;
     ofFbo inactive_app_fbo;

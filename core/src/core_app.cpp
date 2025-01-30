@@ -13,31 +13,31 @@ void CoreApp::setup() {
     inactive_app_fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGBA);
     transition_shader.load("shaders/transition");
 
-    intro_app.setup();
-    tracking_app.setup();
-    current_app = &intro_app;
-    inactive_app = &tracking_app;
+    intro_scene.setup();
+    tracking_scene.setup();
+    current_scene = &intro_scene;
+    inactive_scene = &tracking_scene;
 
-    kinect_device = tracking_app.get_kinect_device();
+    kinect_device = tracking_scene.get_kinect_device();
 }
 
 //--------------------------------------------------------------
 void CoreApp::update() {
     const auto &body_skeletons = kinect_device->getBodySkeletons();
 
-    if (current_app == &intro_app && !body_skeletons.empty()) {
+    if (current_scene == &intro_scene && !body_skeletons.empty()) {
         transition_start_time = std::chrono::steady_clock::now();
 
-        current_app = &tracking_app;
-        inactive_app = &intro_app;
-    } else if (current_app == &tracking_app && body_skeletons.empty()) {
+        current_scene = &tracking_scene;
+        inactive_scene = &intro_scene;
+    } else if (current_scene == &tracking_scene && body_skeletons.empty()) {
         transition_start_time = std::chrono::steady_clock::now();
 
-        current_app = &intro_app;
-        inactive_app = &tracking_app;
+        current_scene = &intro_scene;
+        inactive_scene = &tracking_scene;
     }
 
-    current_app->update();
+    current_scene->update();
 }
 
 //--------------------------------------------------------------
@@ -48,11 +48,11 @@ void CoreApp::draw() {
 
     if (progress < 1.0f) {
         current_app_fbo.begin();
-        current_app->draw();
+        current_scene->draw();
         current_app_fbo.end();
 
         inactive_app_fbo.begin();
-        inactive_app->draw();
+        inactive_scene->draw();
         inactive_app_fbo.end();
 
         transition_shader.begin();
@@ -65,7 +65,7 @@ void CoreApp::draw() {
         }
         transition_shader.end();
     } else {
-        current_app->draw();
+        current_scene->draw();
     }
 
     draw_fps_counter();

@@ -1,11 +1,11 @@
-#include "tracking_app.h"
+#include "tracking_scene.h"
 #include "ofxConvexHull.h"
 
 #include <algorithm>
 #include <vector>
 
 //--------------------------------------------------------------
-void TrackingApp::setup() {
+void TrackingScene::setup() {
     // ofSetLogLevel(OF_LOG_VERBOSE);
 
     ofLogNotice(__FUNCTION__) << "Found " << ofxAzureKinect::Device::getInstalledCount() << " installed devices.";
@@ -53,13 +53,13 @@ void TrackingApp::setup() {
 }
 
 //--------------------------------------------------------------
-void TrackingApp::exit() { kinect_device.close(); }
+void TrackingScene::exit() { kinect_device.close(); }
 
 //--------------------------------------------------------------
-void TrackingApp::update() {}
+void TrackingScene::update() {}
 
 //--------------------------------------------------------------
-void TrackingApp::draw() {
+void TrackingScene::draw() {
     fbo.begin();
     {
         ofClear(0);
@@ -131,7 +131,7 @@ void TrackingApp::draw() {
     camera.end();
 }
 
-void TrackingApp::draw_body_outline_2D(const std::vector<ofxAzureKinect::BodySkeleton> &body_skeletons,
+void TrackingScene::draw_body_outline_2D(const std::vector<ofxAzureKinect::BodySkeleton> &body_skeletons,
                                        const ofCamera &camera) {
     ofxConvexHull convex_hull_calculator; // Instantiate the convex hull object
     const float offset_distance = 0.1f; // Offset in meters (10 cm)
@@ -192,7 +192,7 @@ void TrackingApp::draw_body_outline_2D(const std::vector<ofxAzureKinect::BodySke
 }
 
 
-std::vector<ofVec2f> TrackingApp::calculate_convex_hull(const std::vector<ofVec2f> &points) {
+std::vector<ofVec2f> TrackingScene::calculate_convex_hull(const std::vector<ofVec2f> &points) {
     // Ensure we have enough points to compute a hull
     if (points.size() < 3) {
         return points; // Convex hull is trivial for fewer than 3 points
@@ -240,7 +240,7 @@ std::vector<ofVec2f> TrackingApp::calculate_convex_hull(const std::vector<ofVec2
     return hull;
 }
 
-void TrackingApp::draw_bounding_box() {
+void TrackingScene::draw_bounding_box() {
     const float offset_distance = 0.1f; // Offset in meters (10 cm)
 
     ofPushMatrix();
@@ -298,4 +298,4 @@ void TrackingApp::draw_bounding_box() {
     ofPopMatrix();
 }
 
-ofxAzureKinect::Device *TrackingApp::get_kinect_device() { return &kinect_device; }
+ofxAzureKinect::Device *TrackingScene::get_kinect_device() { return &kinect_device; }

@@ -7,7 +7,7 @@
 
 #include <scene.h>
 
-class TrackingApp : public Scene {
+class TrackingScene : public Scene {
   public:
     void setup() override;
     void exit();
