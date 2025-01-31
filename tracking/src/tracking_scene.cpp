@@ -1,32 +1,10 @@
-#include "tracking_app.h"
+#include "tracking_scene.h"
 #include "ofxConvexHull.h"
 
 #include <algorithm>
 #include <vector>
 
-//--------------------------------------------------------------
-void TrackingApp::setup() {
-    // ofSetLogLevel(OF_LOG_VERBOSE);
-
-    ofLogNotice(__FUNCTION__) << "Found " << ofxAzureKinect::Device::getInstalledCount() << " installed devices.";
-
-    if (kinect_device.open()) {
-        auto device_settings = ofxAzureKinect::DeviceSettings();
-        device_settings.syncImages = true;
-        device_settings.depthMode = K4A_DEPTH_MODE_NFOV_UNBINNED;
-        device_settings.updateIr = false;
-        device_settings.updateColor = true;
-        device_settings.colorResolution = K4A_COLOR_RESOLUTION_1080P;
-        device_settings.updateWorld = true;
-        device_settings.updateVbo = false;
-        kinect_device.startCameras(device_settings);
-
-        auto body_tracker_settings = ofxAzureKinect::BodyTrackerSettings();
-        body_tracker_settings.sensorOrientation = K4ABT_SENSOR_ORIENTATION_DEFAULT;
-        body_tracker_settings.processingMode = K4ABT_TRACKER_PROCESSING_MODE_CPU;
-        kinect_device.startBodyTracker(body_tracker_settings);
-    }
-
+TrackingScene::TrackingScene(ofxAzureKinect::Device *device) : kinect_device(device) {
     // Load shaders.
     auto shader_settings = ofShaderSettings();
     shader_settings.shaderFiles[GL_VERTEX_SHADER] = "shaders/render.vert";
@@ -53,13 +31,9 @@ void TrackingApp::setup() {
 }
 
 //--------------------------------------------------------------
-void TrackingApp::exit() { kinect_device.close(); }
+void TrackingScene::update() {}
 
-//--------------------------------------------------------------
-void TrackingApp::update() {}
-
-//--------------------------------------------------------------
-void TrackingApp::draw() {
+void TrackingScene::render() {
     fbo.begin();
     {
         ofClear(0);
@@ -73,7 +47,7 @@ void TrackingApp::draw() {
 
                 ofEnableDepthTest();
 
-                const auto &body_skeletons = kinect_device.getBodySkeletons();
+                const auto &body_skeletons = kinect_device->getBodySkeletons();
 
                 const std::size_t k_max_bodies = 6;
                 auto body_ids = std::vector<int>(k_max_bodies, 0);
@@ -83,12 +57,12 @@ void TrackingApp::draw() {
 
                 shader.begin();
                 {
-                    const auto frame_width = static_cast<int>(kinect_device.getDepthTex().getWidth());
-                    const auto frame_height = static_cast<int>(kinect_device.getDepthTex().getWidth());
+                    const auto frame_width = static_cast<int>(kinect_device->getDepthTex().getWidth());
+                    const auto frame_height = static_cast<int>(kinect_device->getDepthTex().getWidth());
 
-                    shader.setUniformTexture("uDepthTex", kinect_device.getDepthTex(), 1);
-                    shader.setUniformTexture("uBodyIndexTex", kinect_device.getBodyIndexTex(), 2);
-                    shader.setUniformTexture("uWorldTex", kinect_device.getDepthToWorldTex(), 3);
+                    shader.setUniformTexture("uDepthTex", kinect_device->getDepthTex(), 1);
+                    shader.setUniformTexture("uBodyIndexTex", kinect_device->getBodyIndexTex(), 2);
+                    shader.setUniformTexture("uWorldTex", kinect_device->getDepthToWorldTex(), 3);
                     shader.setUniform2i("uFrameSize", frame_width, frame_height);
                     shader.setUniform1iv("uBodyIDs", body_ids.data(), k_max_bodies);
 
@@ -99,8 +73,6 @@ void TrackingApp::draw() {
 
                 ofDisableDepthTest();
 
-                
-
                 // draw_skeleton(body_skeletons);
             }
             ofPopMatrix();
@@ -109,35 +81,36 @@ void TrackingApp::draw() {
     }
     fbo.end();
 
-    ofPushMatrix();
+    frame_buffer.begin();
     {
-
-        chromatic_shader.begin();
+        ofPushMatrix();
         {
-            const float aberration = 20;
-            chromatic_shader.setUniform1f("aberration_amount", aberration);
-            chromatic_shader.setUniform1f("time", static_cast<float>(ofGetElapsedTimeMillis()) / 50.0f);
-            chromatic_shader.setUniform1i("rand1", distribution(generator));
-            chromatic_shader.setUniform1i("rand2", distribution(generator));
 
-            fbo.draw(0, 0);
+            chromatic_shader.begin();
+            {
+                const float aberration = 20;
+                chromatic_shader.setUniform1f("aberration_amount", aberration);
+                chromatic_shader.setUniform1f("time", static_cast<float>(ofGetElapsedTimeMillis()) / 50.0f);
+                chromatic_shader.setUniform1i("rand1", distribution(generator));
+                chromatic_shader.setUniform1i("rand2", distribution(generator));
+
+                fbo.draw(0, 0);
+            }
+            chromatic_shader.end();
         }
-        chromatic_shader.end();
-    }
-    ofPopMatrix();
+        ofPopMatrix();
 
-    // Draw bounding boxes directly on the screen, outside the FBO
-    draw_bounding_box();
-    camera.begin();
-    { 
-        draw_body_outline_2D(kinect_device.getBodySkeletons(), camera);
+        // Draw bounding boxes directly on the screen, outside the FBO
+        draw_bounding_box();
+        camera.begin();
+        { draw_body_outline_2D(kinect_device->getBodySkeletons(), camera); }
+        camera.end();
     }
-    camera.end();
-    
-    
+    frame_buffer.end();
 }
 
-void TrackingApp::draw_body_outline_2D(const std::vector<ofxAzureKinect::BodySkeleton> &body_skeletons, const ofCamera &camera) {
+void TrackingScene::draw_body_outline_2D(const std::vector<ofxAzureKinect::BodySkeleton> &body_skeletons,
+                                         const ofCamera &camera) {
     ofxConvexHull convex_hull_calculator; // Instantiate the convex hull object
     const float offset_distance = 0.1f; // Offset in meters (10 cm)
 
@@ -197,7 +170,7 @@ void TrackingApp::draw_body_outline_2D(const std::vector<ofxAzureKinect::BodySke
 }
 
 
-std::vector<ofVec2f> TrackingApp::calculate_convex_hull(const std::vector<ofVec2f> &points) {
+std::vector<ofVec2f> TrackingScene::calculate_convex_hull(const std::vector<ofVec2f> &points) {
     // Ensure we have enough points to compute a hull
     if (points.size() < 3) {
         return points; // Convex hull is trivial for fewer than 3 points
@@ -245,7 +218,7 @@ std::vector<ofVec2f> TrackingApp::calculate_convex_hull(const std::vector<ofVec2
     return hull;
 }
 
-void TrackingApp::draw_bounding_box() {
+void TrackingScene::draw_bounding_box() {
     const float offset_distance = 0.1f; // Offset in meters (10 cm)
 
     ofPushMatrix();
@@ -256,7 +229,7 @@ void TrackingApp::draw_bounding_box() {
             {
                 ofRotateXDeg(180);
 
-                const auto &body_skeletons = kinect_device.getBodySkeletons();
+                const auto &body_skeletons = kinect_device->getBodySkeletons();
 
                 for (const auto &skeleton: body_skeletons) {
                     // Initialize bounding box limits
@@ -301,47 +274,4 @@ void TrackingApp::draw_bounding_box() {
         camera.end();
     }
     ofPopMatrix();
-   
 }
-
-
-
-
-//--------------------------------------------------------------
-void TrackingApp::keyPressed(int key) {}
-
-//--------------------------------------------------------------
-void TrackingApp::keyReleased(int key) {}
-
-//--------------------------------------------------------------
-void TrackingApp::mouseMoved(int x, int y) {}
-
-//--------------------------------------------------------------
-void TrackingApp::mouseDragged(int x, int y, int button) {
-    if (button == 1) {
-        kinect_device.getBodyTracker().jointSmoothing = ofMap(x, 0, ofGetWidth(), 0.0f, 1.0f, true);
-    }
-}
-
-//--------------------------------------------------------------
-void TrackingApp::mousePressed(int x, int y, int button) {}
-
-//--------------------------------------------------------------
-void TrackingApp::mouseReleased(int x, int y, int button) {}
-
-//--------------------------------------------------------------
-void TrackingApp::mouseEntered(int x, int y) {}
-
-//--------------------------------------------------------------
-void TrackingApp::mouseExited(int x, int y) {}
-
-//--------------------------------------------------------------
-void TrackingApp::windowResized(int w, int h) {}
-
-//--------------------------------------------------------------
-void TrackingApp::gotMessage(ofMessage msg) {}
-
-//--------------------------------------------------------------
-void TrackingApp::dragEvent(ofDragInfo dragInfo) {}
-
-ofxAzureKinect::Device *TrackingApp::get_kinect_device() { return &kinect_device; }

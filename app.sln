@@ -5,14 +5,23 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "openframeworksLib", "openFrameworks\libs\openFrameworksCompiled\project\vs\openframeworksLib.vcxproj", "{5837595D-ACA9-485C-8E76-729040CE4B0B}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "intro", "intro\intro.vcxproj", "{C5507010-398F-47F2-B28B-40BC6D8812BC}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3F340290-1602-4D89-B88F-2DC6BF8E5F43} = {3F340290-1602-4D89-B88F-2DC6BF8E5F43}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "core", "core\core.vcxproj", "{7FD42DF7-442E-479A-BA76-D0022F99702A}"
 	ProjectSection(ProjectDependencies) = postProject
+		{3F340290-1602-4D89-B88F-2DC6BF8E5F43} = {3F340290-1602-4D89-B88F-2DC6BF8E5F43}
 		{58132289-D202-40F1-AD7E-EC2CB45664B1} = {58132289-D202-40F1-AD7E-EC2CB45664B1}
 		{C5507010-398F-47F2-B28B-40BC6D8812BC} = {C5507010-398F-47F2-B28B-40BC6D8812BC}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tracking", "tracking\tracking.vcxproj", "{58132289-D202-40F1-AD7E-EC2CB45664B1}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3F340290-1602-4D89-B88F-2DC6BF8E5F43} = {3F340290-1602-4D89-B88F-2DC6BF8E5F43}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "shared", "shared\shared.vcxproj", "{3F340290-1602-4D89-B88F-2DC6BF8E5F43}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,6 +45,10 @@ Global
 		{58132289-D202-40F1-AD7E-EC2CB45664B1}.Debug|x64.Build.0 = Debug|x64
 		{58132289-D202-40F1-AD7E-EC2CB45664B1}.Release|x64.ActiveCfg = Release|x64
 		{58132289-D202-40F1-AD7E-EC2CB45664B1}.Release|x64.Build.0 = Release|x64
+		{3F340290-1602-4D89-B88F-2DC6BF8E5F43}.Debug|x64.ActiveCfg = Debug|x64
+		{3F340290-1602-4D89-B88F-2DC6BF8E5F43}.Debug|x64.Build.0 = Debug|x64
+		{3F340290-1602-4D89-B88F-2DC6BF8E5F43}.Release|x64.ActiveCfg = Release|x64
+		{3F340290-1602-4D89-B88F-2DC6BF8E5F43}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

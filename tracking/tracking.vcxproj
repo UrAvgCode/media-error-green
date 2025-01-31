@@ -49,12 +49,14 @@
     <LinkIncremental>true</LinkIncremental>
     <GenerateManifest>true</GenerateManifest>
     <EnableClangTidyCodeAnalysis>true</EnableClangTidyCodeAnalysis>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\shared\include\;</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>bin\</OutDir>
     <IntDir>obj\$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <EnableClangTidyCodeAnalysis>true</EnableClangTidyCodeAnalysis>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\shared\include\;</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -107,7 +109,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\ofxConvexHull.cpp" />
-    <ClCompile Include="src\tracking_app.cpp" />
     <ClCompile Include="..\addons\ofxAzureKinect\src\ofxAzureKinect\BodyTracker.cpp" />
     <ClCompile Include="..\addons\ofxAzureKinect\src\ofxAzureKinect\Device.cpp" />
     <ClCompile Include="..\addons\ofxAzureKinect\src\ofxAzureKinect\Playback.cpp" />
@@ -121,6 +122,7 @@
     <ClCompile Include="..\openFrameworks\addons\ofxOpenCv\src\ofxCvImage.cpp" />
     <ClCompile Include="..\openFrameworks\addons\ofxOpenCv\src\ofxCvShortImage.cpp" />
     <ClCompile Include="..\openFrameworks\addons\ofxSvg\src\ofxSvg.cpp" />
+    <ClCompile Include="src\tracking_scene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\addons\ofxAzureKinect\src\ofxAzureKinect\BodyTracker.h" />
@@ -557,11 +559,14 @@
     <ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\libxml2\libxml2\include\libxml\xpointer.h" />
     <ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\svgtiny\svgtiny\include\svgtiny.h" />
     <ClInclude Include="include\ofxConvexHull.h" />
-    <ClInclude Include="include\tracking_app.h" />
+    <ClInclude Include="include\tracking_scene.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="$(OF_ROOT)\libs\openFrameworksCompiled\project\vs\openframeworksLib.vcxproj">
       <Project>{5837595d-aca9-485c-8e76-729040ce4b0b}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\shared\shared.vcxproj">
+      <Project>{3f340290-1602-4d89-b88f-2dc6bf8e5f43}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

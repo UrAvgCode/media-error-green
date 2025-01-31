@@ -7,24 +7,23 @@
 
 #pragma once
 
-#include "ofPoint.h"
+#include <vector>
+
 #include "ofLog.h"
+#include "ofPoint.h"
 
 using std::vector;
 
-class ofxConvexHull
-{
-public:
+class ofxConvexHull {
+  public:
     vector<ofPoint> getConvexHull(vector<ofPoint> points);
-    float getArea(vector<ofPoint> & hull);
-    
-private:
-    
-    static bool lexicalComparison(const ofPoint& v1, const ofPoint& v2);
+    float getArea(const vector<ofPoint> &hull);
+
+  private:
+    static bool lexicalComparison(const ofPoint &v1, const ofPoint &v2);
     bool isRightTurn(ofPoint a, ofPoint b, ofPoint c);
-    
+
     vector<ofPoint> points;
-    ofPoint h1,h2,h3;
+    ofPoint h1, h2, h3;
     int currentPoint, direction;
 };
-

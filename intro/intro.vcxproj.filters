@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="src\main.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="..\addons\ofxAzureKinect\src\ofxAzureKinect\BodyTracker.cpp">
       <Filter>addons\ofxAzureKinect\src\ofxAzureKinect</Filter>
     </ClCompile>
@@ -43,10 +40,10 @@
     <ClCompile Include="..\openFrameworks\addons\ofxSvg\src\ofxSvg.cpp">
       <Filter>addons\ofxSvg\src</Filter>
     </ClCompile>
-    <ClCompile Include="src\intro_app.cpp">
+    <ClCompile Include="src\particle.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\particle.cpp">
+    <ClCompile Include="src\intro_scene.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1607,10 +1604,10 @@
     <ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\svgtiny\svgtiny\include\svgtiny.h">
       <Filter>addons\ofxSvg\libs\svgtiny\svgtiny\include</Filter>
     </ClInclude>
-    <ClInclude Include="include\intro_app.h">
+    <ClInclude Include="include\particle.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="include\particle.h">
+    <ClInclude Include="include\intro_scene.h">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>
