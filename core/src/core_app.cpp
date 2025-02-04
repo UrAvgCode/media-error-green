@@ -67,8 +67,8 @@ void CoreApp::draw() {
         {
             transition_shader.setUniformTexture("transition_tex", inactive_scene->get_frame_buffer().getTexture(), 1);
             transition_shader.setUniform1f("progress", progress);
-            transition_shader.setUniform1i("rand1", distribution(generator));
-            transition_shader.setUniform1i("rand2", distribution(generator));
+            transition_shader.setUniform1i("random_offset_one", distribution(generator));
+            transition_shader.setUniform1i("random_offset_two", distribution(generator));
             current_scene->get_frame_buffer().draw(0, 0);
         }
         transition_shader.end();

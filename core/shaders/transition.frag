@@ -4,8 +4,8 @@ uniform sampler2DRect tex0;
 uniform sampler2DRect transition_tex;
 
 uniform float progress;
-uniform int rand1;
-uniform int rand2;
+uniform int random_offset_one;
+uniform int random_offset_two;
 
 in vec2 vTexCoord;
 out vec4 fragColor;
@@ -18,11 +18,11 @@ void main() {
 
     vec2 offset = vec2(0, 0);
 
-    if (vTexCoord.y < rand1 + glitch_height && vTexCoord.y > rand1 - glitch_height) {
+    if (vTexCoord.y < random_offset_one + glitch_height && vTexCoord.y > random_offset_one - glitch_height) {
         offset.x += glitch_width;
     }
 
-    if (vTexCoord.y < rand2 + glitch_height && vTexCoord.y > rand2 - glitch_height) {
+    if (vTexCoord.y < random_offset_two + glitch_height && vTexCoord.y > random_offset_two - glitch_height) {
         offset.x -= glitch_width;
     }
 
