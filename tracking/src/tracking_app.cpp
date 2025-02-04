@@ -40,7 +40,7 @@ void TrackingApp::setup() {
 
     jpeg_shader.load("shaders/jpeg_simulation");
 
-    // Setup vbo with single point.
+    // Setup vbo.
     std::vector<glm::vec3> verts(1);
     points_vbo.setVertexData(verts.data(), static_cast<int>(verts.size()), GL_STATIC_DRAW);
 
@@ -109,7 +109,7 @@ void TrackingApp::draw() {
         ofTranslate(fbo.getWidth(), 0);
         ofScale(-1, 1);
 
-        chromatic_shader.begin();
+       /* chromatic_shader.begin();
         {
             const float aberration = 10;
             chromatic_shader.setUniform1f("aberration_amount", aberration);
@@ -119,11 +119,24 @@ void TrackingApp::draw() {
 
            fbo.draw(0, 0);
         }
-        chromatic_shader.end();
+        chromatic_shader.end();*/
 
+        
+        
+        jpeg_shader.begin();
+        {
+            jpeg_shader.setUniformTexture("uTexture", fbo.getTexture(), 0);
+            jpeg_shader.setUniform1f("block_size", 8.0f);
+            jpeg_shader.setUniform1f("quality", 0.5f);
+            
+            fbo.draw(0, 0);
+        }
+        jpeg_shader.end();
 
     }
     ofPopMatrix();
+
+
 
 }
 
