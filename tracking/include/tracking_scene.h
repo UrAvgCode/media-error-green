@@ -33,5 +33,5 @@ class TrackingScene : public Scene {
     ofFbo fbo;
 
     std::mt19937 generator;
-    std::uniform_int_distribution<int> distribution;
+    std::uniform_real_distribution<float> distribution;
 };

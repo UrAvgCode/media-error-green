@@ -23,11 +23,14 @@ TrackingScene::TrackingScene(ofxAzureKinect::Device *device) : kinect_device(dev
 
     // Setup fbo
     fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGBA);
-
+    
     // setup random generator
+    const auto min_random_value = -1000;
+    const auto max_random_value = 1000;
+
     std::random_device random;
     generator = std::mt19937(random());
-    distribution = std::uniform_int_distribution<int>(0, ofGetHeight());
+    distribution = std::uniform_real_distribution<float>(min_random_value, max_random_value);
 }
 
 //--------------------------------------------------------------
@@ -58,7 +61,7 @@ void TrackingScene::render() {
                 shader.begin();
                 {
                     const auto frame_width = static_cast<int>(kinect_device->getDepthTex().getWidth());
-                    const auto frame_height = static_cast<int>(kinect_device->getDepthTex().getWidth());
+                    const auto frame_height = static_cast<int>(kinect_device->getDepthTex().getHeight());
 
                     shader.setUniformTexture("uDepthTex", kinect_device->getDepthTex(), 1);
                     shader.setUniformTexture("uBodyIndexTex", kinect_device->getBodyIndexTex(), 2);
@@ -66,10 +69,16 @@ void TrackingScene::render() {
                     shader.setUniform2i("uFrameSize", frame_width, frame_height);
                     shader.setUniform1iv("uBodyIDs", body_ids.data(), k_max_bodies);
 
+                    shader.setUniform1f("time", static_cast<float>(ofGetElapsedTimeMillis()) / 50.0f);
+                    shader.setUniform1f("random_offset_one", distribution(generator));
+                    shader.setUniform1f("random_offset_two", distribution(generator));
+
                     const int num_points = frame_width * frame_height;
                     points_vbo.drawInstanced(GL_POINTS, 0, 1, num_points);
                 }
                 shader.end();
+
+                draw_body_outline_2D(kinect_device->getBodySkeletons(), camera);
 
                 ofDisableDepthTest();
 
@@ -83,28 +92,10 @@ void TrackingScene::render() {
 
     frame_buffer.begin();
     {
-        ofPushMatrix();
-        {
-
-            chromatic_shader.begin();
-            {
-                const float aberration = 20;
-                chromatic_shader.setUniform1f("aberration_amount", aberration);
-                chromatic_shader.setUniform1f("time", static_cast<float>(ofGetElapsedTimeMillis()) / 50.0f);
-                chromatic_shader.setUniform1i("random_offset_one", distribution(generator));
-                chromatic_shader.setUniform1i("random_offset_two", distribution(generator));
-
-                fbo.draw(0, 0);
-            }
-            chromatic_shader.end();
-        }
-        ofPopMatrix();
+        fbo.draw(0, 0);
 
         // Draw bounding boxes directly on the screen, outside the FBO
         draw_bounding_box();
-        camera.begin();
-        { draw_body_outline_2D(kinect_device->getBodySkeletons(), camera); }
-        camera.end();
     }
     frame_buffer.end();
 }
