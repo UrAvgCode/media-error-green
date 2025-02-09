@@ -26,6 +26,12 @@ uniform ivec2 uFrameSize;
 
 uniform int[6] uBodyIDs;
 
+uniform float time;
+uniform float random_offset_one;
+uniform float random_offset_two;
+
+uniform float shake_amplitude;
+
 out vec4 vColor;
 
 void main()
@@ -52,6 +58,24 @@ void main()
     posWorld.z = depth * 65535.0; // Remap to float range.
     posWorld.x = ray.x * posWorld.z;
     posWorld.y = ray.y * posWorld.z;
+
+    // glitch effect
+    const float glitch_width = 40;
+    const float glitch_height = 10;
+
+    if (posWorld.y < random_offset_one + glitch_height && posWorld.y > random_offset_one - glitch_height) {
+        posWorld.x += glitch_width;
+    }
+
+    if (posWorld.y < random_offset_two + glitch_height && posWorld.y > random_offset_two - glitch_height) {
+        posWorld.x -= glitch_width;
+    }
+
+    posWorld.x += sin(posWorld.y + time) * 20.0;
+   
+    // shake effect
+    posWorld.x += sin(time * 10.0 + posWorld.y) * shake_amplitude;
+    posWorld.y += cos(time * 10.0 + posWorld.x) * shake_amplitude;
 
     gl_Position = modelViewProjectionMatrix * posWorld;
 }
