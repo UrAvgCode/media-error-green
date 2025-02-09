@@ -73,7 +73,7 @@ void TrackingScene::render() {
                 }
                 render_shader.end();
 
-                draw_body_outline_2D(kinect_device->getBodySkeletons(), camera);
+                draw_body_outline_2D();
 
                 ofDisableDepthTest();
             }
@@ -84,8 +84,9 @@ void TrackingScene::render() {
     frame_buffer.end();
 }
 
-void TrackingScene::draw_body_outline_2D(const std::vector<ofxAzureKinect::BodySkeleton> &body_skeletons,
-                                         const ofCamera &camera) {
+void TrackingScene::draw_body_outline_2D() {
+    const auto &body_skeletons = kinect_device->getBodySkeletons();
+
     ofxConvexHull convex_hull_calculator; // Instantiate the convex hull object
     const float offset_distance = 0.1f; // Offset in meters (10 cm)
 

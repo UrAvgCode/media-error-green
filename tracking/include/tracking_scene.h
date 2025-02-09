@@ -17,7 +17,7 @@ class TrackingScene : public Scene {
   private:
     void draw_bounding_box();
     std::vector<ofVec2f> calculate_convex_hull(const std::vector<ofVec2f> &points);
-    void draw_body_outline_2D(const std::vector<ofxAzureKinect::BodySkeleton> &body_skeletons, const ofCamera &camera);
+    void draw_body_outline_2D();
 
     ofxAzureKinect::Device *kinect_device;
 
