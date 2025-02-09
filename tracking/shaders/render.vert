@@ -30,6 +30,8 @@ uniform float time;
 uniform float random_offset_one;
 uniform float random_offset_two;
 
+uniform float shake_amplitude;
+
 out vec4 vColor;
 
 void main()
@@ -57,7 +59,7 @@ void main()
     posWorld.x = ray.x * posWorld.z;
     posWorld.y = ray.y * posWorld.z;
 
-    // glitch effect start
+    // glitch effect
     const float glitch_width = 40;
     const float glitch_height = 10;
 
@@ -70,7 +72,10 @@ void main()
     }
 
     posWorld.x += sin(posWorld.y + time) * 20.0;
-    // glitch effect end
+   
+    // shake effect
+    posWorld.x += sin(time * 10.0 + posWorld.y) * shake_amplitude;
+    posWorld.y += cos(time * 10.0 + posWorld.x) * shake_amplitude;
 
     gl_Position = modelViewProjectionMatrix * posWorld;
 }
