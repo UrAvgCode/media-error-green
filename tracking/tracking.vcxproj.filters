@@ -40,8 +40,8 @@
     <ClCompile Include="..\openFrameworks\addons\ofxSvg\src\ofxSvg.cpp">
       <Filter>addons\ofxSvg\src</Filter>
     </ClCompile>
-    <ClCompile Include="src\ofxConvexHull.cpp">
-      <Filter>src</Filter>
+    <ClCompile Include="..\addons\ofxConvexHull\src\ofxConvexHull.cpp">
+      <Filter>addons\ofxConvexHull\src</Filter>
     </ClCompile>
     <ClCompile Include="src\tracking_scene.cpp">
       <Filter>src</Filter>
@@ -53,6 +53,12 @@
     </Filter>
     <Filter Include="addons">
       <UniqueIdentifier>{AA7C0585--81A-2-4F-09-8-1F2-B32D2CE78AA2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxConvexHull">
+      <UniqueIdentifier>{884EDDD5--991-8-49-78-A-8A9-1B2BA0DE32FC}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxConvexHull\src">
+      <UniqueIdentifier>{D308FE7F--D68-8-49-6E-B-EBD-E9B4ED2B3274}</UniqueIdentifier>
     </Filter>
     <Filter Include="addons\ofxAzureKinect">
       <UniqueIdentifier>{FA0BC4D8--165-A-49-98-9-DED-D3080EB59DE1}</UniqueIdentifier>
@@ -305,6 +311,9 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\addons\ofxConvexHull\src\ofxConvexHull.h">
+      <Filter>addons\ofxConvexHull\src</Filter>
+    </ClInclude>
     <ClInclude Include="..\addons\ofxAzureKinect\src\ofxAzureKinect\BodyTracker.h">
       <Filter>addons\ofxAzureKinect\src\ofxAzureKinect</Filter>
     </ClInclude>
@@ -1603,9 +1612,6 @@
     </ClInclude>
     <ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\svgtiny\svgtiny\include\svgtiny.h">
       <Filter>addons\ofxSvg\libs\svgtiny\svgtiny\include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\ofxConvexHull.h">
-      <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="include\tracking_scene.h">
       <Filter>include</Filter>

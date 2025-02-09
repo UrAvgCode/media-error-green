@@ -1,5 +1,6 @@
 #include "tracking_scene.h"
-#include "ofxConvexHull.h"
+
+#include <ofxConvexHull.h>
 
 #include <algorithm>
 #include <vector>
