@@ -53,9 +53,9 @@ void TrackingScene::render() {
                     body_ids[i] = static_cast<int>(body_skeletons[i].id);
                 }
 
-                auto hulls = std::vector<std::vector<ofPoint>>();
+                auto convex_hulls = std::vector<std::vector<ofPoint>>();
                 for (const auto &skeleton: body_skeletons) {
-                    hulls.emplace_back(calculate_convex_hull(skeleton));
+                    convex_hulls.emplace_back(calculate_convex_hull(skeleton));
                 }
 
                 render_shader.begin();
@@ -75,12 +75,10 @@ void TrackingScene::render() {
 
                     // calculate shake amplitude based on hull area size
                     float shake_amplitude = 0;
-                    for (const auto &hull: hulls) {
+                    for (const auto &hull: convex_hulls) {
                         float area = 0.0f;
-                        int n = hull.size();
-
-                        for (int i = 0; i < n; ++i) {
-                            int j = (i + 1) % n;
+                        for (std::size_t i = 0; i < hull.size(); ++i) {
+                            auto j = (i + 1) % hull.size();
                             area += hull[i].x * hull[j].y;
                             area -= hull[j].x * hull[i].y;
                         }
@@ -99,7 +97,7 @@ void TrackingScene::render() {
                 render_shader.end();
 
                 // draw the red outlines
-                for (const auto &hull: hulls) {
+                for (const auto &hull: convex_hulls) {
                     ofPushStyle();
                     ofSetColor(255, 0, 0);
                     ofNoFill();
