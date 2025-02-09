@@ -5,25 +5,20 @@
 #include <vector>
 
 TrackingScene::TrackingScene(ofxAzureKinect::Device *device) : kinect_device(device) {
-    // Load shaders.
+    // load shaders
     auto shader_settings = ofShaderSettings();
     shader_settings.shaderFiles[GL_VERTEX_SHADER] = "shaders/render.vert";
     shader_settings.shaderFiles[GL_FRAGMENT_SHADER] = "shaders/render.frag";
     shader_settings.intDefines["BODY_INDEX_MAP_BACKGROUND"] = K4ABT_BODY_INDEX_MAP_BACKGROUND;
     shader_settings.bindDefaults = true;
-    if (shader.setup(shader_settings)) {
+    if (render_shader.setup(shader_settings)) {
         ofLogNotice(__FUNCTION__) << "Success loading shader!";
     }
 
-    chromatic_shader.load("shaders/chromatic");
-
-    // Setup vbo.
+    // setup vbo
     std::vector<glm::vec3> verts(1);
     points_vbo.setVertexData(verts.data(), static_cast<int>(verts.size()), GL_STATIC_DRAW);
 
-    // Setup fbo
-    fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGBA);
-    
     // setup random generator
     const auto min_random_value = -1000;
     const auto max_random_value = 1000;
@@ -37,7 +32,7 @@ TrackingScene::TrackingScene(ofxAzureKinect::Device *device) : kinect_device(dev
 void TrackingScene::update() {}
 
 void TrackingScene::render() {
-    fbo.begin();
+    frame_buffer.begin();
     {
         ofClear(0);
         ofBackground(0);
@@ -58,44 +53,33 @@ void TrackingScene::render() {
                     body_ids[i] = static_cast<int>(body_skeletons[i].id);
                 }
 
-                shader.begin();
+                render_shader.begin();
                 {
                     const auto frame_width = static_cast<int>(kinect_device->getDepthTex().getWidth());
                     const auto frame_height = static_cast<int>(kinect_device->getDepthTex().getHeight());
 
-                    shader.setUniformTexture("uDepthTex", kinect_device->getDepthTex(), 1);
-                    shader.setUniformTexture("uBodyIndexTex", kinect_device->getBodyIndexTex(), 2);
-                    shader.setUniformTexture("uWorldTex", kinect_device->getDepthToWorldTex(), 3);
-                    shader.setUniform2i("uFrameSize", frame_width, frame_height);
-                    shader.setUniform1iv("uBodyIDs", body_ids.data(), k_max_bodies);
+                    render_shader.setUniformTexture("uDepthTex", kinect_device->getDepthTex(), 1);
+                    render_shader.setUniformTexture("uBodyIndexTex", kinect_device->getBodyIndexTex(), 2);
+                    render_shader.setUniformTexture("uWorldTex", kinect_device->getDepthToWorldTex(), 3);
+                    render_shader.setUniform2i("uFrameSize", frame_width, frame_height);
+                    render_shader.setUniform1iv("uBodyIDs", body_ids.data(), k_max_bodies);
 
-                    shader.setUniform1f("time", static_cast<float>(ofGetElapsedTimeMillis()) / 50.0f);
-                    shader.setUniform1f("random_offset_one", distribution(generator));
-                    shader.setUniform1f("random_offset_two", distribution(generator));
+                    render_shader.setUniform1f("time", static_cast<float>(ofGetElapsedTimeMillis()) / 50.0f);
+                    render_shader.setUniform1f("random_offset_one", distribution(generator));
+                    render_shader.setUniform1f("random_offset_two", distribution(generator));
 
                     const int num_points = frame_width * frame_height;
                     points_vbo.drawInstanced(GL_POINTS, 0, 1, num_points);
                 }
-                shader.end();
+                render_shader.end();
 
                 draw_body_outline_2D(kinect_device->getBodySkeletons(), camera);
 
                 ofDisableDepthTest();
-
-                // draw_skeleton(body_skeletons);
             }
             ofPopMatrix();
         }
         camera.end();
-    }
-    fbo.end();
-
-    frame_buffer.begin();
-    {
-        fbo.draw(0, 0);
-
-        // Draw bounding boxes directly on the screen, outside the FBO
-        draw_bounding_box();
     }
     frame_buffer.end();
 }
