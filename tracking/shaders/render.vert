@@ -27,8 +27,9 @@ uniform float time;
 uniform float random_offset_one;
 uniform float random_offset_two;
 
-uniform float shake_amplitude;  // Shake-Intensität
+uniform float shake_amplitudes[6]; // ARRAY FÜR JEDEN BODY
 uniform float screen_shake_amplitude; // Neue Uniform für Screen Shake
+
 
 out vec4 vColor;
 
@@ -45,7 +46,7 @@ void main()
         ray.x != 0 && ray.y != 0)
     {
         int bodyID = uBodyIDs[bodyIndex];
-        vColor = vec4(0.0, 255.0, 0.0, 1.0); // COLORS[bodyID % 6];
+        vColor = vec4(0.0, 255.0, 0.0, 1.0);
     }
     else
     {
@@ -53,27 +54,15 @@ void main()
     }
 
     vec4 posWorld = vec4(1);
-    posWorld.z = depth * 65535.0; // Remap to float range.
+    posWorld.z = depth * 65535.0;
     posWorld.x = ray.x * posWorld.z;
     posWorld.y = ray.y * posWorld.z;
 
-    // glitch effect
-    const float glitch_width = 40;
-    const float glitch_height = 10;
+    // Individual Body Shake
+    float shake_strength = shake_amplitudes[bodyIndex % 6]; 
+    posWorld.x += sin(time * 10.0 + posWorld.y) * shake_strength;
+    posWorld.y += cos(time * 10.0 + posWorld.x) * shake_strength;
 
-    if (posWorld.y < random_offset_one + glitch_height && posWorld.y > random_offset_one - glitch_height) {
-        posWorld.x += glitch_width;
-    }
-
-    if (posWorld.y < random_offset_two + glitch_height && posWorld.y > random_offset_two - glitch_height) {
-        posWorld.x -= glitch_width;
-    }
-
-    posWorld.x += sin(posWorld.y + time) * 20.0;
-   
-    // shake effect (per-body shake)
-    posWorld.x += sin(time * 10.0 + posWorld.y) * shake_amplitude;
-    posWorld.y += cos(time * 10.0 + posWorld.x) * shake_amplitude;
 
     // *** Screen Shake ***
     float screen_shake_offset_x = sin(time * 5.0) * screen_shake_amplitude;
@@ -84,3 +73,4 @@ void main()
 
     gl_Position = modelViewProjectionMatrix * posWorld;
 }
+

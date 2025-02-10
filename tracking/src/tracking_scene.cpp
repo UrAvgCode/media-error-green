@@ -42,22 +42,42 @@ void TrackingScene::render() {
             ofPushMatrix();
             {
                 ofRotateXDeg(180);
-
                 ofEnableDepthTest();
 
                 const auto &body_skeletons = kinect_device->getBodySkeletons();
-
                 const std::size_t k_max_bodies = 6;
+
                 auto body_ids = std::vector<int>(k_max_bodies, 0);
+                std::vector<float> shake_amplitudes(k_max_bodies, 0.0f);
+                float screen_shake_amplitude = 0.0f;
+                float max_shake_amplitude = 0.0f;
+
+                std::vector<std::vector<ofPoint>> convex_hulls;
                 for (std::size_t i = 0; i < std::min(body_skeletons.size(), k_max_bodies); ++i) {
                     body_ids[i] = static_cast<int>(body_skeletons[i].id);
+                    convex_hulls.emplace_back(calculate_convex_hull(body_skeletons[i]));
                 }
 
-                auto convex_hulls = std::vector<std::vector<ofPoint>>();
-                for (const auto &skeleton: body_skeletons) {
-                    convex_hulls.emplace_back(calculate_convex_hull(skeleton));
+                // Berechnung der Shake-Amplituden pro Körper
+                for (std::size_t i = 0; i < convex_hulls.size(); ++i) {
+                    float area = 0.0f;
+                    const auto &hull = convex_hulls[i];
+
+                    for (std::size_t j = 0; j < hull.size(); ++j) {
+                        auto k = (j + 1) % hull.size();
+                        area += hull[j].x * hull[k].y - hull[k].x * hull[j].y;
+                    }
+
+                    area = std::abs(area) / 2.0f;
+                    const float min_area = 496604;
+                    const float max_area = 1.51127e+06;
+
+                    shake_amplitudes[i] = ofMap(area, min_area, max_area, 0, 75, true);
+                    screen_shake_amplitude = ofMap(area, min_area, max_area, 0, 75, true);
+                    max_shake_amplitude = std::max(max_shake_amplitude, shake_amplitudes[i]);
                 }
 
+                // Starte den Shader
                 render_shader.begin();
                 {
                     const auto frame_width = static_cast<int>(kinect_device->getDepthTex().getWidth());
@@ -68,30 +88,9 @@ void TrackingScene::render() {
                     render_shader.setUniformTexture("uWorldTex", kinect_device->getDepthToWorldTex(), 3);
                     render_shader.setUniform2i("uFrameSize", frame_width, frame_height);
                     render_shader.setUniform1iv("uBodyIDs", body_ids.data(), k_max_bodies);
+                    render_shader.setUniform1fv("shake_amplitudes", shake_amplitudes.data(), k_max_bodies);
 
                     render_shader.setUniform1f("time", static_cast<float>(ofGetElapsedTimeMillis()) / 50.0f);
-                    render_shader.setUniform1f("random_offset_one", distribution(generator));
-                    render_shader.setUniform1f("random_offset_two", distribution(generator));
-
-                    // calculate shake amplitude based on hull area size
-                    float shake_amplitude = 0;
-                    for (const auto &hull: convex_hulls) {
-                        float area = 0.0f;
-                        for (std::size_t i = 0; i < hull.size(); ++i) {
-                            auto j = (i + 1) % hull.size();
-                            area += hull[i].x * hull[j].y;
-                            area -= hull[j].x * hull[i].y;
-                        }
-
-                        area = std::abs(area) / 2.0f;
-
-                        const float min_area = 496604;
-                        const float max_area = 1.51127e+06;
-                        shake_amplitude = std::max(shake_amplitude, ofMap(area, min_area, max_area, 0, 75, true));
-                    }
-                    render_shader.setUniform1f("shake_amplitude", shake_amplitude);
-
-                    float screen_shake_amplitude = shake_amplitude; // Skaliere für angenehme Intensität
                     render_shader.setUniform1f("screen_shake_amplitude", screen_shake_amplitude);
 
                     const int num_points = frame_width * frame_height;
@@ -99,13 +98,13 @@ void TrackingScene::render() {
                 }
                 render_shader.end();
 
-                // draw the red outlines
-                for (const auto &hull: convex_hulls) {
+                // Zeichne die roten Umrisse der Convex Hulls
+                for (const auto &hull : convex_hulls) {
                     ofPushStyle();
                     ofSetColor(255, 0, 0);
                     ofNoFill();
                     ofBeginShape();
-                    for (const auto &point: hull) {
+                    for (const auto &point : hull) {
                         ofVertex(point);
                     }
                     ofEndShape(true);
@@ -120,6 +119,7 @@ void TrackingScene::render() {
     }
     frame_buffer.end();
 }
+
 
 std::vector<ofPoint> TrackingScene::calculate_convex_hull(const ofxAzureKinect::BodySkeleton &skeleton) {
     ofxConvexHull convex_hull_calculator; // Instantiate the convex hull object
