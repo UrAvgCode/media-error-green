@@ -91,6 +91,9 @@ void TrackingScene::render() {
                     }
                     render_shader.setUniform1f("shake_amplitude", shake_amplitude);
 
+                    float screen_shake_amplitude = shake_amplitude; // Skaliere für angenehme Intensität
+                    render_shader.setUniform1f("screen_shake_amplitude", screen_shake_amplitude);
+
                     const int num_points = frame_width * frame_height;
                     points_vbo.drawInstanced(GL_POINTS, 0, 1, num_points);
                 }

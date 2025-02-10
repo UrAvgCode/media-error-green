@@ -1,11 +1,9 @@
 #version 150
 
 // OF built-in attributes.
-
 uniform mat4 modelViewProjectionMatrix;
 
 // Custom attributes.
-
 #define BODY_INDEX_MAP_BACKGROUND 255
 
 const vec4[6] COLORS = vec4[]
@@ -18,19 +16,19 @@ const vec4[6] COLORS = vec4[]
     vec4(255 / 255.0, 135 / 255.0, 111 / 255.0, 1.0)
 );
 
-uniform sampler2DRect uDepthTex; // Sampler for the depth space data
-uniform sampler2DRect uBodyIndexTex; // Sampler for the body index data
-uniform sampler2DRect uWorldTex; // Transformation from kinect depth space to kinect world space
+uniform sampler2DRect uDepthTex;
+uniform sampler2DRect uBodyIndexTex;
+uniform sampler2DRect uWorldTex;
 
 uniform ivec2 uFrameSize;
-
 uniform int[6] uBodyIDs;
 
 uniform float time;
 uniform float random_offset_one;
 uniform float random_offset_two;
 
-uniform float shake_amplitude;
+uniform float shake_amplitude;  // Shake-Intensität
+uniform float screen_shake_amplitude; // Neue Uniform für Screen Shake
 
 out vec4 vColor;
 
@@ -73,9 +71,16 @@ void main()
 
     posWorld.x += sin(posWorld.y + time) * 20.0;
    
-    // shake effect
+    // shake effect (per-body shake)
     posWorld.x += sin(time * 10.0 + posWorld.y) * shake_amplitude;
     posWorld.y += cos(time * 10.0 + posWorld.x) * shake_amplitude;
+
+    // *** Screen Shake ***
+    float screen_shake_offset_x = sin(time * 5.0) * screen_shake_amplitude;
+    float screen_shake_offset_y = cos(time * 5.0) * screen_shake_amplitude;
+
+    posWorld.x += screen_shake_offset_x;
+    posWorld.y += screen_shake_offset_y;
 
     gl_Position = modelViewProjectionMatrix * posWorld;
 }
