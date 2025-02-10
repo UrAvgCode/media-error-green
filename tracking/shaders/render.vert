@@ -72,10 +72,9 @@ void main()
     posWorld.x += sin(posWorld.y + time) * 20.0;
 
     // Individual Body Shake
-    float shake_strength = shake_amplitudes[bodyIndex % 6]; 
-    posWorld.x += sin(time * 10.0 + posWorld.y) * shake_strength;
-    posWorld.y += cos(time * 10.0 + posWorld.x) * shake_strength;
-
+    // float shake_strength = shake_amplitudes[bodyIndex % 6]; 
+    // posWorld.x += sin(time * 10.0 + posWorld.y) * shake_strength;
+    // posWorld.y += cos(time * 10.0 + posWorld.x) * shake_strength;
 
     // Screen Shake
     float screen_shake_offset_x = sin(time * 5.0) * screen_shake_amplitude;
