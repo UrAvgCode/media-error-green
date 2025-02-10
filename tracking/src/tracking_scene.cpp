@@ -91,6 +91,8 @@ void TrackingScene::render() {
                     render_shader.setUniform1fv("shake_amplitudes", shake_amplitudes.data(), k_max_bodies);
 
                     render_shader.setUniform1f("time", static_cast<float>(ofGetElapsedTimeMillis()) / 50.0f);
+                    render_shader.setUniform1f("random_offset_one", distribution(generator));
+                    render_shader.setUniform1f("random_offset_two", distribution(generator));
                     render_shader.setUniform1f("screen_shake_amplitude", screen_shake_amplitude);
 
                     const int num_points = frame_width * frame_height;
