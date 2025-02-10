@@ -10,7 +10,9 @@ out vec4 fragColor;
 void main() {
     vec2 texSize = textureSize(tex0);
 
-    vec2 blockPos = floor(vTexCoord / block_size) * block_size;
+    float block_size_addition = (floor(abs(((1920 / 2) - vTexCoord.x)) / 50) * 50) / 50;
+
+    vec2 blockPos = floor(vTexCoord / (block_size + block_size_addition)) * (block_size + block_size_addition);
 
     vec4 color = texture(tex0, blockPos);
 
@@ -18,10 +20,6 @@ void main() {
     color.g += (1.0 - quality) * 0.1 * cos(vTexCoord.y * 0.5);
 
     color.rgb = floor(color.rgb * ( quality * 256.0)) / (quality * 256.0);
-
-    if(vTexCoord.x < 100){
-        fragColor = vec4(255.0,0.0,0.0,1.0);
-    }
 
     fragColor = color;
 }

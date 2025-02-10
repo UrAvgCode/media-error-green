@@ -59,23 +59,5 @@ void main()
     posWorld.x = ray.x * posWorld.z;
     posWorld.y = ray.y * posWorld.z;
 
-    // glitch effect
-    const float glitch_width = 40;
-    const float glitch_height = 10;
-
-    if (posWorld.y < random_offset_one + glitch_height && posWorld.y > random_offset_one - glitch_height) {
-        posWorld.x += glitch_width;
-    }
-
-    if (posWorld.y < random_offset_two + glitch_height && posWorld.y > random_offset_two - glitch_height) {
-        posWorld.x -= glitch_width;
-    }
-
-    posWorld.x += sin(posWorld.y + time) * 20.0;
-   
-    // shake effect
-    posWorld.x += sin(time * 10.0 + posWorld.y) * shake_amplitude;
-    posWorld.y += cos(time * 10.0 + posWorld.x) * shake_amplitude;
-
     gl_Position = modelViewProjectionMatrix * posWorld;
 }
