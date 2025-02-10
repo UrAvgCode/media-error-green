@@ -16,6 +16,9 @@ TrackingScene::TrackingScene(ofxAzureKinect::Device *device) : kinect_device(dev
         ofLogNotice(__FUNCTION__) << "Success loading shader!";
     }
 
+    pixel_shader.load("shaders/pixel");
+    pixel_shader_fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGBA);
+
     // setup vbo
     std::vector<glm::vec3> verts(1);
     points_vbo.setVertexData(verts.data(), static_cast<int>(verts.size()), GL_STATIC_DRAW);
@@ -32,7 +35,7 @@ TrackingScene::TrackingScene(ofxAzureKinect::Device *device) : kinect_device(dev
 void TrackingScene::update() {}
 
 void TrackingScene::render() {
-    frame_buffer.begin();
+    pixel_shader_fbo.begin();
     {
         ofClear(0);
         ofBackground(0);
@@ -114,6 +117,18 @@ void TrackingScene::render() {
             ofPopMatrix();
         }
         camera.end();
+    }
+    pixel_shader_fbo.end();
+
+    frame_buffer.begin();
+    {
+        pixel_shader.begin();
+        {
+            pixel_shader.setUniform1f("block_size", 8.0f);
+            pixel_shader.setUniform1f("quality", 0.5f);
+            pixel_shader_fbo.draw(0, 0);
+        }
+        pixel_shader.end();
     }
     frame_buffer.end();
 }

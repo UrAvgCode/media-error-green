@@ -25,6 +25,9 @@ class TrackingScene : public Scene {
     ofVbo points_vbo;
     ofVboMesh skeleton_mesh;
 
+    ofFbo pixel_shader_fbo;
+
+    ofShader pixel_shader;
     ofShader render_shader;
 
     std::mt19937 generator;
