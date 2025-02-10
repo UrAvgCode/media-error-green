@@ -11,6 +11,7 @@ void main() {
     vec2 texSize = textureSize(tex0);
 
     float block_size_addition = (floor(abs(((1920 / 2) - vTexCoord.x)) / 50) * 50) / 50;
+    block_size_addition += (floor(abs(((1080 / 2) - vTexCoord.y)) / 50) * 50) / 50;
 
     vec2 blockPos = floor(vTexCoord / (block_size + block_size_addition)) * (block_size + block_size_addition);
 
