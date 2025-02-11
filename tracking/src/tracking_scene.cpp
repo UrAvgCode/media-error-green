@@ -88,11 +88,11 @@ void TrackingScene::render() {
                     const auto frame_width = static_cast<int>(kinect_device->getDepthTex().getWidth());
                     const auto frame_height = static_cast<int>(kinect_device->getDepthTex().getHeight());
 
-                    render_shader.setUniformTexture("uDepthTex", kinect_device->getDepthTex(), 1);
-                    render_shader.setUniformTexture("uBodyIndexTex", kinect_device->getBodyIndexTex(), 2);
-                    render_shader.setUniformTexture("uWorldTex", kinect_device->getDepthToWorldTex(), 3);
-                    render_shader.setUniform2i("uFrameSize", frame_width, frame_height);
-                    render_shader.setUniform1iv("uBodyIDs", body_ids.data(), k_max_bodies);
+                    render_shader.setUniformTexture("depth_texture", kinect_device->getDepthTex(), 1);
+                    render_shader.setUniformTexture("body_index_texture", kinect_device->getBodyIndexTex(), 2);
+                    render_shader.setUniformTexture("world_texture", kinect_device->getDepthToWorldTex(), 3);
+                    render_shader.setUniform2i("frame_size", frame_width, frame_height);
+                    render_shader.setUniform1iv("body_ids", body_ids.data(), k_max_bodies);
                     render_shader.setUniform1fv("shake_amplitudes", shake_amplitudes.data(), k_max_bodies);
 
                     render_shader.setUniform1f("time", static_cast<float>(ofGetElapsedTimeMillis()) / 50.0f);
