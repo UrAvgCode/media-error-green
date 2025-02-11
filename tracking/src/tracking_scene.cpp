@@ -19,6 +19,9 @@ TrackingScene::TrackingScene(ofxAzureKinect::Device *device) : kinect_device(dev
     pixel_shader.load("shaders/pixel");
     pixel_shader_fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGBA);
 
+    degaussing_shader.load("shaders/degaussing");
+    degauss_fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGBA);
+
     // setup vbo
     std::vector<glm::vec3> verts(1);
     points_vbo.setVertexData(verts.data(), static_cast<int>(verts.size()), GL_STATIC_DRAW);
@@ -51,6 +54,7 @@ void TrackingScene::render() {
     float screen_shake_amplitude = 0.0f;
     float max_shake_amplitude = 0.0f;
     float pixel_block_size = 0;
+    float degauss_intensity = 1.0;
 
     for (std::size_t i = 0; i < convex_hulls.size(); ++i) {
         float area = 0.0f;
@@ -69,6 +73,7 @@ void TrackingScene::render() {
         screen_shake_amplitude = ofMap(area, min_area, max_area, 0, 75, true);
         pixel_block_size = std::max(pixel_block_size, ofMap(area, min_area, max_area, 0, 20, true));
         max_shake_amplitude = std::max(max_shake_amplitude, shake_amplitudes[i]);
+        degauss_intensity = ofMap(area, min_area, max_area, 1.0, 5.0, true);
     }
 
     pixel_shader_fbo.begin();
@@ -112,16 +117,27 @@ void TrackingScene::render() {
     }
     pixel_shader_fbo.end();
 
-    frame_buffer.begin();
+    degauss_fbo.begin();
     {
         pixel_shader.begin();
         {
             pixel_shader.setUniform1f("block_size", pixel_block_size);
-            pixel_shader.setUniform1f("intensity", 5.0f);
+            pixel_shader.setUniform1f("intensity", degauss_intensity);
             pixel_shader.setUniform1f("quality", 0.5f);
             pixel_shader_fbo.draw(0, 0);
         }
         pixel_shader.end();
+    }
+    degauss_fbo.end();
+
+    frame_buffer.begin();
+    {
+        degaussing_shader.begin();
+        {
+            degaussing_shader.setUniform1f("intensity", degauss_intensity);
+            degauss_fbo.draw(0,0);
+        }
+        degaussing_shader.end();
 
         // Zeichne die roten Umrisse der Convex Hulls
         camera.begin();

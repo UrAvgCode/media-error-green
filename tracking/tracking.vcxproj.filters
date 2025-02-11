@@ -1648,5 +1648,11 @@
     <CopyFileToFolders Include="shaders\pixel.vert">
       <Filter>shaders</Filter>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="degaussing.frag">
+      <Filter>shaders</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="degaussing.vert">
+      <Filter>shaders</Filter>
+    </CopyFileToFolders>
   </ItemGroup>
 </Project>

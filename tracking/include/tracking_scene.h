@@ -26,9 +26,11 @@ class TrackingScene : public Scene {
     ofVboMesh skeleton_mesh;
 
     ofFbo pixel_shader_fbo;
+    ofFbo degauss_fbo;
 
     ofShader pixel_shader;
     ofShader render_shader;
+    ofShader degaussing_shader;
 
     std::mt19937 generator;
     std::uniform_real_distribution<float> distribution;
