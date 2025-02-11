@@ -32,4 +32,13 @@ class TrackingScene : public Scene {
 
     std::mt19937 generator;
     std::uniform_real_distribution<float> distribution;
+
+    ofImage bouncing_image; // Das Bild
+    glm::vec2 image_position; // Position des Bildes
+    glm::vec2 image_velocity; // Geschwindigkeit des Bildes
+
+    float image_scale = 0.5;
+    float image_width, image_height; // Bildgröße
+
+    void update_bouncing_image(); // Funktion zur Aktualisierung der Bewegung
 };

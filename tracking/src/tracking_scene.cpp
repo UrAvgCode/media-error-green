@@ -30,9 +30,22 @@ TrackingScene::TrackingScene(ofxAzureKinect::Device *device) : kinect_device(dev
     std::random_device random;
     generator = std::mt19937(random());
     distribution = std::uniform_real_distribution<float>(min_random_value, max_random_value);
+
+    //Bild laden
+    bouncing_image.load("rotateGreen.png");
+    image_width = bouncing_image.getWidth() * image_scale;
+    image_height = bouncing_image.getHeight() * image_scale;
+
+    // Zufällige Startposition im Frame
+    image_position = glm::vec2(ofRandom(0, ofGetWidth() - image_width), ofRandom(0, ofGetHeight() - image_height));
+
+    // Zufällige Geschwindigkeit setzen
+    image_velocity = glm::vec2(ofRandom(-5, 5), ofRandom(-5, 5));
 }
 
-void TrackingScene::update() {}
+void TrackingScene::update() {
+    update_bouncing_image(); 
+}
 
 void TrackingScene::render() {
     const std::size_t k_max_bodies = 6;
@@ -121,6 +134,9 @@ void TrackingScene::render() {
             pixel_shader_fbo.draw(0, 0);
         }
         pixel_shader.end();
+
+        // Zeichne das Bild
+        bouncing_image.draw(image_position.x, image_position.y, image_width, image_height);
 
         // Zeichne die roten Umrisse der Convex Hulls
         camera.begin();
@@ -252,4 +268,18 @@ void TrackingScene::draw_bounding_box() {
         camera.end();
     }
     ofPopMatrix();
+}
+
+void TrackingScene::update_bouncing_image() {
+    image_position += image_velocity; // Bewege das Bild
+
+    // Kollision mit dem linken/rechten Rand
+    if (image_position.x <= 0 || image_position.x + image_width >= ofGetWidth()) {
+        image_velocity.x *= -1; // Richtung umkehren
+    }
+
+    // Kollision mit dem oberen/unteren Rand
+    if (image_position.y <= 0 || image_position.y + image_height >= ofGetHeight()) {
+        image_velocity.y *= -1; // Richtung umkehren
+    }
 }
