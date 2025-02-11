@@ -6,3 +6,6 @@
 [submodule "addons/ofxConvexHull"]
 	path = addons/ofxConvexHull
 	url = https://github.com/genekogan/ofxConvexHull.git
+[submodule "addons/ofxAzureKinect"]
+	path = addons/ofxAzureKinect
+	url = https://github.com/UrAvgCode/ofxAzureKinect.git
