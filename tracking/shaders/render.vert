@@ -57,8 +57,8 @@ void main()
     }
 
     // Screen Shake
-    const float screen_shake_offset_x = sin(time * 5.0) * screen_shake_amplitude;
-    const float screen_shake_offset_y = cos(time * 5.0) * screen_shake_amplitude;
+    float screen_shake_offset_x = sin(time * 5.0) * screen_shake_amplitude;
+    float screen_shake_offset_y = cos(time * 5.0) * screen_shake_amplitude;
 
     posWorld.x += screen_shake_offset_x;
     posWorld.y += screen_shake_offset_y;
