@@ -3,10 +3,6 @@
 	url = https://github.com/openframeworks/openFrameworks.git
 	branch = stable
 	ignore = all
-[submodule "addons/ofxAzureKinect"]
-	path = addons/ofxAzureKinect
-	url = https://github.com/UrAvgCode/ofxAzureKinect.git
-	ignore = all
 [submodule "addons/ofxConvexHull"]
 	path = addons/ofxConvexHull
 	url = https://github.com/genekogan/ofxConvexHull.git
