@@ -47,7 +47,6 @@ void TrackingScene::render() {
     }
 
     // Berechnung der Shake-Amplituden pro Körper
-    std::vector<float> shake_amplitudes(k_max_bodies, 0.0f);
     float screen_shake_amplitude = 0.0f;
     float max_shake_amplitude = 0.0f;
     float pixel_block_size = 0;
@@ -65,10 +64,8 @@ void TrackingScene::render() {
         const float min_area = 496604;
         const float max_area = 1.51127e+06;
 
-        shake_amplitudes[i] = ofMap(area, min_area, max_area, 0, 75, true);
         screen_shake_amplitude = ofMap(area, min_area, max_area, 0, 75, true);
         pixel_block_size = std::max(pixel_block_size, ofMap(area, min_area, max_area, 0, 20, true));
-        max_shake_amplitude = std::max(max_shake_amplitude, shake_amplitudes[i]);
     }
 
     pixel_shader_fbo.begin();
@@ -93,7 +90,6 @@ void TrackingScene::render() {
                     render_shader.setUniformTexture("world_texture", kinect_device->getDepthToWorldTex(), 3);
                     render_shader.setUniform2i("frame_size", frame_width, frame_height);
                     render_shader.setUniform1iv("body_ids", body_ids.data(), k_max_bodies);
-                    render_shader.setUniform1fv("shake_amplitudes", shake_amplitudes.data(), k_max_bodies);
 
                     render_shader.setUniform1f("time", static_cast<float>(ofGetElapsedTimeMillis()) / 50.0f);
                     render_shader.setUniform1f("random_offset_one", distribution(generator));

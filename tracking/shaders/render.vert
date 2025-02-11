@@ -20,8 +20,7 @@ uniform float random_offset_one;
 uniform float random_offset_two;
 
 // Screen Shake
-uniform float shake_amplitudes[6]; // ARRAY FÜR JEDEN BODY
-uniform float screen_shake_amplitude; // Neue Uniform für Screen Shake
+uniform float screen_shake_amplitude;
 
 out vec4 vColor;
 
@@ -57,16 +56,9 @@ void main()
         posWorld.x -= glitch_width;
     }
 
-    posWorld.x += sin(posWorld.y + time) * 20.0;
-
-    // Individual Body Shake
-    // float shake_strength = shake_amplitudes[bodyIndex % 6]; 
-    // posWorld.x += sin(time * 10.0 + posWorld.y) * shake_strength;
-    // posWorld.y += cos(time * 10.0 + posWorld.x) * shake_strength;
-
     // Screen Shake
-    float screen_shake_offset_x = sin(time * 5.0) * screen_shake_amplitude;
-    float screen_shake_offset_y = cos(time * 5.0) * screen_shake_amplitude;
+    const float screen_shake_offset_x = sin(time * 5.0) * screen_shake_amplitude;
+    const float screen_shake_offset_y = cos(time * 5.0) * screen_shake_amplitude;
 
     posWorld.x += screen_shake_offset_x;
     posWorld.y += screen_shake_offset_y;
