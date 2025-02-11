@@ -10,3 +10,4 @@
 [submodule "addons/ofxConvexHull"]
 	path = addons/ofxConvexHull
 	url = https://github.com/genekogan/ofxConvexHull.git
+	ignore = all
