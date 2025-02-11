@@ -117,6 +117,7 @@ void TrackingScene::render() {
         pixel_shader.begin();
         {
             pixel_shader.setUniform1f("block_size", pixel_block_size);
+            pixel_shader.setUniform1f("intensity", 5.0f);
             pixel_shader.setUniform1f("quality", 0.5f);
             pixel_shader_fbo.draw(0, 0);
         }
