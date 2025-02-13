@@ -1,0 +1,96 @@
+#version 430
+
+layout(local_size_x = 1) in;
+
+struct Pixel {
+    vec2 position;
+    vec2 acceleration;
+    vec2 velocity;
+};
+
+layout(std430, binding = 0) buffer PixelBuffer {
+    Pixel pixels[];
+};
+
+layout(std430, binding = 1) buffer VectorFieldBuffer {
+    vec2 vectorField[];
+};
+
+layout(std430, binding = 2) buffer LogoVectorFieldBuffer {
+    vec4 logo_vectors[]; // Store pairs as vec4 (x1, y1, x2, y2)
+};
+
+uniform int fieldWidth;
+uniform int fieldHeight;
+uniform float fieldScale;
+
+uniform vec2 logo_center;
+uniform float logo_radius;
+
+uniform int number_of_particles;
+uniform int logo_vectors_size;
+
+void main() {
+    uint id = gl_GlobalInvocationID.x;
+    Pixel pixel = pixels[id];
+
+    const float max_speed = 4.0f;
+
+    // Calculate the field index based on the particle's position
+    int x_index = int(pixel.position.x / fieldScale);
+    int y_index = int(pixel.position.y / fieldScale);
+    int vector_index = y_index * fieldWidth + x_index;
+
+    pixel.acceleration += vectorField[vector_index];
+
+    // force, that pulls particles to the logo
+    const float attraction_radius = 30;
+    for (int i = 0; i < logo_vectors_size; ++i) {
+        vec2 vector_position = logo_vectors[i].rg;
+        vec2 vector_direction = logo_vectors[i].ba;
+        if (distance(pixel.position, vector_position) < attraction_radius) {
+            pixel.acceleration += 0.2 * vector_direction;
+            pixel.acceleration += 0.1 * normalize(vector_position - pixel.position);
+        }
+    }
+
+    // apply_repulsion
+    const float logo_tolerance = 10.0f;
+    const float repulsion_radius = 25;
+    const float repulsion_strength = 5;
+
+    if (distance(pixel.position, logo_center) <= logo_radius) {
+        for (int i = 0; i < number_of_particles; ++i) {
+            Pixel other_pixel = pixels[i];
+
+            float dist = distance(pixel.position, other_pixel.position);
+            if (i != id && (dist < repulsion_radius)) {
+                float force = (1 - (dist / repulsion_radius)) * repulsion_strength;
+                pixel.acceleration += force;
+            }
+        }
+    }
+
+    // update particle velocity and position
+    pixel.velocity += pixel.acceleration;
+    if (length(pixel.velocity) > max_speed) {
+        pixel.velocity = normalize(pixel.velocity) * max_speed;
+    }
+    pixel.position += pixel.velocity;
+
+    // check if particle is outside of screen
+    if (pixel.position.x < 0) {
+        pixel.position.x = 1920;
+    } else if (pixel.position.x > 1920) {
+        pixel.position.x = 0;
+    }
+
+    if (pixel.position.y < 0) {
+        pixel.position.y = 1080;
+    } else if (pixel.position.y > 1080) {
+        pixel.position.y = 0;
+    }
+
+    // Write back the updated pixel
+    pixels[id] = pixel;
+}
