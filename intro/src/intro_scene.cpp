@@ -10,7 +10,7 @@ IntroScene::IntroScene() {
     flow_field.resize(cols * rows); // initialize vector field
     z_offset = 0.0;
 
-    logo_picture.load("meLogoPlain.svg");
+    logo_picture.load("resources/media_error_logo.svg");
     logo_fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGB);
 
     logo_fbo.begin();
@@ -28,8 +28,8 @@ IntroScene::IntroScene() {
     line_shader.setGeometryOutputType(GL_LINE_STRIP);
     line_shader.setGeometryOutputCount(2);
 
-    logo_svg.load(logo_image);
-    logo_in_outs_svg.load(logo_in_outs_image);
+    logo_svg.load("resources/media_error_logo_lines.svg");
+    logo_in_outs_svg.load("resources/logo_in_and_out_lines.svg");
     logo_position = ofVec2f(ofGetWidth() / 2, ofGetHeight() / 2);
     logo_width = logo_svg.getWidth() * logo_scale;
     logo_height = logo_svg.getHeight() * logo_scale;
