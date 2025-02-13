@@ -10,6 +10,24 @@ IntroScene::IntroScene() {
     flow_field.resize(cols * rows); // initialize vector field
     z_offset = 0.0;
 
+    logo_picture.load("meLogoPlain.svg");
+    logo_fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGB);
+
+    logo_fbo.begin();
+    {
+        ofPushMatrix();
+        ofTranslate(0.5f * ofGetWidth(), 0.5f * ofGetHeight());
+        ofTranslate(-logo_picture.getHeight() / 2.0f, -logo_picture.getHeight() / 2.0f);
+        logo_picture.draw();
+        ofPopMatrix();
+    }
+    logo_fbo.end();
+
+    line_shader.load("shaders/line_shader.vert", "shaders/line_shader.frag", "shaders/line_shader.geom");
+    line_shader.setGeometryInputType(GL_LINES);
+    line_shader.setGeometryOutputType(GL_LINE_STRIP);
+    line_shader.setGeometryOutputCount(2);
+
     logo_svg.load(logo_image);
     logo_in_outs_svg.load(logo_in_outs_image);
     logo_position = ofVec2f(ofGetWidth() / 2, ofGetHeight() / 2);
@@ -46,6 +64,28 @@ IntroScene::IntroScene() {
     logo_radius = (std::max(boundingBoxLogo.getWidth(), boundingBoxLogo.getHeight()) / 2.0f);
     Particle::logo_center = logo_center;
     Particle::logo_radius = logo_radius;
+
+    pixel_shader.load("shaders/pixel_intro");
+
+    // compute shader
+    for (int i = 0; i < particles.size(); ++i) {
+        simple_particles.emplace_back(particles[i].position);
+        particle_tails.emplace_back(particles[i].position.x, particles[i].position.y);
+    }
+
+    // Load and compile compute shader
+    compute_shader.setupShaderFromFile(GL_COMPUTE_SHADER, "shaders/compute_shader.comp");
+    compute_shader.linkProgram();
+
+    // Allocate and upload pixel data to GPU
+    particle_buffer.allocate(simple_particles, GL_DYNAMIC_DRAW);
+    particle_buffer.bindBase(GL_SHADER_STORAGE_BUFFER, 0);
+
+    flow_field_buffer.allocate(flow_field, GL_DYNAMIC_DRAW);
+    flow_field_buffer.bindBase(GL_SHADER_STORAGE_BUFFER, 1);
+
+    logo_vectors_buffer.allocate(all_logo_vectors, GL_DYNAMIC_DRAW);
+    logo_vectors_buffer.bindBase(GL_SHADER_STORAGE_BUFFER, 2);
 }
 
 //--------------------------------------------------------------
@@ -117,6 +157,40 @@ void IntroScene::update() {
     for (auto &particle: particles) {
         particle.update(logo_vectors, logo_tolerance);
     }
+
+
+    // Bind the buffer and dispatch the compute shader
+    particle_buffer.updateData(0, simple_particles);
+    flow_field_buffer.updateData(0, flow_field);
+    particle_buffer.bindBase(GL_SHADER_STORAGE_BUFFER, 0);
+    flow_field_buffer.bindBase(GL_SHADER_STORAGE_BUFFER, 1);
+    logo_vectors_buffer.bindBase(GL_SHADER_STORAGE_BUFFER, 2);
+
+    compute_shader.begin();
+    compute_shader.setUniform1i("fieldWidth", rows);
+    compute_shader.setUniform1i("fieldHeight", cols);
+    compute_shader.setUniform1f("fieldScale", resolution);
+
+    compute_shader.setUniform2f("logo_center", logo_center);
+    compute_shader.setUniform1f("logo_radius", logo_radius);
+
+    compute_shader.setUniform1i("number_of_particles", simple_particles.size());
+    compute_shader.setUniform1i("logo_vectors_size", all_logo_vectors.size());
+
+    compute_shader.dispatchCompute(simple_particles.size(), 1, 1);
+    compute_shader.end();
+
+    // Map the buffer to access the updated pixel data
+    SimpleParticle *mappedPixels = particle_buffer.map<SimpleParticle>(GL_READ_ONLY);
+    if (mappedPixels) {
+        memcpy(simple_particles.data(), mappedPixels, simple_particles.size() * sizeof(SimpleParticle));
+        particle_buffer.unmap();
+    }
+
+    for (std::size_t i = 0; i < simple_particles.size(); ++i) {
+        simple_particles[i].position += simple_particles[i].velocity;
+        particle_tails[i].update_position(simple_particles[i].position);
+    }
 }
 
 void IntroScene::render() {
@@ -132,21 +206,42 @@ void IntroScene::render() {
         // ofPopMatrix();
 
 
-        //// visualized flowing field
-        // for (int y = 0; y < rows; y++) {
-        //	for (int x = 0; x < cols; x++) {
-        //		ofVec2f vec = flow_field[y * cols + x];
-        //		ofPushMatrix();
-        //		ofTranslate(x * resolution, y * resolution);
-        //		ofDrawLine(0, 0, vec.x * resolution * 0.5, vec.y * resolution * 0.5);
-        //		ofPopMatrix();
-        //	}
-        // }
+        // visualized flowing field
+        /* for (int y = 0; y < rows; y++) {
+            for (int x = 0; x < cols; x++) {
+                ofVec2f vec = flow_field[y * cols + x];
+                ofPushMatrix();
+                ofTranslate(x * resolution, y * resolution);
+                ofDrawLine(0, 0, vec.x * resolution * 0.5, vec.y * resolution * 0.5);
+                ofPopMatrix();
+            }
+        }*/
 
         // draw particles
+
+        // pixel_shader.begin();
+        // pixel_shader.setUniform1f("pixelationAmount", 50.0f);
+        // pixel_shader.setUniform1f("quality", 0.5f);
+
+
         for (auto &particle: particles) {
+            // particle.draw();
+        }
+
+        // pixel_shader.end();
+
+        // for (const auto &pixel: simple_particles) {
+        //     ofDrawCircle(pixel.position, 2);
+        // }
+
+        line_shader.begin();
+        line_shader.setUniform1f("uMaxLength", 10);
+        line_shader.setUniformTexture("logo_texture", logo_fbo.getTexture(), 0);
+
+        for (auto &particle: particle_tails) {
             particle.draw();
         }
+        line_shader.end();
 
         // drawing logo_vectors
         // ofSetColor(0, 255, 0); // green

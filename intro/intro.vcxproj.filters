@@ -46,6 +46,12 @@
     <ClCompile Include="src\intro_scene.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\simple_particle.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\particle_tail.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
@@ -302,6 +308,9 @@
     </Filter>
     <Filter Include="resources">
       <UniqueIdentifier>{3c9d5652-10b9-4f80-9e82-9b5949c6cf9a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shaders">
+      <UniqueIdentifier>{d45aba7b-45a5-499f-bf7a-fe30377edf43}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1610,6 +1619,12 @@
     <ClInclude Include="include\intro_scene.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="include\simple_particle.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\particle_tail.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="icon.rc" />
@@ -1653,6 +1668,24 @@
     </CopyFileToFolders>
     <CopyFileToFolders Include="resources\logo_in_and_outs.svg">
       <Filter>resources</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\pixel_intro.frag">
+      <Filter>shaders</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\pixel_intro.vert">
+      <Filter>shaders</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\compute_shader.comp">
+      <Filter>shaders</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\line_shader.frag">
+      <Filter>shaders</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\line_shader.vert">
+      <Filter>shaders</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\line_shader.geom">
+      <Filter>shaders</Filter>
     </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>

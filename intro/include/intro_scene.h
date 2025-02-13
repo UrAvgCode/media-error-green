@@ -9,6 +9,8 @@
 
 #include <scene.h>
 #include "particle.h"
+#include "simple_particle.h"
+#include "particle_tail.h"
 
 class IntroScene : public Scene {
   public:
@@ -26,7 +28,7 @@ class IntroScene : public Scene {
     const int cols = ofGetWidth() / resolution;
     const int rows = ofGetHeight() / resolution;
 
-    std::vector<ofVec2f> flow_field;
+    std::vector<glm::vec2> flow_field;
     float z_offset; // for animated Perlin noise
 
     // particles
@@ -46,9 +48,14 @@ class IntroScene : public Scene {
     const float logo_scale = 1.0;
     string logo_image = "logo_lines4.svg";
     string logo_in_outs_image = "logo_in_and_outs.svg";
-    std::vector<pair<ofVec2f, ofVec2f>> logo_vectors;
-    std::vector<pair<ofVec2f, ofVec2f>> logo_in_outs_vectors;
-    std::vector<std::pair<ofVec2f, ofVec2f>> all_logo_vectors;
+    std::vector<pair<glm::vec2, glm::vec2>> logo_vectors;
+    std::vector<pair<glm::vec2, glm::vec2>> logo_in_outs_vectors;
+    std::vector<std::pair<glm::vec2, glm::vec2>> all_logo_vectors;
+
+    ofxSVG logo_picture;
+    ofFbo logo_fbo;
+
+    ofShader line_shader;
 
     ofVec2f logo_position;
     float logo_width;
@@ -57,6 +64,15 @@ class IntroScene : public Scene {
     ofVec2f logo_center;
     float logo_radius;
     int logo_margin = 30;
+
+    ofShader pixel_shader;
+
+    vector<SimpleParticle> simple_particles;
+    vector<ParticleTail> particle_tails;
+    ofShader compute_shader;
+    ofBufferObject particle_buffer;
+    ofBufferObject flow_field_buffer;
+    ofBufferObject logo_vectors_buffer;
 
     void create_logo_vectors();
     void create_logo_in_outs_vectors();

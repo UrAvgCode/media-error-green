@@ -24,9 +24,9 @@ Particle::Particle(float x, float y) : position(ofVec2f(x, y)), velocity(ofVec2f
     }
 }
 
-void Particle::apply_force(ofVec2f force) { acceleration += force; }
+void Particle::apply_force(glm::vec2 force) { acceleration += force; }
 
-void Particle::update(const std::vector<std::pair<ofVec2f, ofVec2f>> &logo_vectors, float logo_tolerance) {
+void Particle::update(const std::vector<std::pair<glm::vec2, glm::vec2>> &logo_vectors, float logo_tolerance) {
     velocity += acceleration;
     velocity.limit(max_speed);
     acceleration = {0, 0};
@@ -133,7 +133,8 @@ void Particle::set_color(const ofColor &color) {
 }
 
 // Prüft, ob sich der Partikel auf einem Logo-Vektor befindet
-bool Particle::check_if_on_logo(const std::vector<std::pair<ofVec2f, ofVec2f>> &logo_vectors, float logo_tolerance) {
+bool Particle::check_if_on_logo(const std::vector<std::pair<glm::vec2, glm::vec2>> &logo_vectors,
+                                float logo_tolerance) {
     if (position.distance(logo_center) < logo_radius) {
         for (const auto &logo_vec: logo_vectors) {
             if (position.distance(logo_vec.first) < logo_tolerance) {

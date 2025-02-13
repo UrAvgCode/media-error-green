@@ -36,9 +36,32 @@ void main() {
 
     const float max_speed = 4.0f;
 
+    // apply_repulsion
+    const float logo_tolerance = 10.0f;
+    const float repulsion_radius = 25;
+    const float repulsion_strength = 5;
+
+    if (distance(pixel.position, logo_center) <= logo_radius) {
+        for (int i = 0; i < number_of_particles; ++i) {
+            Pixel other_pixel = pixels[i];
+            if (i == id) {
+                continue;
+            }
+
+            vec2 diff = pixel.position - other_pixel.position;
+            float dist = length(diff);
+            if (dist > repulsion_radius) {
+                continue;
+            }
+
+            float force = (1 - (dist / repulsion_radius)) * repulsion_strength;
+            pixel.acceleration += diff * force;
+        }
+    }
+
     // Calculate the field index based on the particle's position
-    int x_index = int(pixel.position.x / fieldScale);
-    int y_index = int(pixel.position.y / fieldScale);
+    int x_index = int(pixel.position.x / fieldScale) % fieldWidth;
+    int y_index = int(pixel.position.y / fieldScale) % fieldHeight;
     int vector_index = y_index * fieldWidth + x_index;
 
     pixel.acceleration += vectorField[vector_index];
@@ -54,29 +77,13 @@ void main() {
         }
     }
 
-    // apply_repulsion
-    const float logo_tolerance = 10.0f;
-    const float repulsion_radius = 25;
-    const float repulsion_strength = 5;
-
-    if (distance(pixel.position, logo_center) <= logo_radius) {
-        for (int i = 0; i < number_of_particles; ++i) {
-            Pixel other_pixel = pixels[i];
-
-            float dist = distance(pixel.position, other_pixel.position);
-            if (i != id && (dist < repulsion_radius)) {
-                float force = (1 - (dist / repulsion_radius)) * repulsion_strength;
-                pixel.acceleration += force;
-            }
-        }
-    }
-
-    // update particle velocity and position
+    // update particle velocity
     pixel.velocity += pixel.acceleration;
     if (length(pixel.velocity) > max_speed) {
         pixel.velocity = normalize(pixel.velocity) * max_speed;
     }
-    pixel.position += pixel.velocity;
+    
+    pixel.acceleration = vec2(0, 0);
 
     // check if particle is outside of screen
     if (pixel.position.x < 0) {

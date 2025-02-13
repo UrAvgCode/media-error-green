@@ -23,14 +23,14 @@ class Particle {
 
     Particle(float x, float y);
 
-    void update(const std::vector<std::pair<ofVec2f, ofVec2f>> &logo_vectors, float logo_tolerance);
+    void update(const std::vector<std::pair<glm::vec2, glm::vec2>> &logo_vectors, float logo_tolerance);
     void draw();
 
-    void apply_force(ofVec2f force);
+    void apply_force(glm::vec2 force);
 
     bool is_outside_of_screen() const;
     void apply_repulsion(const std::vector<Particle> &particles, float repulsion_radius, float repulsion_strength);
-    bool check_if_on_logo(const std::vector<std::pair<ofVec2f, ofVec2f>> &logo_vectors, float logo_tolerance);
+    bool check_if_on_logo(const std::vector<std::pair<glm::vec2, glm::vec2>> &logo_vectors, float logo_tolerance);
 
 
   protected:
