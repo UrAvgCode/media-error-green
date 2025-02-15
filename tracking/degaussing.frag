@@ -6,7 +6,7 @@ uniform float intensity;
 in vec2 vTexCoord;
 out vec4 fragColor;
 
-void main() 
+void main() {
 
     vec4 color = texture(tex0, vTexCoord);
 
@@ -14,7 +14,7 @@ void main()
     color.b += (intensity) * 0.1 * cos(vTexCoord.y * 0.05);
     color.r += (intensity) * 0.1 * cos((vTexCoord.y * 0.05) + 3.14);
 
-    color.rgb = floor(color.rgb * ( quality * 256.0)) / (quality * 256.0);
+    color.rgb = floor(color.rgb * (256.0)) / (256.0);
 
     fragColor = color;
 }
