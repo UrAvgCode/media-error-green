@@ -55,6 +55,7 @@ void TrackingScene::render() {
     float max_shake_amplitude = 0.0f;
     float pixel_block_size = 0;
     float degauss_intensity = 1.0;
+    float degauss_distortion = 0.0;
 
     for (std::size_t i = 0; i < convex_hulls.size(); ++i) {
         float area = 0.0f;
@@ -74,6 +75,7 @@ void TrackingScene::render() {
         pixel_block_size = std::max(pixel_block_size, ofMap(area, min_area, max_area, 0, 20, true));
         max_shake_amplitude = std::max(max_shake_amplitude, shake_amplitudes[i]);
         degauss_intensity = ofMap(area, min_area, max_area, 1.0, 5.0, true);
+        degauss_distortion = ofMap(area, min_area, max_area, 0.0, 2.0, true);
     }
 
     pixel_shader_fbo.begin();
@@ -122,7 +124,6 @@ void TrackingScene::render() {
         pixel_shader.begin();
         {
             pixel_shader.setUniform1f("block_size", pixel_block_size);
-            pixel_shader.setUniform1f("intensity", degauss_intensity);
             pixel_shader.setUniform1f("quality", 0.5f);
             pixel_shader_fbo.draw(0, 0);
         }
@@ -135,6 +136,9 @@ void TrackingScene::render() {
         degaussing_shader.begin();
         {
             degaussing_shader.setUniform1f("intensity", degauss_intensity);
+            degaussing_shader.setUniform1f("distortionAmount", degauss_distortion);
+            degaussing_shader.setUniform1f("time", ofGetElapsedTimef());
+            degaussing_shader.setUniform2f("resolution", ofGetWidth(), ofGetHeight());
             degauss_fbo.draw(0,0);
         }
         degaussing_shader.end();

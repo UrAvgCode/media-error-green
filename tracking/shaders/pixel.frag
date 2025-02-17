@@ -3,7 +3,6 @@
 uniform sampler2DRect tex0;
 uniform float block_size;
 uniform float quality;
-uniform float intensity;
 
 in vec2 vTexCoord;
 out vec4 fragColor;
