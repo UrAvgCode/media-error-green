@@ -1,10 +1,9 @@
 #version 430
 
-layout(local_size_x = 1) in;
+layout(local_size_x = 32) in;
 
 struct Pixel {
     vec2 position;
-    vec2 acceleration;
     vec2 velocity;
 };
 
@@ -34,6 +33,8 @@ void main() {
     uint id = gl_GlobalInvocationID.x;
     Pixel pixel = pixels[id];
 
+    vec2 acceleration = vec2(0, 0);
+
     const float max_speed = 4.0f;
 
     // apply_repulsion
@@ -41,21 +42,17 @@ void main() {
     const float repulsion_radius = 25;
     const float repulsion_strength = 5;
 
-    if (distance(pixel.position, logo_center) <= logo_radius) {
+    if (distance(pixel.position, logo_center) < logo_radius) {
         for (int i = 0; i < number_of_particles; ++i) {
-            Pixel other_pixel = pixels[i];
-            if (i == id) {
-                continue;
-            }
+            if (i == id) continue;
 
-            vec2 diff = pixel.position - other_pixel.position;
-            float dist = length(diff);
-            if (dist > repulsion_radius) {
-                continue;
-            }
+            const vec2 diff = pixel.position - pixels[i].position;
+            const float dist = length(diff);
+            if (dist >= repulsion_radius) continue;
 
-            float force = (1 - (dist / repulsion_radius)) * repulsion_strength;
-            pixel.acceleration += diff * force;
+            float force = (dist / repulsion_radius * (-repulsion_strength) + repulsion_strength);
+            //vec2 directional_force = diff * (force / dist);
+            acceleration += diff * force;
         }
     }
 
@@ -64,40 +61,24 @@ void main() {
     int y_index = int(pixel.position.y / fieldScale) % fieldHeight;
     int vector_index = y_index * fieldWidth + x_index;
 
-    pixel.acceleration += vectorField[vector_index];
-
+    acceleration += vectorField[vector_index];
+    
     // force, that pulls particles to the logo
     const float attraction_radius = 30;
     for (int i = 0; i < logo_vectors_size; ++i) {
         vec2 vector_position = logo_vectors[i].rg;
         vec2 vector_direction = logo_vectors[i].ba;
         if (distance(pixel.position, vector_position) < attraction_radius) {
-            pixel.acceleration += 0.2 * vector_direction;
-            pixel.acceleration += 0.1 * normalize(vector_position - pixel.position);
+            acceleration += 0.2 * vector_direction;
+            acceleration += 0.1 * normalize(vector_position - pixel.position);
         }
     }
 
     // update particle velocity
-    pixel.velocity += pixel.acceleration;
+    pixel.velocity += acceleration;
     if (length(pixel.velocity) > max_speed) {
-        pixel.velocity = normalize(pixel.velocity) * max_speed;
-    }
-    
-    pixel.acceleration = vec2(0, 0);
-
-    // check if particle is outside of screen
-    if (pixel.position.x < 0) {
-        pixel.position.x = 1920;
-    } else if (pixel.position.x > 1920) {
-        pixel.position.x = 0;
+        pixel.velocity = pixel.velocity * (max_speed / length(pixel.velocity));
     }
 
-    if (pixel.position.y < 0) {
-        pixel.position.y = 1080;
-    } else if (pixel.position.y > 1080) {
-        pixel.position.y = 0;
-    }
-
-    // Write back the updated pixel
     pixels[id] = pixel;
 }

@@ -8,7 +8,6 @@
 #include <ofxSvg.h>
 
 #include <scene.h>
-#include "particle.h"
 #include "simple_particle.h"
 #include "particle_tail.h"
 
@@ -32,8 +31,9 @@ class IntroScene : public Scene {
     float z_offset; // for animated Perlin noise
 
     // particles
-    std::vector<Particle> particles;
-    const int num_particles = 2000;
+    vector<SimpleParticle> simple_particles;
+    vector<ParticleTail> particle_tails;
+    const int num_particles = 2048;
     const float repulsion_radius = 25;
     const float repulsion_strength = 5;
 
@@ -46,8 +46,6 @@ class IntroScene : public Scene {
     ofxSVG logo_svg;
     ofxSVG logo_in_outs_svg;
     const float logo_scale = 1.0;
-    string logo_image = "logo_lines4.svg";
-    string logo_in_outs_image = "logo_in_and_outs.svg";
     std::vector<pair<glm::vec2, glm::vec2>> logo_vectors;
     std::vector<pair<glm::vec2, glm::vec2>> logo_in_outs_vectors;
     std::vector<std::pair<glm::vec2, glm::vec2>> all_logo_vectors;
@@ -67,9 +65,9 @@ class IntroScene : public Scene {
 
     ofShader pixel_shader;
 
-    vector<SimpleParticle> simple_particles;
-    vector<ParticleTail> particle_tails;
     ofShader compute_shader;
+    ofShader move_particles_shader;
+
     ofBufferObject particle_buffer;
     ofBufferObject flow_field_buffer;
     ofBufferObject logo_vectors_buffer;

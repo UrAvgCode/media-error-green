@@ -122,7 +122,6 @@
     <ClCompile Include="..\openFrameworks\addons\ofxOpenCv\src\ofxCvShortImage.cpp" />
     <ClCompile Include="..\openFrameworks\addons\ofxSvg\src\ofxSvg.cpp" />
     <ClCompile Include="src\intro_scene.cpp" />
-    <ClCompile Include="src\particle.cpp" />
     <ClCompile Include="src\particle_tail.cpp" />
     <ClCompile Include="src\simple_particle.cpp" />
   </ItemGroup>
@@ -561,7 +560,6 @@
     <ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\libxml2\libxml2\include\libxml\xpointer.h" />
     <ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\svgtiny\svgtiny\include\svgtiny.h" />
     <ClInclude Include="include\intro_scene.h" />
-    <ClInclude Include="include\particle.h" />
     <ClInclude Include="include\particle_tail.h" />
     <ClInclude Include="include\simple_particle.h" />
   </ItemGroup>
@@ -625,6 +623,11 @@
       <FileType>Document</FileType>
       <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">data/resources/%(Filename)%(Extension)</DestinationFileName>
       <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">data/resources/%(Filename)%(Extension)</DestinationFileName>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\move_particles.comp">
+      <FileType>Document</FileType>
+      <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">data/shaders/%(Filename)%(Extension)</DestinationFileName>
+      <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">data/shaders/%(Filename)%(Extension)</DestinationFileName>
     </CopyFileToFolders>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
