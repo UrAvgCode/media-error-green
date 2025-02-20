@@ -2,34 +2,32 @@
 
 layout(local_size_x = 32) in;
 
-struct Pixel {
+struct Particle {
     vec2 position;
     vec2 velocity;
 };
 
 layout(std430, binding = 0) buffer PixelBuffer {
-    Pixel pixels[];
+    Particle particles[];
 };
 
 void main() {
     uint id = gl_GlobalInvocationID.x;
-    Pixel pixel = pixels[id];
+    Particle particle = particles[id];
 
-     pixel.position += pixel.velocity;
+    particle.position += particle.velocity;
 
-    // check if particle is outside of screen
-    if (pixel.position.x < 0) {
-        pixel.position.x = 1920;
-    } else if (pixel.position.x > 1920) {
-        pixel.position.x = 0;
+    if (particle.position.x < 0) {
+        particle.position.x = 1920;
+    } else if (particle.position.x > 1920) {
+        particle.position.x = 0;
     }
 
-    if (pixel.position.y < 0) {
-        pixel.position.y = 1080;
-    } else if (pixel.position.y > 1080) {
-        pixel.position.y = 0;
+    if (particle.position.y < 0) {
+        particle.position.y = 1080;
+    } else if (particle.position.y > 1080) {
+        particle.position.y = 0;
     }
 
-    // Write back the updated pixel
-    pixels[id] = pixel;
+    particles[id] = particle;
 }

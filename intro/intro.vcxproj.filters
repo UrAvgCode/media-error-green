@@ -40,9 +40,6 @@
     <ClCompile Include="..\openFrameworks\addons\ofxSvg\src\ofxSvg.cpp">
       <Filter>addons\ofxSvg\src</Filter>
     </ClCompile>
-    <ClCompile Include="src\particle.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="src\intro_scene.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -1613,9 +1610,6 @@
     <ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\svgtiny\svgtiny\include\svgtiny.h">
       <Filter>addons\ofxSvg\libs\svgtiny\svgtiny\include</Filter>
     </ClInclude>
-    <ClInclude Include="include\particle.h">
-      <Filter>include</Filter>
-    </ClInclude>
     <ClInclude Include="include\intro_scene.h">
       <Filter>include</Filter>
     </ClInclude>
@@ -1656,6 +1650,9 @@
     </CopyFileToFolders>
     <CopyFileToFolders Include="resources\media_error_logo.svg">
       <Filter>resources</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\move_particles.comp">
+      <Filter>shaders</Filter>
     </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
