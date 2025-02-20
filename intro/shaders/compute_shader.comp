@@ -48,11 +48,10 @@ void main() {
 
             const vec2 diff = pixel.position - pixels[i].position;
             const float dist = length(diff);
-            if (dist >= repulsion_radius) continue;
+            if (dist >= repulsion_radius || dist == 0) continue;
 
             float force = (dist / repulsion_radius * (-repulsion_strength) + repulsion_strength);
-            //vec2 directional_force = diff * (force / dist);
-            acceleration += diff * force;
+            acceleration += normalize(diff) * force;
         }
     }
 
