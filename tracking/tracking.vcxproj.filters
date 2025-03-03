@@ -309,6 +309,9 @@
     <Filter Include="shaders">
       <UniqueIdentifier>{935e57e9-53fe-4a97-8875-85c441835d3d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="resources">
+      <UniqueIdentifier>{f1775964-cc50-4329-837a-0ddce82b9d03}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\addons\ofxConvexHull\src\ofxConvexHull.h">
@@ -1647,6 +1650,9 @@
     </CopyFileToFolders>
     <CopyFileToFolders Include="shaders\pixel.vert">
       <Filter>shaders</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="..\..\branding\path181.svg">
+      <Filter>resources</Filter>
     </CopyFileToFolders>
   </ItemGroup>
 </Project>

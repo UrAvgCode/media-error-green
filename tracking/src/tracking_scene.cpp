@@ -23,6 +23,15 @@ TrackingScene::TrackingScene(ofxAzureKinect::Device *device) : kinect_device(dev
     std::vector<glm::vec3> verts(1);
     points_vbo.setVertexData(verts.data(), static_cast<int>(verts.size()), GL_STATIC_DRAW);
 
+    //setupLogo
+    floatingSvg.load("path181.svg");
+    svgPos = ofVec2f(ofRandom(0, ofGetWidth() - floatingSvg.getWidth()),
+        ofRandom(0, ofGetHeight() - floatingSvg.getHeight()));
+    svgVel = ofVec2f(ofRandom(2, 5) * (ofRandom(1) > 0.5 ? 1 : -1),
+        ofRandom(2,5) * (ofRandom(1) > 0.5 ? 1 : 1 ) );
+    logoScale = 0.125f;
+    timeCounter = 0.0f;
+
     // setup random generator
     const auto min_random_value = -1000;
     const auto max_random_value = 1000;
@@ -32,7 +41,27 @@ TrackingScene::TrackingScene(ofxAzureKinect::Device *device) : kinect_device(dev
     distribution = std::uniform_real_distribution<float>(min_random_value, max_random_value);
 }
 
-void TrackingScene::update() {}
+void TrackingScene::update() {
+
+        svgPos +=  svgVel;
+
+        float minX = 0;
+        float minY = 0;
+        float logoWidth = floatingSvg.getWidth() * logoScale;
+        float logoHeight = floatingSvg.getHeight() * logoScale;
+        float maxX = ofGetWidth();
+        float maxY = ofGetHeight();
+
+        if (svgPos.x >= (maxX - logoWidth) || svgPos.x <= minX) {
+            svgVel.x *= -1;
+            svgPos.x = ofClamp(svgPos.x, minX, maxX);
+        } 
+        if (svgPos.y >= (maxY - logoHeight) || svgPos.y < minY) {
+            svgVel.y *= -1;
+            svgPos.y = ofClamp(svgPos.y, minY, maxY);
+        }
+
+}
 
 void TrackingScene::render() {
     const std::size_t k_max_bodies = 6;
@@ -101,6 +130,8 @@ void TrackingScene::render() {
                 }
                 render_shader.end();
                 ofDisableDepthTest();
+
+                
             }
             ofPopMatrix();
         }
@@ -134,10 +165,21 @@ void TrackingScene::render() {
                 ofEndShape(true);
                 ofPopStyle();
             }
+
+            
+
         }
         ofPopMatrix();
         camera.end();
     }
+
+    if (!floatingSvg.getNumPath()) {
+        ofLogError("TrackingScene") << "SVG failed to load";
+    }
+    ofTranslate(svgPos.x, svgPos.y);
+    ofLogNotice("SVG") << "SVG Position: " << svgPos.x << "," << svgPos.y;
+    ofScale(logoScale, logoScale);
+    floatingSvg.draw();
     frame_buffer.end();
 }
 

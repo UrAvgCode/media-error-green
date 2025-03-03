@@ -576,6 +576,10 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
+    <CopyFileToFolders Include="..\..\branding\path181.svg">
+      <FileType>Document</FileType>
+      <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">data/resources/%(Filename)%(Extension)</DestinationFileName>
+    </CopyFileToFolders>
     <None Include="packages.config" />
     <CopyFileToFolders Include="shaders\render.frag">
       <FileType>Document</FileType>

@@ -2,6 +2,9 @@
 
 #include <vector>
 
+#include <ofxSvg.h>
+//#include <utility>
+
 #include <ofMain.h>
 #include <ofxAzureKinect.h>
 
@@ -29,6 +32,12 @@ class TrackingScene : public Scene {
 
     ofShader pixel_shader;
     ofShader render_shader;
+
+    ofxSvg floatingSvg;
+    float logoScale;
+    ofVec2f svgPos;
+    ofVec2f svgVel;
+    float timeCounter;
 
     std::mt19937 generator;
     std::uniform_real_distribution<float> distribution;
