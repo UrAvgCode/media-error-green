@@ -213,11 +213,30 @@ void TrackingScene::render() {
         for (const auto &joint: skeleton.joints) {
             if (std::isfinite(joint.position.x) && std::isfinite(joint.position.y) && std::isfinite(joint.position.z)) {
             
-                ofVec3f world_position(joint.position.x, joint.position.y, joint.position.z);
-                ofVec3f screen_position = camera.worldToScreen(world_position);
+                k4a_float3_t joint3D = {joint.position.x, joint.position.y, joint.position.z};
+                k4a_float2_t joint2D;
+                int valid;
 
-                ofSetColor(0, 0, 255); // blue for body points
-                ofDrawCircle(screen_position.x, screen_position.y, 5);
+                k4a_calibration_3d_to_2d(
+                    &calibration, 
+                    &joint3D,                     
+                    K4A_CALIBRATION_TYPE_DEPTH,
+                    K4A_CALIBRATION_TYPE_COLOR,
+                    &joint2D, 
+                    &valid);
+
+                int color_width = calibration.color_camera_calibration.resolution_width;
+                int color_height = calibration.color_camera_calibration.resolution_height;
+
+                if (valid > 0) {
+                    glm::vec2 screen_position(
+                        joint2D.xy.x * ofGetWidth() / color_width,
+                        joint2D.xy.y * ofGetHeight() / color_height
+                    );
+
+                    ofSetColor(0, 0, 255); // blue for body points
+                    ofDrawCircle(screen_position.x, screen_position.y, 5);
+                }
             }
         }
     }
