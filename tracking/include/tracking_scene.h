@@ -3,7 +3,6 @@
 #include <vector>
 
 #include <ofxSvg.h>
-//#include <utility>
 
 #include <ofMain.h>
 #include <ofxAzureKinect.h>
@@ -16,6 +15,7 @@ class TrackingScene : public Scene {
 
     void update() override;
     void render() override;
+    bool isCollidingWithBody(glm::vec2);
 
   private:
     void draw_bounding_box();
@@ -33,6 +33,7 @@ class TrackingScene : public Scene {
     ofShader pixel_shader;
     ofShader render_shader;
 
+    ofRectangle svgBoundingBox;
     ofxSvg floatingSvg;
     float logoScale;
     ofVec2f svgPos;

@@ -43,6 +43,7 @@ TrackingScene::TrackingScene(ofxAzureKinect::Device *device) : kinect_device(dev
 
 void TrackingScene::update() {
 
+
         svgPos +=  svgVel;
 
         float minX = 0;
@@ -61,6 +62,39 @@ void TrackingScene::update() {
             svgPos.y = ofClamp(svgPos.y, minY, maxY);
         }
 
+        if (isCollidingWithBody(svgPos)) {
+            svgVel.x *= -1;
+            //svgVel.y *= -1;
+            svgPos += svgVel * 2;
+        }
+
+}
+
+bool TrackingScene::isCollidingWithBody(glm::vec2 position) { 
+   
+    if (kinect_device->isFrameNew()) {
+
+
+        const auto &body_skeletons = kinect_device->getBodySkeletons();
+
+
+        // translate 3D-joint-coordinates from kinect to 2D-screen-coordinates
+        for (const auto &skeleton: body_skeletons) {
+            for (const auto &joint: skeleton.joints) {
+                if (std::isfinite(joint.position.x) && std::isfinite(joint.position.y) &&
+                    std::isfinite(joint.position.z)) {
+
+                    ofVec3f world_position(joint.position.x, joint.position.y, joint.position.z);
+                    ofVec3f screen_position = camera.worldToScreen(world_position);
+
+                    float distance = glm::distance(position, glm::vec2(screen_position.x, screen_position.y));
+                    if (distance < 10) {
+                        return true;
+                    }
+                }
+            }
+        }
+    }
 }
 
 void TrackingScene::render() {
@@ -123,7 +157,7 @@ void TrackingScene::render() {
                     render_shader.setUniform1f("time", static_cast<float>(ofGetElapsedTimeMillis()) / 50.0f);
                     render_shader.setUniform1f("random_offset_one", distribution(generator));
                     render_shader.setUniform1f("random_offset_two", distribution(generator));
-                    render_shader.setUniform1f("screen_shake_amplitude", screen_shake_amplitude);
+                    render_shader.setUniform1f("screen_shake_amplitude", 0.0);
 
                     const int num_points = frame_width * frame_height;
                     points_vbo.drawInstanced(GL_POINTS, 0, 1, num_points);
@@ -143,7 +177,7 @@ void TrackingScene::render() {
     {
         pixel_shader.begin();
         {
-            pixel_shader.setUniform1f("block_size", pixel_block_size);
+            pixel_shader.setUniform1f("block_size", 1.0);
             pixel_shader.setUniform1f("quality", 0.5f);
             pixel_shader_fbo.draw(0, 0);
         }
@@ -173,6 +207,22 @@ void TrackingScene::render() {
         camera.end();
     }
 
+    k4a_calibration_t calibration = kinect_device->getCalibration();
+    
+    for (const auto &skeleton: kinect_device->getBodySkeletons()) {
+        for (const auto &joint: skeleton.joints) {
+            if (std::isfinite(joint.position.x) && std::isfinite(joint.position.y) && std::isfinite(joint.position.z)) {
+            
+                ofVec3f world_position(joint.position.x, joint.position.y, joint.position.z);
+                ofVec3f screen_position = camera.worldToScreen(world_position);
+
+                ofSetColor(0, 0, 255); // blue for body points
+                ofDrawCircle(screen_position.x, screen_position.y, 5);
+            }
+        }
+    }
+
+    //floating logo
     if (!floatingSvg.getNumPath()) {
         ofLogError("TrackingScene") << "SVG failed to load";
     }
@@ -180,6 +230,7 @@ void TrackingScene::render() {
     ofLogNotice("SVG") << "SVG Position: " << svgPos.x << "," << svgPos.y;
     ofScale(logoScale, logoScale);
     floatingSvg.draw();
+
     frame_buffer.end();
 }
 
