@@ -8,6 +8,7 @@
 #include <ofxSvg.h>
 
 #include <scene.h>
+
 #include "particle.h"
 
 class IntroScene : public Scene {
@@ -44,11 +45,12 @@ class IntroScene : public Scene {
     ofxSVG logo_svg;
     ofxSVG logo_in_outs_svg;
     const float logo_scale = 1.0;
-    string logo_image = "logo_lines4.svg";
-    string logo_in_outs_image = "logo_in_and_outs.svg";
     std::vector<pair<ofVec2f, ofVec2f>> logo_vectors;
     std::vector<pair<ofVec2f, ofVec2f>> logo_in_outs_vectors;
     std::vector<std::pair<ofVec2f, ofVec2f>> all_logo_vectors;
+
+    ofxSVG logo_picture;
+    ofFbo logo_fbo;
 
     ofVec2f logo_position;
     float logo_width;
@@ -57,6 +59,9 @@ class IntroScene : public Scene {
     ofVec2f logo_center;
     float logo_radius;
     int logo_margin = 30;
+
+    ofShader particle_trail_shader;
+    ofShader particle_pixel_shader;
 
     void create_logo_vectors();
     void create_logo_in_outs_vectors();

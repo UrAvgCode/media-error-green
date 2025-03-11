@@ -10,8 +10,26 @@ IntroScene::IntroScene() {
     flow_field.resize(cols * rows); // initialize vector field
     z_offset = 0.0;
 
-    logo_svg.load(logo_image);
-    logo_in_outs_svg.load(logo_in_outs_image);
+    logo_picture.load("resources/media_error_logo.svg");
+    logo_fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGB);
+
+    logo_fbo.begin();
+    {
+        ofPushMatrix();
+        ofTranslate(0.5f * ofGetWidth(), 0.5f * ofGetHeight());
+        ofTranslate(-logo_picture.getHeight() / 2.0f, -logo_picture.getHeight() / 2.0f);
+        logo_picture.draw();
+        ofPopMatrix();
+    }
+    logo_fbo.end();
+
+    particle_trail_shader.load("shaders/particle_trail_shader.vert", "shaders/particle_trail_shader.frag", "shaders/particle_trail_shader.geom");
+    particle_trail_shader.setGeometryInputType(GL_LINES);
+    particle_trail_shader.setGeometryOutputType(GL_LINE_STRIP);
+    particle_trail_shader.setGeometryOutputCount(2);
+
+    logo_svg.load("resources/media_error_logo_lines.svg");
+    logo_in_outs_svg.load("resources/logo_in_and_out_lines.svg");
     logo_position = ofVec2f(ofGetWidth() / 2, ofGetHeight() / 2);
     logo_width = logo_svg.getWidth() * logo_scale;
     logo_height = logo_svg.getHeight() * logo_scale;
@@ -44,8 +62,6 @@ IntroScene::IntroScene() {
     // Mittelpunkt und Radius des Kreises berechnen
     logo_center = ofVec2f(boundingBoxLogo.getCenter().x + logo_left, boundingBoxLogo.getCenter().y + logo_top);
     logo_radius = (std::max(boundingBoxLogo.getWidth(), boundingBoxLogo.getHeight()) / 2.0f);
-    Particle::logo_center = logo_center;
-    Particle::logo_radius = logo_radius;
 }
 
 //--------------------------------------------------------------
@@ -124,35 +140,15 @@ void IntroScene::render() {
     {
         ofClear(0);
 
-        // ofPushMatrix();
-        // ofTranslate(ofGetWidth() / 2, ofGetHeight() / 2);
-        // ofScale(0.5, 0.5);
-        // ofTranslate(-logo_svg.getHeight() / 2, -logo_svg.getHeight() / 2);
-        //  logo_svg.draw();
-        // ofPopMatrix();
-
-
-        //// visualized flowing field
-        // for (int y = 0; y < rows; y++) {
-        //	for (int x = 0; x < cols; x++) {
-        //		ofVec2f vec = flow_field[y * cols + x];
-        //		ofPushMatrix();
-        //		ofTranslate(x * resolution, y * resolution);
-        //		ofDrawLine(0, 0, vec.x * resolution * 0.5, vec.y * resolution * 0.5);
-        //		ofPopMatrix();
-        //	}
-        // }
-
-        // draw particles
-        for (auto &particle: particles) {
-            particle.draw();
+        particle_trail_shader.begin();
+        {
+            particle_trail_shader.setUniform1f("uMaxLength", 10);
+            particle_trail_shader.setUniformTexture("logo_texture", logo_fbo.getTexture(), 0);
+            for (auto &particle: particles) {
+                particle.draw();
+            }
         }
-
-        // drawing logo_vectors
-        // ofSetColor(0, 255, 0); // green
-        /*for (auto &logo_vec: all_logo_vectors) {
-             ofDrawLine(logo_vec.first, logo_vec.first + logo_vec.second * 10);
-        }*/
+        particle_trail_shader.end();
     }
     frame_buffer.end();
 }
