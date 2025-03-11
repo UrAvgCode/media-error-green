@@ -576,6 +576,11 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
+    <CopyFileToFolders Include="images\meLogoPlain.svg">
+      <FileType>Document</FileType>
+      <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">data/%(Filename)%(Extension)</DestinationFileName>
+      <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">data/%(Filename)%(Extension)</DestinationFileName>
+    </CopyFileToFolders>
     <None Include="packages.config" />
     <CopyFileToFolders Include="shaders\render.frag">
       <FileType>Document</FileType>

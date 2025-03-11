@@ -1,4 +1,4 @@
-#include "tracking_scene.h"
+﻿#include "tracking_scene.h"
 
 #include <ofxConvexHull.h>
 
@@ -32,19 +32,26 @@ TrackingScene::TrackingScene(ofxAzureKinect::Device *device) : kinect_device(dev
     distribution = std::uniform_real_distribution<float>(min_random_value, max_random_value);
 
     //Bild laden
-    bouncing_image.load("dvd-logo-green.png");
+    bouncing_image.load(image_path);
     image_width = bouncing_image.getWidth() * image_scale;
     image_height = bouncing_image.getHeight() * image_scale;
 
-    // Zuf�llige Startposition im Frame
+    // Zufällige Startposition im Frame
     image_position = glm::vec2(ofRandom(0, ofGetWidth() - image_width), ofRandom(0, ofGetHeight() - image_height));
 
-    // Zuf�llige Geschwindigkeit setzen
+    // Zufällige Geschwindigkeit setzen
     image_velocity = glm::vec2(ofRandom(-5, 5), ofRandom(-5, 5));
 }
 
 void TrackingScene::update() {
-    update_bouncing_image(); 
+    const auto &body_skeletons = kinect_device->getBodySkeletons();
+    std::vector<std::vector<ofPoint>> convex_hulls;
+
+    for (const auto &skeleton: body_skeletons) {
+        convex_hulls.emplace_back(calculate_convex_hull(skeleton));
+    }
+
+    update_bouncing_image(convex_hulls); // Bild aktualisieren mit Kollisionserkennung
 }
 
 void TrackingScene::render() {
@@ -59,7 +66,7 @@ void TrackingScene::render() {
         convex_hulls.emplace_back(calculate_convex_hull(body_skeletons[i]));
     }
 
-    // Berechnung der Shake-Amplituden pro K�rper
+    // Berechnung der Shake-Amplituden pro Körper
     std::vector<float> shake_amplitudes(k_max_bodies, 0.0f);
     float screen_shake_amplitude = 0.0f;
     float max_shake_amplitude = 0.0f;
@@ -270,7 +277,7 @@ void TrackingScene::draw_bounding_box() {
     ofPopMatrix();
 }
 
-void TrackingScene::update_bouncing_image() {
+void TrackingScene::update_bouncing_image(const std::vector<std::vector<ofPoint>> &convex_hulls) {
     image_position += image_velocity; // Bewege das Bild
 
     // Kollision mit dem linken/rechten Rand
@@ -282,4 +289,52 @@ void TrackingScene::update_bouncing_image() {
     if (image_position.y <= 0 || image_position.y + image_height >= ofGetHeight()) {
         image_velocity.y *= -1; // Richtung umkehren
     }
+
+    // Kollision mit Körpern prüfen
+    if (check_collision_with_bodies(convex_hulls)) {
+        image_velocity *= -1; // Richtungsumkehr bei Kollision
+    }
+
+    image_position += image_velocity; // Bild bewegen
+}
+
+bool TrackingScene::check_collision_with_bodies(const std::vector<std::vector<ofPoint>> &convexHulls) {
+    glm::vec2 imageCenter = image_position + glm::vec2(image_width / 2, image_height / 2);
+    float radius = image_width / 2; // Falls das Logo perfekt rund ist
+
+    for (const auto &hull: convexHulls) {
+        if (hull.size() < 3)
+            continue; // Ein gültiger Convex Hull braucht mindestens 3 Punkte
+
+         // Explizit sicherstellen, dass die Konvertierung zu ofPolyline korrekt ist
+        ofPolyline polyline;
+        for (const auto &point: hull) {
+            polyline.addVertex(glm::vec3(point.x, point.y, 0)); // 2D-Punkte als 3D speichern
+        }
+        polyline.close();
+
+        // Berechne die kürzeste Distanz zwischen dem Kreiszentrum und dem Polyline
+        float minDistance = FLT_MAX;
+        for (std::size_t i = 0; i < polyline.size(); ++i) {
+            glm::vec2 p1 = polyline[i];
+            glm::vec2 p2 = polyline[(i + 1) % polyline.size()]; // Nächstes Segment
+            float distance = of_dist_point_to_segment(imageCenter, p1, p2);
+            minDistance = std::min(minDistance, distance);
+        }
+
+        // Falls die Distanz kleiner als der Radius ist → Kollision erkannt
+        if (minDistance <= radius) {
+            return true;
+        }
+    }
+    return false; // Keine Kollision
+}
+
+float TrackingScene::of_dist_point_to_segment(const glm::vec2 &p, const glm::vec2 &a, const glm::vec2 &b) {
+    glm::vec2 ab = b - a;
+    glm::vec2 ap = p - a;
+    float t = glm::dot(ap, ab) / glm::dot(ab, ab);
+    t = glm::clamp(t, 0.0f, 1.0f); // Begrenze t auf das Segment
+    glm::vec2 closestPoint = a + t * ab;
+    return glm::distance(p, closestPoint);
 }
