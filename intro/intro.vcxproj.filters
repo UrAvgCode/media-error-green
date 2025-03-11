@@ -1627,10 +1627,10 @@
     <CopyFileToFolders Include="shaders\particle_trail_shader.vert">
       <Filter>shaders</Filter>
     </CopyFileToFolders>
-    <CopyFileToFolders Include="shaders\pixel_intro.frag">
+    <CopyFileToFolders Include="shaders\particle_pixel_shader.frag">
       <Filter>shaders</Filter>
     </CopyFileToFolders>
-    <CopyFileToFolders Include="shaders\pixel_intro.vert">
+    <CopyFileToFolders Include="shaders\particle_pixel_shader.vert">
       <Filter>shaders</Filter>
     </CopyFileToFolders>
     <CopyFileToFolders Include="resources\logo_in_and_out_lines.svg">

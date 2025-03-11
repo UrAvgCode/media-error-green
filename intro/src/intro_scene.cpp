@@ -29,6 +29,10 @@ IntroScene::IntroScene() {
     particle_trail_shader.setGeometryOutputType(GL_LINE_STRIP);
     particle_trail_shader.setGeometryOutputCount(2);
 
+    particle_pixel_shader.load("shaders/particle_pixel_shader");
+
+    particle_draw_fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGB);
+
     logo_svg.load("resources/media_error_logo_lines.svg");
     logo_in_outs_svg.load("resources/logo_in_and_out_lines.svg");
     logo_position = ofVec2f(ofGetWidth() / 2, ofGetHeight() / 2);
@@ -133,7 +137,7 @@ void IntroScene::update() {
 }
 
 void IntroScene::render() {
-    frame_buffer.begin();
+    particle_draw_fbo.begin();
     {
         ofClear(0);
 
@@ -146,6 +150,18 @@ void IntroScene::render() {
             }
         }
         particle_trail_shader.end();
+    }
+    particle_draw_fbo.end();
+
+    frame_buffer.begin();
+    {
+        particle_pixel_shader.begin();
+
+        particle_pixel_shader.setUniform1f("block_size", 5);
+        particle_pixel_shader.setUniform1f("quality", 0.5f);
+        particle_draw_fbo.draw(0, 0);
+
+        particle_pixel_shader.end();
     }
     frame_buffer.end();
 }

@@ -59,6 +59,8 @@ class IntroScene : public Scene {
     float logo_radius;
     int logo_margin = 30;
 
+    ofFbo particle_draw_fbo;
+
     ofShader particle_trail_shader;
     ofShader particle_pixel_shader;
 
