@@ -7,6 +7,8 @@
 
 #include <ofGLProgrammableRenderer.h>
 
+Particle::Particle() : Particle(ofRandomWidth(), ofRandomHeight()) {}
+
 Particle::Particle(float x, float y) : position(ofVec2f(x, y)), velocity(ofVec2f(0, 0)), acceleration(ofVec2f(0, 0)) {
     mesh.setMode(OF_PRIMITIVE_LINE_STRIP);
     auto &vertices = mesh.getVertices();
@@ -65,7 +67,7 @@ void Particle::wrap_position() {
     }
 }
 
-void Particle::apply_repulsion(const std::vector<Particle> &particles, float repulsion_radius,
+void Particle::apply_repulsion(const std::array<Particle, 2048> &particles, float repulsion_radius,
                                float repulsion_strength) {
     acceleration += std::transform_reduce(
             std::execution::par_unseq, particles.begin(), particles.end(), ofVec2f(), std::plus<>(), [&](auto &other) {

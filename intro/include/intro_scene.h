@@ -31,8 +31,7 @@ class IntroScene : public Scene {
     float z_offset; // for animated Perlin noise
 
     // particles
-    std::vector<Particle> particles;
-    const int num_particles = 2000;
+    std::array<Particle, 2048> particles;
     const float repulsion_radius = 25;
     const float repulsion_strength = 5;
 

@@ -18,13 +18,14 @@ class Particle {
     ofVec2f velocity;
     ofVec2f acceleration;
 
+    Particle();
     Particle(float x, float y);
 
     void update(const std::vector<std::pair<ofVec2f, ofVec2f>> &logo_vectors, float logo_tolerance);
     void draw();
 
     void apply_force(ofVec2f force);
-    void apply_repulsion(const std::vector<Particle> &particles, float repulsion_radius, float repulsion_strength);
+    void apply_repulsion(const std::array<Particle, 2048> &particles, float repulsion_radius, float repulsion_strength);
 
   protected:
     ofMesh mesh;

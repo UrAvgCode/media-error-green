@@ -23,7 +23,8 @@ IntroScene::IntroScene() {
     }
     logo_fbo.end();
 
-    particle_trail_shader.load("shaders/particle_trail_shader.vert", "shaders/particle_trail_shader.frag", "shaders/particle_trail_shader.geom");
+    particle_trail_shader.load("shaders/particle_trail_shader.vert", "shaders/particle_trail_shader.frag",
+                               "shaders/particle_trail_shader.geom");
     particle_trail_shader.setGeometryInputType(GL_LINES);
     particle_trail_shader.setGeometryOutputType(GL_LINE_STRIP);
     particle_trail_shader.setGeometryOutputCount(2);
@@ -44,10 +45,6 @@ IntroScene::IntroScene() {
     // ´combine both vectorlists
     all_logo_vectors = logo_vectors;
     all_logo_vectors.insert(all_logo_vectors.end(), logo_in_outs_vectors.begin(), logo_in_outs_vectors.end());
-
-    for (int i = 0; i < num_particles; i++) {
-        particles.emplace_back(ofRandom(ofGetWidth()), ofRandom(ofGetHeight()));
-    }
 
     // Berechne die Bounding Box des Logos
     ofRectangle boundingBoxLogo;
