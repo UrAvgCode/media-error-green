@@ -32,7 +32,7 @@ TrackingScene::TrackingScene(ofxAzureKinect::Device *device) : kinect_device(dev
     distribution = std::uniform_real_distribution<float>(min_random_value, max_random_value);
 
     //Bild laden
-    bouncing_image.load("rotateGreen.png");
+    bouncing_image.load("dvd-logo-green.png");
     image_width = bouncing_image.getWidth() * image_scale;
     image_height = bouncing_image.getHeight() * image_scale;
 
