@@ -39,6 +39,9 @@ class TrackingScene : public Scene {
     glm::vec2 image_position; // Position des Bildes
     glm::vec2 image_velocity; // Geschwindigkeit des Bildes
 
+    //polyline for collision
+    ofPolyline debug_polyline; // Speichert die letzte getestete Polyline
+
     float image_scale = 1;
     float image_width, image_height; // Bildgröße
 

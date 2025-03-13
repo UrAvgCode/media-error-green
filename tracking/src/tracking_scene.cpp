@@ -41,6 +41,8 @@ TrackingScene::TrackingScene(ofxAzureKinect::Device *device) : kinect_device(dev
 
     // Zufällige Geschwindigkeit setzen
     image_velocity = glm::vec2(ofRandom(-5, 5), ofRandom(-5, 5));
+
+    
 }
 
 void TrackingScene::update() {
@@ -51,7 +53,7 @@ void TrackingScene::update() {
         convex_hulls.emplace_back(calculate_convex_hull(skeleton));
     }
 
-    update_bouncing_image(convex_hulls); // Bild aktualisieren mit Kollisionserkennung
+    update_bouncing_image(convex_hulls); // Bild aktualisieren mit Kollisionserkennung anhand von convex_hulls
 }
 
 void TrackingScene::render() {
@@ -144,6 +146,10 @@ void TrackingScene::render() {
 
         // Zeichne das Bild
         bouncing_image.draw(image_position.x, image_position.y, image_width, image_height);
+
+        ofSetColor(0, 0, 255); // Blaue Linie für Debug
+        debug_polyline.draw();
+           
 
         // Zeichne die roten Umrisse der Convex Hulls
         camera.begin();
@@ -309,9 +315,12 @@ bool TrackingScene::check_collision_with_bodies(const std::vector<std::vector<of
          // Explizit sicherstellen, dass die Konvertierung zu ofPolyline korrekt ist
         ofPolyline polyline;
         for (const auto &point: hull) {
-            polyline.addVertex(glm::vec3(point.x, point.y, 0)); // 2D-Punkte als 3D speichern
+            glm::vec3 screen_hullpoint = camera.worldToScreen(point);
+            polyline.addVertex(glm::vec3(screen_hullpoint.x, screen_hullpoint.y, 0)); // 2D-Punkte als 3D speichern
         }
         polyline.close();
+
+        debug_polyline = polyline;
 
         // Berechne die kürzeste Distanz zwischen dem Kreiszentrum und dem Polyline
         float minDistance = FLT_MAX;
@@ -321,6 +330,8 @@ bool TrackingScene::check_collision_with_bodies(const std::vector<std::vector<of
             float distance = of_dist_point_to_segment(imageCenter, p1, p2);
             minDistance = std::min(minDistance, distance);
         }
+
+        polyline.draw();
 
         // Falls die Distanz kleiner als der Radius ist → Kollision erkannt
         if (minDistance <= radius) {
