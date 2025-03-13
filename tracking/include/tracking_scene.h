@@ -13,12 +13,15 @@ class TrackingScene : public Scene {
 
     void update() override;
     void render() override;
+    void draw() override;
 
   private:
     void draw_bounding_box();
     std::vector<ofPoint> calculate_convex_hull(const ofxAzureKinect::BodySkeleton &skeleton);
 
     ofxAzureKinect::Device *kinect_device;
+
+    ofFpsCounter kinectFps;
 
     ofEasyCam camera;
 

@@ -47,7 +47,7 @@ void main()
         ray.x != 0 && ray.y != 0)
     {
         int bodyID = uBodyIDs[bodyIndex];
-        vColor = vec4(0.0, 255.0, 0.0, 1.0); // COLORS[bodyID % 6];
+        vColor = vec4(1.0, 1.0, 1.0, 1.0); // COLORS[bodyID % 6];
     }
     else
     {
@@ -60,22 +60,22 @@ void main()
     posWorld.y = ray.y * posWorld.z;
 
     // glitch effect
-    const float glitch_width = 40;
-    const float glitch_height = 10;
+    //const float glitch_width = 40;
+    //const float glitch_height = 10;
 
-    if (posWorld.y < random_offset_one + glitch_height && posWorld.y > random_offset_one - glitch_height) {
-        posWorld.x += glitch_width;
-    }
+    //if (posWorld.y < random_offset_one + glitch_height && posWorld.y > random_offset_one - glitch_height) {
+    //    posWorld.x += glitch_width;
+    //}
 
-    if (posWorld.y < random_offset_two + glitch_height && posWorld.y > random_offset_two - glitch_height) {
-        posWorld.x -= glitch_width;
-    }
+    //if (posWorld.y < random_offset_two + glitch_height && posWorld.y > random_offset_two - glitch_height) {
+    //    posWorld.x -= glitch_width;
+    //}
 
-    posWorld.x += sin(posWorld.y + time) * 20.0;
+    //posWorld.x += sin(posWorld.y + time) * 20.0;
    
     // shake effect
-    posWorld.x += sin(time * 10.0 + posWorld.y) * shake_amplitude;
-    posWorld.y += cos(time * 10.0 + posWorld.x) * shake_amplitude;
+    //posWorld.x += sin(time * 10.0 + posWorld.y) * shake_amplitude;
+    //posWorld.y += cos(time * 10.0 + posWorld.x) * shake_amplitude;
 
     gl_Position = modelViewProjectionMatrix * posWorld;
 }

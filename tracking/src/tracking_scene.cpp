@@ -29,7 +29,11 @@ TrackingScene::TrackingScene(ofxAzureKinect::Device *device) : kinect_device(dev
     distribution = std::uniform_real_distribution<float>(min_random_value, max_random_value);
 }
 
-void TrackingScene::update() {}
+void TrackingScene::update() {
+    if (kinect_device->isFrameNew()) {
+        kinectFps.newFrame();
+    }
+}
 
 void TrackingScene::render() {
     frame_buffer.begin();
@@ -63,7 +67,7 @@ void TrackingScene::render() {
                     const auto frame_width = static_cast<int>(kinect_device->getDepthTex().getWidth());
                     const auto frame_height = static_cast<int>(kinect_device->getDepthTex().getHeight());
 
-                    render_shader.setUniformTexture("uDepthTex", kinect_device->getDepthTex(), 1);
+                    /*render_shader.setUniformTexture("uDepthTex", kinect_device->getDepthTex(), 1);
                     render_shader.setUniformTexture("uBodyIndexTex", kinect_device->getBodyIndexTex(), 2);
                     render_shader.setUniformTexture("uWorldTex", kinect_device->getDepthToWorldTex(), 3);
                     render_shader.setUniform2i("uFrameSize", frame_width, frame_height);
@@ -71,10 +75,10 @@ void TrackingScene::render() {
 
                     render_shader.setUniform1f("time", static_cast<float>(ofGetElapsedTimeMillis()) / 50.0f);
                     render_shader.setUniform1f("random_offset_one", distribution(generator));
-                    render_shader.setUniform1f("random_offset_two", distribution(generator));
+                    render_shader.setUniform1f("random_offset_two", distribution(generator));*/
 
                     // calculate shake amplitude based on hull area size
-                    float shake_amplitude = 0;
+                    /*float shake_amplitude = 0;
                     for (const auto &hull: convex_hulls) {
                         float area = 0.0f;
                         for (std::size_t i = 0; i < hull.size(); ++i) {
@@ -88,8 +92,8 @@ void TrackingScene::render() {
                         const float min_area = 496604;
                         const float max_area = 1.51127e+06;
                         shake_amplitude = std::max(shake_amplitude, ofMap(area, min_area, max_area, 0, 75, true));
-                    }
-                    render_shader.setUniform1f("shake_amplitude", shake_amplitude);
+                    }*/
+                    render_shader.setUniform1f("shake_amplitude", 0.0);
 
                     const int num_points = frame_width * frame_height;
                     points_vbo.drawInstanced(GL_POINTS, 0, 1, num_points);
@@ -97,7 +101,7 @@ void TrackingScene::render() {
                 render_shader.end();
 
                 // draw the red outlines
-                for (const auto &hull: convex_hulls) {
+                /*for (const auto &hull: convex_hulls) {
                     ofPushStyle();
                     ofSetColor(255, 0, 0);
                     ofNoFill();
@@ -107,7 +111,7 @@ void TrackingScene::render() {
                     }
                     ofEndShape(true);
                     ofPopStyle();
-                }
+                }*/
 
                 ofDisableDepthTest();
             }
@@ -116,6 +120,37 @@ void TrackingScene::render() {
         camera.end();
     }
     frame_buffer.end();
+}
+
+void TrackingScene::draw() {
+    ofBackground(0);
+
+    if (kinect_device->isStreaming()) {
+        // Draw the body index texture.
+        // The pixels are not black, their color equals the body ID which is just a low number.
+        kinect_device->getBodyIndexTex().draw(0, 0);
+
+        // Draw the projected joints onto the image.
+        const auto &skeletons = kinect_device->getBodySkeletons();
+        for (int i = 0; i < skeletons.size(); ++i) {
+            for (int j = 0; j < K4ABT_JOINT_COUNT; ++j) {
+                switch (skeletons[i].joints[j].confidenceLevel) {
+                    case K4ABT_JOINT_CONFIDENCE_MEDIUM:
+                        ofSetColor(ofColor::green);
+                        break;
+                    case K4ABT_JOINT_CONFIDENCE_LOW:
+                        ofSetColor(ofColor::yellow);
+                        break;
+                    case K4ABT_JOINT_CONFIDENCE_NONE:
+                    default:
+                        ofSetColor(ofColor::red);
+                        break;
+                }
+                ofDrawCircle(skeletons[i].joints[j].projPos, 5.0f);
+            }
+        }
+        ofSetColor(ofColor::white);
+    }
 }
 
 std::vector<ofPoint> TrackingScene::calculate_convex_hull(const ofxAzureKinect::BodySkeleton &skeleton) {
