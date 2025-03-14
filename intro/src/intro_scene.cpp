@@ -7,8 +7,8 @@
 #include <ofVec2f.h>
 
 IntroScene::IntroScene() {
-    flow_field.resize(cols * rows); // initialize vector field
-    z_offset = 0.0;
+    flow_field.resize(flow_field_cols * flow_field_rows); // initialize vector field
+    flow_field_offset = 0.0;
 
     logo_picture.load("resources/media_error_logo.svg");
     logo_fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGB);
@@ -67,31 +67,23 @@ IntroScene::IntroScene() {
 
 //--------------------------------------------------------------
 void IntroScene::update() {
-    z_offset += 0.01; // animation offset gets increased
+    flow_field_offset += 0.01; // animation offset gets increased
 
     // vectors get calculated by Perlin noise
-    for (int y = 0; y < rows; y++) {
-        for (int x = 0; x < cols; x++) {
+    for (int y = 0; y < flow_field_rows; y++) {
+        for (int x = 0; x < flow_field_cols; x++) {
 
-            float pos_x = x * resolution;
-            float pos_y = y * resolution;
-
-            //// Prüfen, ob der aktuelle Punkt innerhalb des Logo-Bereichs liegt
-            // if (pos_x >= logo_position.x - logo_width / 2 && pos_x <= logo_position.x + logo_width / 2 &&
-            //     pos_y >= logo_position.y - logo_height / 2 && pos_y <= logo_position.y + logo_height / 2) {
-            //     // Überspringen, wenn innerhalb des Logos
-            //     continue;
-            // }
+            float pos_x = x * flow_field_resolution;
+            float pos_y = y * flow_field_resolution;
 
             // Prüfen, ob der aktuelle Punkt innerhalb des Logo-Kreises liegt
             float distance_to_logo_center = ofVec2f(pos_x, pos_y).distance(logo_center);
             if (distance_to_logo_center <= logo_radius + logo_margin) {
-                // Überspringen, wenn innerhalb des Logos
                 continue;
             }
 
-            float angle = ofNoise(x * 0.1, y * 0.1, z_offset) * TWO_PI; // noise creates angle
-            flow_field[y * cols + x] = ofVec2f(cos(angle), sin(angle));
+            float angle = ofNoise(x * 0.1, y * 0.1, flow_field_offset) * TWO_PI; // noise creates angle
+            flow_field[y * flow_field_cols + x] = ofVec2f(cos(angle), sin(angle));
         }
     }
 
@@ -102,9 +94,9 @@ void IntroScene::update() {
             particle.apply_repulsion(particles, repulsion_radius, repulsion_strength);
         }
 
-        auto x_index = static_cast<int>(particle.position.x / resolution);
-        auto y_index = static_cast<int>(particle.position.y / resolution);
-        auto index = y_index * cols + x_index;
+        auto x_index = static_cast<int>(particle.position.x / flow_field_resolution);
+        auto y_index = static_cast<int>(particle.position.y / flow_field_resolution);
+        auto index = y_index * flow_field_cols + x_index;
 
         // using perlin noise as force
         if (index >= 0 && index < flow_field.size()) {

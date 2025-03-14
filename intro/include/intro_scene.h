@@ -22,13 +22,12 @@ class IntroScene : public Scene {
     const int screen_width = ofGetWidth();
     const int screen_height = ofGetHeight();
 
-    // Flow Field
-    const int resolution = 20; // size of every cell
-    const int cols = ofGetWidth() / resolution;
-    const int rows = ofGetHeight() / resolution;
-
+    // flow field
     std::vector<ofVec2f> flow_field;
-    float z_offset; // for animated Perlin noise
+    float flow_field_offset;
+    const int flow_field_resolution = 20;
+    const int flow_field_cols = ofGetWidth() / flow_field_resolution;
+    const int flow_field_rows = ofGetHeight() / flow_field_resolution;
 
     // particles
     std::array<Particle, 2048> particles;
