@@ -303,6 +303,9 @@
     <Filter Include="resources">
       <UniqueIdentifier>{3c9d5652-10b9-4f80-9e82-9b5949c6cf9a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="shaders">
+      <UniqueIdentifier>{eb0c8ce0-f639-43fd-8d25-7778e45b85ee}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\addons\ofxAzureKinect\src\ofxAzureKinect\BodyTracker.h">
@@ -1615,43 +1618,28 @@
     <ResourceCompile Include="icon.rc" />
   </ItemGroup>
   <ItemGroup>
-    <CopyFileToFolders Include="resources\logo_filled.png">
+    <CopyFileToFolders Include="shaders\particle_trail_shader.frag">
+      <Filter>shaders</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\particle_trail_shader.geom">
+      <Filter>shaders</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\particle_trail_shader.vert">
+      <Filter>shaders</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\particle_pixel_shader.frag">
+      <Filter>shaders</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\particle_pixel_shader.vert">
+      <Filter>shaders</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="resources\logo_in_and_out_lines.svg">
       <Filter>resources</Filter>
     </CopyFileToFolders>
-    <CopyFileToFolders Include="resources\logo_lines1.svg">
+    <CopyFileToFolders Include="resources\media_error_logo.svg">
       <Filter>resources</Filter>
     </CopyFileToFolders>
-    <CopyFileToFolders Include="resources\logo_lines2.svg">
-      <Filter>resources</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="resources\logo_lines3.svg">
-      <Filter>resources</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="resources\logo_lines4.svg">
-      <Filter>resources</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="resources\logo_lines5.svg">
-      <Filter>resources</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="resources\meLogoPlain.svg">
-      <Filter>resources</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="resources\path1.svg">
-      <Filter>resources</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="resources\rotateGreen.png">
-      <Filter>resources</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="resources\rotateGreen1.png">
-      <Filter>resources</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="resources\logo_lines7.svg">
-      <Filter>resources</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="resources\logo_lines6.svg">
-      <Filter>resources</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="resources\logo_in_and_outs.svg">
+    <CopyFileToFolders Include="resources\media_error_logo_lines.svg">
       <Filter>resources</Filter>
     </CopyFileToFolders>
   </ItemGroup>
