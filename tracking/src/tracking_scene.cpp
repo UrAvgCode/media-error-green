@@ -41,8 +41,6 @@ TrackingScene::TrackingScene(ofxAzureKinect::Device *device) : kinect_device(dev
 
     // Zufällige Geschwindigkeit setzen
     image_velocity = glm::vec2(ofRandom(-5, 5), ofRandom(-5, 5));
-
-    
 }
 
 void TrackingScene::update() {
@@ -149,7 +147,6 @@ void TrackingScene::render() {
 
         ofSetColor(0, 0, 255); // Blaue Linie für Debug
         debug_polyline.draw();
-           
 
         // Zeichne die roten Umrisse der Convex Hulls
         camera.begin();
@@ -225,64 +222,6 @@ std::vector<ofPoint> TrackingScene::calculate_convex_hull(const ofxAzureKinect::
     return output_hull;
 }
 
-void TrackingScene::draw_bounding_box() {
-    const float offset_distance = 0.1f; // Offset in meters (10 cm)
-
-    ofPushMatrix();
-    {
-        camera.begin();
-        {
-            ofPushMatrix();
-            {
-                ofRotateXDeg(180);
-
-                const auto &body_skeletons = kinect_device->getBodySkeletons();
-
-                for (const auto &skeleton: body_skeletons) {
-                    // Initialize bounding box limits
-                    ofVec3f min_bounds(FLT_MAX, FLT_MAX, FLT_MAX);
-                    ofVec3f max_bounds(-FLT_MAX, -FLT_MAX, -FLT_MAX);
-
-                    bool valid_skeleton = false;
-
-                    // Iterate through all joints in the skeleton
-                    for (const auto &joint: skeleton.joints) {
-                        // Ensure joint position is valid
-                        if (std::isfinite(joint.position.x) && std::isfinite(joint.position.y) &&
-                            std::isfinite(joint.position.z)) {
-                            valid_skeleton = true; // At least one valid joint found
-
-                            // Update bounding box
-                            min_bounds.x = std::min(min_bounds.x, joint.position.x);
-                            min_bounds.y = std::min(min_bounds.y, joint.position.y);
-                            min_bounds.z = std::min(min_bounds.z, joint.position.z);
-
-                            max_bounds.x = std::max(max_bounds.x, joint.position.x);
-                            max_bounds.y = std::max(max_bounds.y, joint.position.y);
-                            max_bounds.z = std::max(max_bounds.z, joint.position.z);
-                        }
-                    }
-
-                    // If at least one valid joint was found, draw the bounding box
-                    if (valid_skeleton) {
-                        ofPushStyle();
-                        ofNoFill();
-                        ofSetColor(255, 0, 0); // Red line
-                        ofDrawBox((min_bounds + max_bounds) / 2, // Center of the box
-                                  max_bounds.x - min_bounds.x, // Width
-                                  max_bounds.y - min_bounds.y, // Height
-                                  max_bounds.z - min_bounds.z); // Depth
-                        ofPopStyle();
-                    }
-                }
-            }
-            ofPopMatrix();
-        }
-        camera.end();
-    }
-    ofPopMatrix();
-}
-
 void TrackingScene::update_bouncing_image(const std::vector<std::vector<ofPoint>> &convex_hulls) {
     image_position += image_velocity; // Bewege das Bild
 
@@ -312,7 +251,7 @@ bool TrackingScene::check_collision_with_bodies(const std::vector<std::vector<of
         if (hull.size() < 3)
             continue; // Ein gültiger Convex Hull braucht mindestens 3 Punkte
 
-         // Explizit sicherstellen, dass die Konvertierung zu ofPolyline korrekt ist
+        // Explizit sicherstellen, dass die Konvertierung zu ofPolyline korrekt ist
         ofPolyline polyline;
         for (const auto &point: hull) {
             glm::vec3 screen_hullpoint = camera.worldToScreen(point);
