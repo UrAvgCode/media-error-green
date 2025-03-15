@@ -31,7 +31,7 @@ TrackingScene::TrackingScene(ofxAzureKinect::Device *device) : kinect_device(dev
     generator = std::mt19937(random());
     distribution = std::uniform_real_distribution<float>(min_random_value, max_random_value);
 
-    //Bild laden
+    // Bild laden
     bouncing_image.load(image_path);
     image_width = bouncing_image.getWidth() * image_scale;
     image_height = bouncing_image.getHeight() * image_scale;
@@ -51,7 +51,7 @@ void TrackingScene::update() {
         convex_hulls.emplace_back(calculate_convex_hull(skeleton));
     }
 
-    update_bouncing_image(convex_hulls); // Bild aktualisieren mit Kollisionserkennung anhand von convex_hulls
+    update_bouncing_image(body_skeletons); // Bild aktualisieren mit Kollisionserkennung anhand von body skeletons
 }
 
 void TrackingScene::render() {
@@ -134,6 +134,7 @@ void TrackingScene::render() {
 
     frame_buffer.begin();
     {
+        pixel_shader_fbo.draw(0, 0);
         pixel_shader.begin();
         {
             pixel_shader.setUniform1f("block_size", pixel_block_size);
@@ -167,8 +168,135 @@ void TrackingScene::render() {
         }
         ofPopMatrix();
         camera.end();
+
+        camera.begin();
+        {
+            ofPushMatrix();
+            {
+                ofRotateXDeg(180);
+                draw_skeletons(body_skeletons);
+            }
+            ofPopMatrix();
+        }
+        camera.end();
     }
     frame_buffer.end();
+}
+
+void TrackingScene::draw_skeletons(const std::vector<ofxAzureKinect::BodySkeleton> &skeletons) {
+    for (const auto &skeleton: skeletons) {
+        // Draw joints.
+        for (int i = 0; i < K4ABT_JOINT_COUNT; ++i) {
+            auto joint = skeleton.joints[i];
+            ofPushMatrix();
+            {
+                glm::mat4 transform = glm::translate(joint.position) * glm::toMat4(joint.orientation);
+                ofMultMatrix(transform);
+
+                ofDrawAxis(50.0f);
+
+                if (joint.confidenceLevel >= K4ABT_JOINT_CONFIDENCE_MEDIUM) {
+                    ofSetColor(ofColor::green);
+                } else if (joint.confidenceLevel >= K4ABT_JOINT_CONFIDENCE_LOW) {
+                    ofSetColor(ofColor::yellow);
+                } else {
+                    ofSetColor(ofColor::red);
+                }
+
+                ofDrawSphere(10.0f);
+            }
+            ofPopMatrix();
+        }
+
+        // Draw connections.
+        skeleton_mesh.setMode(OF_PRIMITIVE_LINES);
+        auto &vertices = skeleton_mesh.getVertices();
+        vertices.resize(50);
+        int vdx = 0;
+
+        // Spine.
+        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_PELVIS].position);
+        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SPINE_NAVEL].position);
+
+        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SPINE_NAVEL].position);
+        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SPINE_CHEST].position);
+
+        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SPINE_CHEST].position);
+        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_NECK].position);
+
+        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_NECK].position);
+        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_HEAD].position);
+
+        // Head.
+        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_HEAD].position);
+        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_NOSE].position);
+
+        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_NOSE].position);
+        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_EYE_LEFT].position);
+
+        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_EYE_LEFT].position);
+        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_EAR_LEFT].position);
+
+        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_NOSE].position);
+        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_EYE_RIGHT].position);
+
+        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_EYE_RIGHT].position);
+        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_EAR_RIGHT].position);
+
+        // Left Leg.
+        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_PELVIS].position);
+        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_HIP_LEFT].position);
+
+        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_HIP_LEFT].position);
+        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_KNEE_LEFT].position);
+
+        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_KNEE_LEFT].position);
+        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ANKLE_LEFT].position);
+
+        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ANKLE_LEFT].position);
+        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_FOOT_LEFT].position);
+
+        // Right leg.
+        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_PELVIS].position);
+        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_HIP_RIGHT].position);
+
+        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_HIP_RIGHT].position);
+        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_KNEE_RIGHT].position);
+
+        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_KNEE_RIGHT].position);
+        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ANKLE_RIGHT].position);
+
+        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ANKLE_RIGHT].position);
+        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_FOOT_RIGHT].position);
+
+        // Left arm.
+        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_NECK].position);
+        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_CLAVICLE_LEFT].position);
+
+        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_CLAVICLE_LEFT].position);
+        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SHOULDER_LEFT].position);
+
+        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SHOULDER_LEFT].position);
+        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ELBOW_LEFT].position);
+
+        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ELBOW_LEFT].position);
+        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_WRIST_LEFT].position);
+
+        // Right arm.
+        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_NECK].position);
+        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_CLAVICLE_RIGHT].position);
+
+        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_CLAVICLE_RIGHT].position);
+        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SHOULDER_RIGHT].position);
+
+        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SHOULDER_RIGHT].position);
+        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ELBOW_RIGHT].position);
+
+        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ELBOW_RIGHT].position);
+        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_WRIST_RIGHT].position);
+
+        skeleton_mesh.draw();
+    }
 }
 
 std::vector<ofPoint> TrackingScene::calculate_convex_hull(const ofxAzureKinect::BodySkeleton &skeleton) {
@@ -222,7 +350,7 @@ std::vector<ofPoint> TrackingScene::calculate_convex_hull(const ofxAzureKinect::
     return output_hull;
 }
 
-void TrackingScene::update_bouncing_image(const std::vector<std::vector<ofPoint>> &convex_hulls) {
+void TrackingScene::update_bouncing_image(const std::vector<ofxAzureKinect::BodySkeleton> &skeletons) {
     image_position += image_velocity; // Bewege das Bild
 
     // Kollision mit dem linken/rechten Rand
@@ -236,48 +364,40 @@ void TrackingScene::update_bouncing_image(const std::vector<std::vector<ofPoint>
     }
 
     // Kollision mit Körpern prüfen
-    if (check_collision_with_bodies(convex_hulls)) {
+    if (check_collision_with_bodies(skeletons)) {
         image_velocity *= -1; // Richtungsumkehr bei Kollision
     }
 
     image_position += image_velocity; // Bild bewegen
 }
 
-bool TrackingScene::check_collision_with_bodies(const std::vector<std::vector<ofPoint>> &convexHulls) {
-    glm::vec2 imageCenter = image_position + glm::vec2(image_width / 2, image_height / 2);
-    float radius = image_width / 2; // Falls das Logo perfekt rund ist
+bool TrackingScene::check_collision_with_bodies(const std::vector<ofxAzureKinect::BodySkeleton> &skeletons) {
+    glm::vec2 image_center = image_position + glm::vec2(image_width / 2, image_height / 2);
 
-    for (const auto &hull: convexHulls) {
-        if (hull.size() < 3)
-            continue; // Ein gültiger Convex Hull braucht mindestens 3 Punkte
+    const auto image_width = bouncing_image.getWidth();
+    const auto image_height = bouncing_image.getHeight();
 
-        // Explizit sicherstellen, dass die Konvertierung zu ofPolyline korrekt ist
-        ofPolyline polyline;
-        for (const auto &point: hull) {
-            glm::vec3 screen_hullpoint = camera.worldToScreen(point);
-            polyline.addVertex(glm::vec3(screen_hullpoint.x, screen_hullpoint.y, 0)); // 2D-Punkte als 3D speichern
-        }
-        polyline.close();
+    for (const auto &skeleton: skeletons) {
+        for (const auto &joint: skeleton.joints) {
 
-        debug_polyline = polyline;
+            auto joint_position = joint.projPos;
+            // glm::vec4 joint_position_4(joint_position, 0.0f, 1.0f);
 
-        // Berechne die kürzeste Distanz zwischen dem Kreiszentrum und dem Polyline
-        float minDistance = FLT_MAX;
-        for (std::size_t i = 0; i < polyline.size(); ++i) {
-            glm::vec2 p1 = polyline[i];
-            glm::vec2 p2 = polyline[(i + 1) % polyline.size()]; // Nächstes Segment
-            float distance = of_dist_point_to_segment(imageCenter, p1, p2);
-            minDistance = std::min(minDistance, distance);
-        }
+            // glm::mat4 transform = glm::translate(joint.position) * glm::toMat4(joint.orientation);
 
-        polyline.draw();
+            // joint_position_4 *= transform;
+            // joint_position = glm::vec2(joint_position_4.x, joint_position_4.y);
 
-        // Falls die Distanz kleiner als der Radius ist → Kollision erkannt
-        if (minDistance <= radius) {
-            return true;
+
+            if (joint_position.x > image_position.x && joint_position.x < image_position.x + image_width &&
+                joint_position.y > image_position.y && joint_position.y < image_position.y + image_height) {
+
+                return true;
+            }
         }
     }
-    return false; // Keine Kollision
+
+    return false;
 }
 
 float TrackingScene::of_dist_point_to_segment(const glm::vec2 &p, const glm::vec2 &a, const glm::vec2 &b) {

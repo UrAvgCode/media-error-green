@@ -15,9 +15,10 @@ class TrackingScene : public Scene {
     void render() override;
 
   private:
-    void draw_bounding_box();
     std::vector<ofPoint> calculate_convex_hull(const ofxAzureKinect::BodySkeleton &skeleton);
-    bool check_collision_with_bodies(const std::vector<std::vector<ofPoint>> &convexHulls);
+    bool check_collision_with_bodies(const std::vector<ofxAzureKinect::BodySkeleton> &skeletons);
+
+    void draw_skeletons(const std::vector<ofxAzureKinect::BodySkeleton> &skeletons);
 
     ofxAzureKinect::Device *kinect_device;
 
@@ -39,12 +40,12 @@ class TrackingScene : public Scene {
     glm::vec2 image_position; // Position des Bildes
     glm::vec2 image_velocity; // Geschwindigkeit des Bildes
 
-    //polyline for collision
+    // polyline for collision
     ofPolyline debug_polyline; // Speichert die letzte getestete Polyline
 
     float image_scale = 1;
     float image_width, image_height; // Bildgröße
 
-    void update_bouncing_image(const std::vector<std::vector<ofPoint>> &convexHulls); // Funktion zur Aktualisierung der Bewegung
+    void update_bouncing_image(const std::vector<ofxAzureKinect::BodySkeleton> &skeletons); // Funktion zur Aktualisierung der Bewegung
     float of_dist_point_to_segment(const glm::vec2 &p, const glm::vec2 &a, const glm::vec2 &b);
 };
