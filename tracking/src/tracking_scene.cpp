@@ -31,16 +31,11 @@ TrackingScene::TrackingScene(ofxAzureKinect::Device *device) : kinect_device(dev
     generator = std::mt19937(random());
     distribution = std::uniform_real_distribution<float>(min_random_value, max_random_value);
 
-    // Bild laden
-    bouncing_image.load(image_path);
-    image_width = bouncing_image.getWidth() * image_scale;
-    image_height = bouncing_image.getHeight() * image_scale;
-
-    // Zufällige Startposition im Frame
-    image_position = glm::vec2(ofRandom(0, ofGetWidth() - image_width), ofRandom(0, ofGetHeight() - image_height));
-
-    // Zufällige Geschwindigkeit setzen
-    image_velocity = glm::vec2(ofRandom(-5, 5), ofRandom(-5, 5));
+    //init dvd logo
+    auto dvd_position = glm::vec2(ofRandom(5, 1000), ofRandom(5, 500));
+    auto dvd_velocity = glm::vec2(ofRandom(-100, 100), ofRandom(-100, 100));
+    dvd_velocity = 8 * glm::normalize(dvd_velocity);
+    dvd_logo = CollisionObject(dvd_position, dvd_velocity, "resources/dvd-logo.png");
 }
 
 void TrackingScene::update() {
@@ -51,7 +46,7 @@ void TrackingScene::update() {
         convex_hulls.emplace_back(calculate_convex_hull(skeleton));
     }
 
-    update_bouncing_image(body_skeletons); // Bild aktualisieren mit Kollisionserkennung anhand von body skeletons
+    dvd_logo.update(body_skeletons, camera);
 }
 
 void TrackingScene::render() {
@@ -146,8 +141,7 @@ void TrackingScene::render() {
         pixel_shader.end();
         */
 
-        // Zeichne das Bild
-        bouncing_image.draw(image_position.x, image_position.y, image_width, image_height);
+        dvd_logo.draw();
 
         ofSetColor(0, 0, 255); // Blaue Linie für Debug
         debug_polyline.draw();
@@ -351,60 +345,4 @@ std::vector<ofPoint> TrackingScene::calculate_convex_hull(const ofxAzureKinect::
     }
 
     return output_hull;
-}
-
-void TrackingScene::update_bouncing_image(const std::vector<ofxAzureKinect::BodySkeleton> &skeletons) {
-    image_position += image_velocity; // Bewege das Bild
-
-    // Kollision mit dem linken/rechten Rand
-    if (image_position.x <= 0 || image_position.x + image_width >= ofGetWidth()) {
-        image_velocity.x *= -1; // Richtung umkehren
-    }
-
-    // Kollision mit dem oberen/unteren Rand
-    if (image_position.y <= 0 || image_position.y + image_height >= ofGetHeight()) {
-        image_velocity.y *= -1; // Richtung umkehren
-    }
-
-    // Kollision mit Körpern prüfen
-    if (check_collision_with_bodies(skeletons)) {
-        image_velocity *= -1; // Richtungsumkehr bei Kollision
-    }
-
-    image_position += image_velocity; // Bild bewegen
-}
-
-bool TrackingScene::check_collision_with_bodies(const std::vector<ofxAzureKinect::BodySkeleton> &skeletons) {
-    glm::vec2 image_center = image_position + glm::vec2(image_width / 2, image_height / 2);
-
-    const auto image_width = bouncing_image.getWidth();
-    const auto image_height = bouncing_image.getHeight();
-
-    for (const auto &skeleton: skeletons) {
-        for (const auto &joint: skeleton.joints) {
-
-            auto joint_position_homogeneous = glm::vec4(joint.position, 1.0f);
-            auto rotation_matrix = glm::rotate(glm::mat4(1.0f), glm::radians(180.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-
-            auto rotated_joint_position_homogenous = rotation_matrix * joint_position_homogeneous;
-            auto rotated_joint_position = glm::vec3(rotated_joint_position_homogenous);
-
-            auto joint_position = camera.worldToScreen(rotated_joint_position);
-            if (joint_position.x > image_position.x && joint_position.x < image_position.x + image_width &&
-                joint_position.y > image_position.y && joint_position.y < image_position.y + image_height) {
-                return true;
-            }
-        }
-    }
-
-    return false;
-}
-
-float TrackingScene::of_dist_point_to_segment(const glm::vec2 &p, const glm::vec2 &a, const glm::vec2 &b) {
-    glm::vec2 ab = b - a;
-    glm::vec2 ap = p - a;
-    float t = glm::dot(ap, ab) / glm::dot(ab, ab);
-    t = glm::clamp(t, 0.0f, 1.0f); // Begrenze t auf das Segment
-    glm::vec2 closestPoint = a + t * ab;
-    return glm::distance(p, closestPoint);
 }

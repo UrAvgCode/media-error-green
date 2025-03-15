@@ -7,6 +7,8 @@
 
 #include <scene.h>
 
+#include "collision_object.h"
+
 class TrackingScene : public Scene {
   public:
     explicit TrackingScene(ofxAzureKinect::Device *device);
@@ -35,16 +37,10 @@ class TrackingScene : public Scene {
     std::mt19937 generator;
     std::uniform_real_distribution<float> distribution;
 
-    ofImage bouncing_image; // Das Bild
-    string image_path = "dvd-logo-green.png";
-    glm::vec2 image_position; // Position des Bildes
-    glm::vec2 image_velocity; // Geschwindigkeit des Bildes
+    CollisionObject dvd_logo;
 
     // polyline for collision
     ofPolyline debug_polyline; // Speichert die letzte getestete Polyline
-
-    float image_scale = 1;
-    float image_width, image_height; // Bildgröße
 
     void update_bouncing_image(const std::vector<ofxAzureKinect::BodySkeleton> &skeletons); // Funktion zur Aktualisierung der Bewegung
     float of_dist_point_to_segment(const glm::vec2 &p, const glm::vec2 &a, const glm::vec2 &b);
