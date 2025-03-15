@@ -178,9 +178,6 @@ void TrackingScene::render() {
 }
 
 void TrackingScene::draw_skeletons(const std::vector<ofxAzureKinect::BodySkeleton> &skeletons) {
-
-    std::vector<glm::vec2> joint_screen_positions;
-
     camera.begin();
     {
         ofPushMatrix();
@@ -206,16 +203,6 @@ void TrackingScene::draw_skeletons(const std::vector<ofxAzureKinect::BodySkeleto
                         }
 
                         ofDrawSphere(10.0f);
-
-                        glm::vec4 jointPosHomo(joint.position, 1.0f); // Convert to homogeneous coordinates
-                        glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(180.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-                        glm::vec4 rotatedPosHomo = rotationMatrix * jointPosHomo; // Apply rotation
-                        glm::vec3 rotatedPos = glm::vec3(rotatedPosHomo); // Convert back to 3D coordinates
-
-                        // Get screen coordinates
-                        glm::vec3 screenPos = camera.worldToScreen(rotatedPos);
-
-                        joint_screen_positions.emplace_back(screenPos.x, screenPos.y);
                     }
                     ofPopMatrix();
                 }
@@ -313,11 +300,6 @@ void TrackingScene::draw_skeletons(const std::vector<ofxAzureKinect::BodySkeleto
         ofPopMatrix();
     }
     camera.end();
-
-    for (auto &pos: joint_screen_positions) {
-        ofSetColor(ofColor::beige);
-        ofDrawCircle(pos.x, pos.y, 5);
-    }
 }
 
 std::vector<ofPoint> TrackingScene::calculate_convex_hull(const ofxAzureKinect::BodySkeleton &skeleton) {
@@ -401,18 +383,15 @@ bool TrackingScene::check_collision_with_bodies(const std::vector<ofxAzureKinect
     for (const auto &skeleton: skeletons) {
         for (const auto &joint: skeleton.joints) {
 
-            auto joint_position = joint.projPos;
-            // glm::vec4 joint_position_4(joint_position, 0.0f, 1.0f);
+            auto joint_position_homogeneous = glm::vec4(joint.position, 1.0f);
+            auto rotation_matrix = glm::rotate(glm::mat4(1.0f), glm::radians(180.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
-            // glm::mat4 transform = glm::translate(joint.position) * glm::toMat4(joint.orientation);
+            auto rotated_joint_position_homogenous = rotation_matrix * joint_position_homogeneous;
+            auto rotated_joint_position = glm::vec3(rotated_joint_position_homogenous);
 
-            // joint_position_4 *= transform;
-            // joint_position = glm::vec2(joint_position_4.x, joint_position_4.y);
-
-
+            auto joint_position = camera.worldToScreen(rotated_joint_position);
             if (joint_position.x > image_position.x && joint_position.x < image_position.x + image_width &&
                 joint_position.y > image_position.y && joint_position.y < image_position.y + image_height) {
-
                 return true;
             }
         }
