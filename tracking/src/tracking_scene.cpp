@@ -135,6 +135,8 @@ void TrackingScene::render() {
     frame_buffer.begin();
     {
         pixel_shader_fbo.draw(0, 0);
+        /*
+        pixel_shader_fbo.draw(0, 0);
         pixel_shader.begin();
         {
             pixel_shader.setUniform1f("block_size", pixel_block_size);
@@ -142,6 +144,7 @@ void TrackingScene::render() {
             pixel_shader_fbo.draw(0, 0);
         }
         pixel_shader.end();
+        */
 
         // Zeichne das Bild
         bouncing_image.draw(image_position.x, image_position.y, image_width, image_height);
@@ -169,133 +172,151 @@ void TrackingScene::render() {
         ofPopMatrix();
         camera.end();
 
-        camera.begin();
-        {
-            ofPushMatrix();
-            {
-                ofRotateXDeg(180);
-                draw_skeletons(body_skeletons);
-            }
-            ofPopMatrix();
-        }
-        camera.end();
+        draw_skeletons(body_skeletons);
     }
     frame_buffer.end();
 }
 
 void TrackingScene::draw_skeletons(const std::vector<ofxAzureKinect::BodySkeleton> &skeletons) {
-    for (const auto &skeleton: skeletons) {
-        // Draw joints.
-        for (int i = 0; i < K4ABT_JOINT_COUNT; ++i) {
-            auto joint = skeleton.joints[i];
-            ofPushMatrix();
-            {
-                glm::mat4 transform = glm::translate(joint.position) * glm::toMat4(joint.orientation);
-                ofMultMatrix(transform);
 
-                ofDrawAxis(50.0f);
+    std::vector<glm::vec2> joint_screen_positions;
 
-                if (joint.confidenceLevel >= K4ABT_JOINT_CONFIDENCE_MEDIUM) {
-                    ofSetColor(ofColor::green);
-                } else if (joint.confidenceLevel >= K4ABT_JOINT_CONFIDENCE_LOW) {
-                    ofSetColor(ofColor::yellow);
-                } else {
-                    ofSetColor(ofColor::red);
+    camera.begin();
+    {
+        ofPushMatrix();
+        {
+            ofRotateXDeg(180);
+            for (const auto &skeleton: skeletons) {
+                // Draw joints.
+                for (int i = 0; i < K4ABT_JOINT_COUNT; ++i) {
+                    auto joint = skeleton.joints[i];
+                    ofPushMatrix();
+                    {
+                        glm::mat4 transform = glm::translate(joint.position) * glm::toMat4(joint.orientation);
+                        ofMultMatrix(transform);
+
+                        ofDrawAxis(50.0f);
+
+                        if (joint.confidenceLevel >= K4ABT_JOINT_CONFIDENCE_MEDIUM) {
+                            ofSetColor(ofColor::green);
+                        } else if (joint.confidenceLevel >= K4ABT_JOINT_CONFIDENCE_LOW) {
+                            ofSetColor(ofColor::yellow);
+                        } else {
+                            ofSetColor(ofColor::red);
+                        }
+
+                        ofDrawSphere(10.0f);
+
+                        glm::vec4 jointPosHomo(joint.position, 1.0f); // Convert to homogeneous coordinates
+                        glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(180.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+                        glm::vec4 rotatedPosHomo = rotationMatrix * jointPosHomo; // Apply rotation
+                        glm::vec3 rotatedPos = glm::vec3(rotatedPosHomo); // Convert back to 3D coordinates
+
+                        // Get screen coordinates
+                        glm::vec3 screenPos = camera.worldToScreen(rotatedPos);
+
+                        joint_screen_positions.emplace_back(screenPos.x, screenPos.y);
+                    }
+                    ofPopMatrix();
                 }
 
-                ofDrawSphere(10.0f);
+                // Draw connections.
+                skeleton_mesh.setMode(OF_PRIMITIVE_LINES);
+                auto &vertices = skeleton_mesh.getVertices();
+                vertices.resize(50);
+                int vdx = 0;
+
+                // Spine.
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_PELVIS].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SPINE_NAVEL].position);
+
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SPINE_NAVEL].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SPINE_CHEST].position);
+
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SPINE_CHEST].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_NECK].position);
+
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_NECK].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_HEAD].position);
+
+                // Head.
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_HEAD].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_NOSE].position);
+
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_NOSE].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_EYE_LEFT].position);
+
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_EYE_LEFT].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_EAR_LEFT].position);
+
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_NOSE].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_EYE_RIGHT].position);
+
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_EYE_RIGHT].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_EAR_RIGHT].position);
+
+                // Left Leg.
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_PELVIS].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_HIP_LEFT].position);
+
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_HIP_LEFT].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_KNEE_LEFT].position);
+
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_KNEE_LEFT].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ANKLE_LEFT].position);
+
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ANKLE_LEFT].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_FOOT_LEFT].position);
+
+                // Right leg.
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_PELVIS].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_HIP_RIGHT].position);
+
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_HIP_RIGHT].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_KNEE_RIGHT].position);
+
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_KNEE_RIGHT].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ANKLE_RIGHT].position);
+
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ANKLE_RIGHT].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_FOOT_RIGHT].position);
+
+                // Left arm.
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_NECK].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_CLAVICLE_LEFT].position);
+
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_CLAVICLE_LEFT].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SHOULDER_LEFT].position);
+
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SHOULDER_LEFT].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ELBOW_LEFT].position);
+
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ELBOW_LEFT].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_WRIST_LEFT].position);
+
+                // Right arm.
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_NECK].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_CLAVICLE_RIGHT].position);
+
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_CLAVICLE_RIGHT].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SHOULDER_RIGHT].position);
+
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SHOULDER_RIGHT].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ELBOW_RIGHT].position);
+
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ELBOW_RIGHT].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_WRIST_RIGHT].position);
+
+                skeleton_mesh.draw();
             }
-            ofPopMatrix();
         }
+        ofPopMatrix();
+    }
+    camera.end();
 
-        // Draw connections.
-        skeleton_mesh.setMode(OF_PRIMITIVE_LINES);
-        auto &vertices = skeleton_mesh.getVertices();
-        vertices.resize(50);
-        int vdx = 0;
-
-        // Spine.
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_PELVIS].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SPINE_NAVEL].position);
-
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SPINE_NAVEL].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SPINE_CHEST].position);
-
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SPINE_CHEST].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_NECK].position);
-
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_NECK].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_HEAD].position);
-
-        // Head.
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_HEAD].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_NOSE].position);
-
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_NOSE].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_EYE_LEFT].position);
-
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_EYE_LEFT].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_EAR_LEFT].position);
-
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_NOSE].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_EYE_RIGHT].position);
-
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_EYE_RIGHT].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_EAR_RIGHT].position);
-
-        // Left Leg.
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_PELVIS].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_HIP_LEFT].position);
-
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_HIP_LEFT].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_KNEE_LEFT].position);
-
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_KNEE_LEFT].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ANKLE_LEFT].position);
-
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ANKLE_LEFT].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_FOOT_LEFT].position);
-
-        // Right leg.
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_PELVIS].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_HIP_RIGHT].position);
-
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_HIP_RIGHT].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_KNEE_RIGHT].position);
-
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_KNEE_RIGHT].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ANKLE_RIGHT].position);
-
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ANKLE_RIGHT].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_FOOT_RIGHT].position);
-
-        // Left arm.
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_NECK].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_CLAVICLE_LEFT].position);
-
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_CLAVICLE_LEFT].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SHOULDER_LEFT].position);
-
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SHOULDER_LEFT].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ELBOW_LEFT].position);
-
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ELBOW_LEFT].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_WRIST_LEFT].position);
-
-        // Right arm.
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_NECK].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_CLAVICLE_RIGHT].position);
-
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_CLAVICLE_RIGHT].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SHOULDER_RIGHT].position);
-
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SHOULDER_RIGHT].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ELBOW_RIGHT].position);
-
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ELBOW_RIGHT].position);
-        vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_WRIST_RIGHT].position);
-
-        skeleton_mesh.draw();
+    for (auto &pos: joint_screen_positions) {
+        ofSetColor(ofColor::beige);
+        ofDrawCircle(pos.x, pos.y, 5);
     }
 }
 
