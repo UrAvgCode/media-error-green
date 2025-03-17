@@ -6,7 +6,7 @@
 CollisionObject::CollisionObject() : CollisionObject({0, 0}, {0, 0}, "") {}
 
 CollisionObject::CollisionObject(glm::vec2 position, glm::vec2 velocity, const std::string &filename) :
-    position(position), velocity(velocity), image(ofImage()) {
+    position(position), velocity(velocity), can_collide(false) {
     image.load(filename);
 }
 
@@ -25,15 +25,18 @@ void CollisionObject::update(const std::vector<ofxAzureKinect::BodySkeleton> &sk
         velocity.y *= -1;
     }
 
-    if (check_collision_with_bodies(skeletons, camera)) {
+    if (can_collide && check_collision_with_bodies(skeletons, camera)) {
         velocity *= -1;
+        can_collide = false;
+    } else {
+        can_collide = true;
     }
 
     position += velocity;
 }
 
 bool CollisionObject::check_collision_with_bodies(const std::vector<ofxAzureKinect::BodySkeleton> &skeletons,
-                                                  ofEasyCam &camera) {
+                                                  ofEasyCam &camera) const {
     for (const auto &skeleton: skeletons) {
         for (const auto &joint: skeleton.joints) {
 

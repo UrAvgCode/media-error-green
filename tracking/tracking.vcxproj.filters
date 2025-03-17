@@ -46,6 +46,9 @@
     <ClCompile Include="src\tracking_scene.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\collision_object.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
@@ -1616,6 +1619,9 @@
     <ClInclude Include="include\tracking_scene.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="include\collision_object.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="icon.rc" />
@@ -1648,5 +1654,6 @@
     <CopyFileToFolders Include="shaders\pixel.vert">
       <Filter>shaders</Filter>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="resources\dvd-logo.png" />
   </ItemGroup>
 </Project>

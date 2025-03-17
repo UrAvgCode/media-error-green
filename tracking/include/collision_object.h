@@ -19,10 +19,13 @@ class CollisionObject {
     void update(const std::vector<ofxAzureKinect::BodySkeleton> &skeletons, ofEasyCam &camera);
 
   protected:
-    bool check_collision_with_bodies(const std::vector<ofxAzureKinect::BodySkeleton> &skeletons, ofEasyCam &camera);
+    bool check_collision_with_bodies(const std::vector<ofxAzureKinect::BodySkeleton> &skeletons,
+                                     ofEasyCam &camera) const;
 
     ofImage image;
 
     glm::vec2 position;
     glm::vec2 velocity;
+
+    bool can_collide;
 };
