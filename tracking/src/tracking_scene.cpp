@@ -1,4 +1,4 @@
-#include "tracking_scene.h"
+ï»¿#include "tracking_scene.h"
 
 #include <ofxConvexHull.h>
 
@@ -30,9 +30,24 @@ TrackingScene::TrackingScene(ofxAzureKinect::Device *device) : kinect_device(dev
     std::random_device random;
     generator = std::mt19937(random());
     distribution = std::uniform_real_distribution<float>(min_random_value, max_random_value);
+
+    //init dvd logo
+    auto dvd_position = glm::vec2(ofRandom(5, 1000), ofRandom(5, 500));
+    auto dvd_velocity = glm::vec2(ofRandom(-100, 100), ofRandom(-100, 100));
+    dvd_velocity = 8 * glm::normalize(dvd_velocity);
+    dvd_logo = CollisionObject(dvd_position, dvd_velocity, "resources/dvd-logo.png");
 }
 
-void TrackingScene::update() {}
+void TrackingScene::update() {
+    const auto &body_skeletons = kinect_device->getBodySkeletons();
+    std::vector<std::vector<ofPoint>> convex_hulls;
+
+    for (const auto &skeleton: body_skeletons) {
+        convex_hulls.emplace_back(calculate_convex_hull(skeleton));
+    }
+
+    dvd_logo.update(body_skeletons, camera);
+}
 
 void TrackingScene::render() {
     const std::size_t k_max_bodies = 6;
@@ -46,7 +61,8 @@ void TrackingScene::render() {
         convex_hulls.emplace_back(calculate_convex_hull(body_skeletons[i]));
     }
 
-    // Berechnung der Shake-Amplituden pro K�rper
+    // Berechnung der Shake-Amplituden pro Körper
+    std::vector<float> shake_amplitudes(k_max_bodies, 0.0f);
     float screen_shake_amplitude = 0.0f;
     float max_shake_amplitude = 0.0f;
     float pixel_block_size = 0;
@@ -110,6 +126,9 @@ void TrackingScene::render() {
 
     frame_buffer.begin();
     {
+        pixel_shader_fbo.draw(0, 0);
+        /*
+        pixel_shader_fbo.draw(0, 0);
         pixel_shader.begin();
         {
             pixel_shader.setUniform1f("block_size", pixel_block_size);
@@ -117,6 +136,12 @@ void TrackingScene::render() {
             pixel_shader_fbo.draw(0, 0);
         }
         pixel_shader.end();
+        */
+
+        dvd_logo.draw();
+
+        ofSetColor(0, 0, 255); // Blaue Linie fÃ¼r Debug
+        debug_polyline.draw();
 
         // Zeichne die roten Umrisse der Convex Hulls
         camera.begin();
@@ -137,8 +162,135 @@ void TrackingScene::render() {
         }
         ofPopMatrix();
         camera.end();
+
+        draw_skeletons(body_skeletons);
     }
     frame_buffer.end();
+}
+
+void TrackingScene::draw_skeletons(const std::vector<ofxAzureKinect::BodySkeleton> &skeletons) {
+    camera.begin();
+    {
+        ofPushMatrix();
+        {
+            ofRotateXDeg(180);
+            for (const auto &skeleton: skeletons) {
+                // Draw joints.
+                for (int i = 0; i < K4ABT_JOINT_COUNT; ++i) {
+                    auto joint = skeleton.joints[i];
+                    ofPushMatrix();
+                    {
+                        glm::mat4 transform = glm::translate(joint.position) * glm::toMat4(joint.orientation);
+                        ofMultMatrix(transform);
+
+                        ofDrawAxis(50.0f);
+
+                        if (joint.confidenceLevel >= K4ABT_JOINT_CONFIDENCE_MEDIUM) {
+                            ofSetColor(ofColor::green);
+                        } else if (joint.confidenceLevel >= K4ABT_JOINT_CONFIDENCE_LOW) {
+                            ofSetColor(ofColor::yellow);
+                        } else {
+                            ofSetColor(ofColor::red);
+                        }
+
+                        ofDrawSphere(10.0f);
+                    }
+                    ofPopMatrix();
+                }
+
+                // Draw connections.
+                skeleton_mesh.setMode(OF_PRIMITIVE_LINES);
+                auto &vertices = skeleton_mesh.getVertices();
+                vertices.resize(50);
+                int vdx = 0;
+
+                // Spine.
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_PELVIS].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SPINE_NAVEL].position);
+
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SPINE_NAVEL].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SPINE_CHEST].position);
+
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SPINE_CHEST].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_NECK].position);
+
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_NECK].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_HEAD].position);
+
+                // Head.
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_HEAD].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_NOSE].position);
+
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_NOSE].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_EYE_LEFT].position);
+
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_EYE_LEFT].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_EAR_LEFT].position);
+
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_NOSE].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_EYE_RIGHT].position);
+
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_EYE_RIGHT].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_EAR_RIGHT].position);
+
+                // Left Leg.
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_PELVIS].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_HIP_LEFT].position);
+
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_HIP_LEFT].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_KNEE_LEFT].position);
+
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_KNEE_LEFT].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ANKLE_LEFT].position);
+
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ANKLE_LEFT].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_FOOT_LEFT].position);
+
+                // Right leg.
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_PELVIS].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_HIP_RIGHT].position);
+
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_HIP_RIGHT].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_KNEE_RIGHT].position);
+
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_KNEE_RIGHT].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ANKLE_RIGHT].position);
+
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ANKLE_RIGHT].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_FOOT_RIGHT].position);
+
+                // Left arm.
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_NECK].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_CLAVICLE_LEFT].position);
+
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_CLAVICLE_LEFT].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SHOULDER_LEFT].position);
+
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SHOULDER_LEFT].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ELBOW_LEFT].position);
+
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ELBOW_LEFT].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_WRIST_LEFT].position);
+
+                // Right arm.
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_NECK].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_CLAVICLE_RIGHT].position);
+
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_CLAVICLE_RIGHT].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SHOULDER_RIGHT].position);
+
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SHOULDER_RIGHT].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ELBOW_RIGHT].position);
+
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ELBOW_RIGHT].position);
+                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_WRIST_RIGHT].position);
+
+                skeleton_mesh.draw();
+            }
+        }
+        ofPopMatrix();
+    }
+    camera.end();
 }
 
 std::vector<ofPoint> TrackingScene::calculate_convex_hull(const ofxAzureKinect::BodySkeleton &skeleton) {
@@ -190,62 +342,4 @@ std::vector<ofPoint> TrackingScene::calculate_convex_hull(const ofxAzureKinect::
     }
 
     return output_hull;
-}
-
-void TrackingScene::draw_bounding_box() {
-    const float offset_distance = 0.1f; // Offset in meters (10 cm)
-
-    ofPushMatrix();
-    {
-        camera.begin();
-        {
-            ofPushMatrix();
-            {
-                ofRotateXDeg(180);
-
-                const auto &body_skeletons = kinect_device->getBodySkeletons();
-
-                for (const auto &skeleton: body_skeletons) {
-                    // Initialize bounding box limits
-                    ofVec3f min_bounds(FLT_MAX, FLT_MAX, FLT_MAX);
-                    ofVec3f max_bounds(-FLT_MAX, -FLT_MAX, -FLT_MAX);
-
-                    bool valid_skeleton = false;
-
-                    // Iterate through all joints in the skeleton
-                    for (const auto &joint: skeleton.joints) {
-                        // Ensure joint position is valid
-                        if (std::isfinite(joint.position.x) && std::isfinite(joint.position.y) &&
-                            std::isfinite(joint.position.z)) {
-                            valid_skeleton = true; // At least one valid joint found
-
-                            // Update bounding box
-                            min_bounds.x = std::min(min_bounds.x, joint.position.x);
-                            min_bounds.y = std::min(min_bounds.y, joint.position.y);
-                            min_bounds.z = std::min(min_bounds.z, joint.position.z);
-
-                            max_bounds.x = std::max(max_bounds.x, joint.position.x);
-                            max_bounds.y = std::max(max_bounds.y, joint.position.y);
-                            max_bounds.z = std::max(max_bounds.z, joint.position.z);
-                        }
-                    }
-
-                    // If at least one valid joint was found, draw the bounding box
-                    if (valid_skeleton) {
-                        ofPushStyle();
-                        ofNoFill();
-                        ofSetColor(255, 0, 0); // Red line
-                        ofDrawBox((min_bounds + max_bounds) / 2, // Center of the box
-                                  max_bounds.x - min_bounds.x, // Width
-                                  max_bounds.y - min_bounds.y, // Height
-                                  max_bounds.z - min_bounds.z); // Depth
-                        ofPopStyle();
-                    }
-                }
-            }
-            ofPopMatrix();
-        }
-        camera.end();
-    }
-    ofPopMatrix();
 }
