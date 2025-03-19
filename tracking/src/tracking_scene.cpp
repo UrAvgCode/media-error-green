@@ -1,4 +1,4 @@
-ï»¿#include "tracking_scene.h"
+#include "tracking_scene.h"
 
 #include <ofxConvexHull.h>
 
