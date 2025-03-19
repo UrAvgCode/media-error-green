@@ -7,11 +7,34 @@
 #include <ofVec2f.h>
 
 IntroScene::IntroScene() {
-    flow_field.resize(cols * rows); // initialize vector field
-    z_offset = 0.0;
+    flow_field.resize(flow_field_cols * flow_field_rows); // initialize vector field
+    flow_field_offset = 0.0;
 
-    logo_svg.load(logo_image);
-    logo_in_outs_svg.load(logo_in_outs_image);
+    logo_picture.load("resources/media_error_logo.svg");
+    logo_fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGB);
+
+    logo_fbo.begin();
+    {
+        ofPushMatrix();
+        ofTranslate(0.5f * ofGetWidth(), 0.5f * ofGetHeight());
+        ofTranslate(-logo_picture.getHeight() / 2.0f, -logo_picture.getHeight() / 2.0f);
+        logo_picture.draw();
+        ofPopMatrix();
+    }
+    logo_fbo.end();
+
+    particle_trail_shader.load("shaders/particle_trail_shader.vert", "shaders/particle_trail_shader.frag",
+                               "shaders/particle_trail_shader.geom");
+    particle_trail_shader.setGeometryInputType(GL_LINES);
+    particle_trail_shader.setGeometryOutputType(GL_LINE_STRIP);
+    particle_trail_shader.setGeometryOutputCount(2);
+
+    particle_pixel_shader.load("shaders/particle_pixel_shader");
+
+    particle_draw_fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGB);
+
+    logo_svg.load("resources/media_error_logo_lines.svg");
+    logo_in_outs_svg.load("resources/logo_in_and_out_lines.svg");
     logo_position = ofVec2f(ofGetWidth() / 2, ofGetHeight() / 2);
     logo_width = logo_svg.getWidth() * logo_scale;
     logo_height = logo_svg.getHeight() * logo_scale;
@@ -27,10 +50,6 @@ IntroScene::IntroScene() {
     all_logo_vectors = logo_vectors;
     all_logo_vectors.insert(all_logo_vectors.end(), logo_in_outs_vectors.begin(), logo_in_outs_vectors.end());
 
-    for (int i = 0; i < num_particles; i++) {
-        particles.emplace_back(ofRandom(ofGetWidth()), ofRandom(ofGetHeight()));
-    }
-
     // Berechne die Bounding Box des Logos
     ofRectangle boundingBoxLogo;
     for (int i = 0; i < logo_svg.getNumPath(); i++) {
@@ -44,37 +63,27 @@ IntroScene::IntroScene() {
     // Mittelpunkt und Radius des Kreises berechnen
     logo_center = ofVec2f(boundingBoxLogo.getCenter().x + logo_left, boundingBoxLogo.getCenter().y + logo_top);
     logo_radius = (std::max(boundingBoxLogo.getWidth(), boundingBoxLogo.getHeight()) / 2.0f);
-    Particle::logo_center = logo_center;
-    Particle::logo_radius = logo_radius;
 }
 
 //--------------------------------------------------------------
 void IntroScene::update() {
-    z_offset += 0.01; // animation offset gets increased
+    flow_field_offset += 0.01; // animation offset gets increased
 
     // vectors get calculated by Perlin noise
-    for (int y = 0; y < rows; y++) {
-        for (int x = 0; x < cols; x++) {
+    for (int y = 0; y < flow_field_rows; y++) {
+        for (int x = 0; x < flow_field_cols; x++) {
 
-            float pos_x = x * resolution;
-            float pos_y = y * resolution;
-
-            //// Prüfen, ob der aktuelle Punkt innerhalb des Logo-Bereichs liegt
-            // if (pos_x >= logo_position.x - logo_width / 2 && pos_x <= logo_position.x + logo_width / 2 &&
-            //     pos_y >= logo_position.y - logo_height / 2 && pos_y <= logo_position.y + logo_height / 2) {
-            //     // Überspringen, wenn innerhalb des Logos
-            //     continue;
-            // }
+            float pos_x = x * flow_field_resolution;
+            float pos_y = y * flow_field_resolution;
 
             // Prüfen, ob der aktuelle Punkt innerhalb des Logo-Kreises liegt
             float distance_to_logo_center = ofVec2f(pos_x, pos_y).distance(logo_center);
             if (distance_to_logo_center <= logo_radius + logo_margin) {
-                // Überspringen, wenn innerhalb des Logos
                 continue;
             }
 
-            float angle = ofNoise(x * 0.1, y * 0.1, z_offset) * TWO_PI; // noise creates angle
-            flow_field[y * cols + x] = ofVec2f(cos(angle), sin(angle));
+            float angle = ofNoise(x * 0.1, y * 0.1, flow_field_offset) * TWO_PI; // noise creates angle
+            flow_field[y * flow_field_cols + x] = ofVec2f(cos(angle), sin(angle));
         }
     }
 
@@ -85,9 +94,9 @@ void IntroScene::update() {
             particle.apply_repulsion(particles, repulsion_radius, repulsion_strength);
         }
 
-        auto x_index = static_cast<int>(particle.position.x / resolution);
-        auto y_index = static_cast<int>(particle.position.y / resolution);
-        auto index = y_index * cols + x_index;
+        auto x_index = static_cast<int>(particle.position.x / flow_field_resolution);
+        auto y_index = static_cast<int>(particle.position.y / flow_field_resolution);
+        auto index = y_index * flow_field_cols + x_index;
 
         // using perlin noise as force
         if (index >= 0 && index < flow_field.size()) {
@@ -120,39 +129,31 @@ void IntroScene::update() {
 }
 
 void IntroScene::render() {
-    frame_buffer.begin();
+    particle_draw_fbo.begin();
     {
         ofClear(0);
 
-        // ofPushMatrix();
-        // ofTranslate(ofGetWidth() / 2, ofGetHeight() / 2);
-        // ofScale(0.5, 0.5);
-        // ofTranslate(-logo_svg.getHeight() / 2, -logo_svg.getHeight() / 2);
-        //  logo_svg.draw();
-        // ofPopMatrix();
-
-
-        //// visualized flowing field
-        // for (int y = 0; y < rows; y++) {
-        //	for (int x = 0; x < cols; x++) {
-        //		ofVec2f vec = flow_field[y * cols + x];
-        //		ofPushMatrix();
-        //		ofTranslate(x * resolution, y * resolution);
-        //		ofDrawLine(0, 0, vec.x * resolution * 0.5, vec.y * resolution * 0.5);
-        //		ofPopMatrix();
-        //	}
-        // }
-
-        // draw particles
-        for (auto &particle: particles) {
-            particle.draw();
+        particle_trail_shader.begin();
+        {
+            particle_trail_shader.setUniform1f("uMaxLength", 10);
+            particle_trail_shader.setUniformTexture("logo_texture", logo_fbo.getTexture(), 0);
+            for (auto &particle: particles) {
+                particle.draw();
+            }
         }
+        particle_trail_shader.end();
+    }
+    particle_draw_fbo.end();
 
-        // drawing logo_vectors
-        // ofSetColor(0, 255, 0); // green
-        /*for (auto &logo_vec: all_logo_vectors) {
-             ofDrawLine(logo_vec.first, logo_vec.first + logo_vec.second * 10);
-        }*/
+    frame_buffer.begin();
+    {
+        particle_pixel_shader.begin();
+
+        particle_pixel_shader.setUniform1f("block_size", 5);
+        particle_pixel_shader.setUniform1f("quality", 0.5f);
+        particle_draw_fbo.draw(0, 0);
+
+        particle_pixel_shader.end();
     }
     frame_buffer.end();
 }
