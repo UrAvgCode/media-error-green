@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include <string>
+#include <vector>
 
 #include <ofEasyCam.h>
 #include <ofImage.h>
@@ -16,11 +17,11 @@ class CollisionObject {
     float width() const;
     float height() const;
 
-    void update(const std::vector<ofxAzureKinect::BodySkeleton> &skeletons, ofEasyCam &camera);
+    void update(const std::vector<ofxAzureKinect::BodySkeleton> &skeletons, const ofEasyCam &camera);
 
   protected:
     bool check_collision_with_bodies(const std::vector<ofxAzureKinect::BodySkeleton> &skeletons,
-                                     ofEasyCam &camera) const;
+                                     const ofEasyCam &camera) const;
 
     ofImage image;
 

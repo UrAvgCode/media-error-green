@@ -1,5 +1,8 @@
 ﻿#include "collision_object.h"
 
+#include <string>
+#include <vector>
+
 #include "ofAppRunner.h"
 
 
@@ -16,7 +19,7 @@ float CollisionObject::width() const { return image.getWidth(); }
 
 float CollisionObject::height() const { return image.getHeight(); }
 
-void CollisionObject::update(const std::vector<ofxAzureKinect::BodySkeleton> &skeletons, ofEasyCam &camera) {
+void CollisionObject::update(const std::vector<ofxAzureKinect::BodySkeleton> &skeletons, const ofEasyCam &camera) {
     if (position.x <= 0 || position.x + width() >= ofGetWidth()) {
         velocity.x *= -1;
     }
@@ -36,7 +39,7 @@ void CollisionObject::update(const std::vector<ofxAzureKinect::BodySkeleton> &sk
 }
 
 bool CollisionObject::check_collision_with_bodies(const std::vector<ofxAzureKinect::BodySkeleton> &skeletons,
-                                                  ofEasyCam &camera) const {
+                                                  const ofEasyCam &camera) const {
     for (const auto &skeleton: skeletons) {
         for (const auto &joint: skeleton.joints) {
 
