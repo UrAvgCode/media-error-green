@@ -8,6 +8,7 @@
 #include <ofxSvg.h>
 
 #include <scene.h>
+
 #include "particle.h"
 
 class IntroScene : public Scene {
@@ -21,17 +22,15 @@ class IntroScene : public Scene {
     const int screen_width = ofGetWidth();
     const int screen_height = ofGetHeight();
 
-    // Flow Field
-    const int resolution = 20; // size of every cell
-    const int cols = ofGetWidth() / resolution;
-    const int rows = ofGetHeight() / resolution;
-
+    // flow field
     std::vector<ofVec2f> flow_field;
-    float z_offset; // for animated Perlin noise
+    float flow_field_offset;
+    const int flow_field_resolution = 20;
+    const int flow_field_cols = ofGetWidth() / flow_field_resolution;
+    const int flow_field_rows = ofGetHeight() / flow_field_resolution;
 
     // particles
-    std::vector<Particle> particles;
-    const int num_particles = 2000;
+    std::array<Particle, 2048> particles;
     const float repulsion_radius = 25;
     const float repulsion_strength = 5;
 
@@ -44,11 +43,12 @@ class IntroScene : public Scene {
     ofxSVG logo_svg;
     ofxSVG logo_in_outs_svg;
     const float logo_scale = 1.0;
-    string logo_image = "logo_lines4.svg";
-    string logo_in_outs_image = "logo_in_and_outs.svg";
     std::vector<pair<ofVec2f, ofVec2f>> logo_vectors;
     std::vector<pair<ofVec2f, ofVec2f>> logo_in_outs_vectors;
     std::vector<std::pair<ofVec2f, ofVec2f>> all_logo_vectors;
+
+    ofxSVG logo_picture;
+    ofFbo logo_fbo;
 
     ofVec2f logo_position;
     float logo_width;
@@ -57,6 +57,11 @@ class IntroScene : public Scene {
     ofVec2f logo_center;
     float logo_radius;
     int logo_margin = 30;
+
+    ofFbo particle_draw_fbo;
+
+    ofShader particle_trail_shader;
+    ofShader particle_pixel_shader;
 
     void create_logo_vectors();
     void create_logo_in_outs_vectors();

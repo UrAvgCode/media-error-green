@@ -65,4 +65,4 @@ jobs:
       with:
         name: build-artifacts
         path: ./core/bin/
-        retention-days: 1
+        retention-days: 14
