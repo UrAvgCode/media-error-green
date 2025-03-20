@@ -65,4 +65,3 @@ void main()
 
     gl_Position = modelViewProjectionMatrix * posWorld;
 }
-
