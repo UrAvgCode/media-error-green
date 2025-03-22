@@ -19,7 +19,7 @@ float CollisionObject::width() const { return image.getWidth(); }
 
 float CollisionObject::height() const { return image.getHeight(); }
 
-void CollisionObject::update(const std::vector<ofxAzureKinect::BodySkeleton> &skeletons, const ofEasyCam &camera) {
+void CollisionObject::update(std::map<std::uint32_t, Player> &players, const ofEasyCam &camera) {
     if (position.x <= 0 || position.x + width() >= ofGetWidth()) {
         velocity.x *= -1;
     }
@@ -28,7 +28,7 @@ void CollisionObject::update(const std::vector<ofxAzureKinect::BodySkeleton> &sk
         velocity.y *= -1;
     }
 
-    if (can_collide && check_collision_with_bodies(skeletons, camera)) {
+    if (can_collide && check_collision_with_bodies(players, camera)) {
         velocity *= -1;
         can_collide = false;
     } else {
@@ -38,10 +38,11 @@ void CollisionObject::update(const std::vector<ofxAzureKinect::BodySkeleton> &sk
     position += velocity;
 }
 
-bool CollisionObject::check_collision_with_bodies(const std::vector<ofxAzureKinect::BodySkeleton> &skeletons,
+bool CollisionObject::check_collision_with_bodies( std::map<std::uint32_t, Player> &players,
                                                   const ofEasyCam &camera) const {
-    for (const auto &skeleton: skeletons) {
-        for (const auto &joint: skeleton.joints) {
+    for (auto &player_pair: players) {
+        Player &player = player_pair.second;
+        for (const auto &joint: player.get_skeleton().joints) {
 
             auto joint_position_homogeneous = glm::vec4(joint.position, 1.0f);
             auto rotation_matrix = glm::rotate(glm::mat4(1.0f), glm::radians(180.0f), glm::vec3(1.0f, 0.0f, 0.0f));

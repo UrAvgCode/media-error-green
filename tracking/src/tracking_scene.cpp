@@ -54,7 +54,7 @@ void TrackingScene::update() {
         convex_hulls.emplace_back(calculate_convex_hull(skeleton));
     }
 
-    dvd_logo.update(body_skeletons, camera);
+    dvd_logo.update(players, camera);
 }
 
 void TrackingScene::render() {

@@ -6,6 +6,7 @@
 #include <ofEasyCam.h>
 #include <ofImage.h>
 #include <ofxAzureKinect.h>
+#include <player.h>
 
 class CollisionObject {
   public:
@@ -17,10 +18,10 @@ class CollisionObject {
     float width() const;
     float height() const;
 
-    void update(const std::vector<ofxAzureKinect::BodySkeleton> &skeletons, const ofEasyCam &camera);
+    void update(std::map<std::uint32_t, Player> &players, const ofEasyCam &camera);
 
   protected:
-    bool check_collision_with_bodies(const std::vector<ofxAzureKinect::BodySkeleton> &skeletons,
+    bool check_collision_with_bodies(std::map<std::uint32_t, Player> &players,
                                      const ofEasyCam &camera) const;
 
     ofImage image;

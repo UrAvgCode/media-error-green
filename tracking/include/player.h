@@ -10,6 +10,7 @@ class Player {
     Player(std::uint32_t id, ofEasyCam *camera);
 
     void set_skeleton(const ofxAzureKinect::BodySkeleton &skeleton);
+    ofxAzureKinect::BodySkeleton get_skeleton();
 
     std::array<glm::vec2, K4ABT_JOINT_COUNT> get_projected_joints();
 

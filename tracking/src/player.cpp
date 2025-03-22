@@ -5,6 +5,8 @@ Player::Player() : Player(0, nullptr) {}
 Player::Player(std::uint32_t id, ofEasyCam *camera) : id(id), camera(camera) {}
 
 void Player::set_skeleton(const ofxAzureKinect::BodySkeleton &skeleton) { this->skeleton = skeleton; }
+ofxAzureKinect::BodySkeleton Player::get_skeleton() { return skeleton; }
+
 
 std::array<glm::vec2, K4ABT_JOINT_COUNT> Player::get_projected_joints() {
     std::array<glm::vec2, K4ABT_JOINT_COUNT> projected_joints;
