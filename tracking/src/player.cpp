@@ -9,7 +9,7 @@ void Player::set_skeleton(const ofxAzureKinect::BodySkeleton &skeleton) { this->
 
 void Player::set_fake_shader(std::string shader) { fake_shader = shader; }
 std::string Player::get_fake_shader() { return fake_shader; }
-std::string Player::get_id() { return "" + id; }
+std::string Player::get_id() { return std::to_string(id); }
 
 ofxAzureKinect::BodySkeleton Player::get_skeleton() { return skeleton; }
 
