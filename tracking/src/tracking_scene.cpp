@@ -58,7 +58,6 @@ void TrackingScene::update() {
 }
 
 void TrackingScene::render() {
-    const std::size_t k_max_bodies = 6;
     const auto &body_skeletons = kinect_device->getBodySkeletons();
 
     auto body_ids = std::vector<int>(k_max_bodies, 0);
@@ -134,6 +133,7 @@ void TrackingScene::render() {
 
     frame_buffer.begin();
     {
+        ofClear(0,0,0,0);
         pixel_shader_fbo.draw(0, 0);
         /*
         pixel_shader_fbo.draw(0, 0);
@@ -146,8 +146,14 @@ void TrackingScene::render() {
         pixel_shader.end();
         */
         
-
+        
+        
         dvd_logo.draw();
+
+        for (std::size_t i = 0; i < std::min(players.size(), k_max_bodies); ++i) {
+            Player player = players[i];
+            ofDrawBitmapStringHighlight(player.get_fake_shader(), 100, 20 + (i * 2));
+        }
 
         ofSetColor(0, 0, 255); // Blaue Linie fÃ¼r Debug
         debug_polyline.draw();

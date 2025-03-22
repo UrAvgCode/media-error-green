@@ -24,6 +24,7 @@ class TrackingScene : public Scene {
 
     ofVbo points_vbo;
     ofVboMesh skeleton_mesh;
+    const std::size_t k_max_bodies = 6;
 
     std::map<std::uint32_t, Player> players;
 

@@ -66,7 +66,7 @@ bool CollisionObject::check_collision_with_bodies( std::map<std::uint32_t, Playe
 
 void CollisionObject::affect_player(Player &player, std::string shader) const { 
     if (shader.compare(fake_shader)) {
-        player.set_fake_shader(""); 
+        player.set_fake_shader("none"); 
     }
     else {
         player.set_fake_shader(shader);
