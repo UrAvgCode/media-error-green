@@ -150,10 +150,7 @@ void TrackingScene::render() {
         
         dvd_logo.draw();
 
-        for (std::size_t i = 0; i < std::min(players.size(), k_max_bodies); ++i) {
-            Player player = players[i];
-            ofDrawBitmapStringHighlight(player.get_fake_shader(), 100, 20 + (i * 2));
-        }
+        draw_fake_shaders();
 
         ofSetColor(0, 0, 255); // Blaue Linie fÃ¼r Debug
         debug_polyline.draw();
@@ -357,4 +354,11 @@ std::vector<ofPoint> TrackingScene::calculate_convex_hull(const ofxAzureKinect::
     }
 
     return output_hull;
+}
+
+void TrackingScene::draw_fake_shaders() {
+    for (std::size_t i = 0; i < std::min(players.size(), k_max_bodies); ++i) {
+        Player player = players[i];
+        ofDrawBitmapStringHighlight("Player " + player.get_id() + ": " + player.get_fake_shader(), 100, 20 + (i * 20));
+    }
 }

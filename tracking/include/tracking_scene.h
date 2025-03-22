@@ -48,4 +48,5 @@ class TrackingScene : public Scene {
 
     void update_bouncing_image(const std::vector<ofxAzureKinect::BodySkeleton> &skeletons); // Funktion zur Aktualisierung der Bewegung
     float of_dist_point_to_segment(const glm::vec2 &p, const glm::vec2 &a, const glm::vec2 &b);
+    void draw_fake_shaders();
 };
