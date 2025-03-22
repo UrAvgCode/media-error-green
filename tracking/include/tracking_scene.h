@@ -1,12 +1,14 @@
 #pragma once
 
 #include <vector>
+#include <map>
 
 #include <ofMain.h>
 #include <ofxAzureKinect.h>
 
 #include <scene.h>
 
+#include "player.h"
 #include "collision_object.h"
 
 class TrackingScene : public Scene {
@@ -17,17 +19,13 @@ class TrackingScene : public Scene {
     void render() override;
 
   private:
-    std::vector<ofPoint> calculate_convex_hull(const ofxAzureKinect::BodySkeleton &skeleton);
-    bool check_collision_with_bodies(const std::vector<ofxAzureKinect::BodySkeleton> &skeletons);
-
-    void draw_skeletons(const std::vector<ofxAzureKinect::BodySkeleton> &skeletons);
-
     ofxAzureKinect::Device *kinect_device;
-
     ofEasyCam camera;
 
     ofVbo points_vbo;
     ofVboMesh skeleton_mesh;
+
+    std::map<std::uint32_t, Player> players;
 
     ofFbo pixel_shader_fbo;
 
@@ -41,6 +39,11 @@ class TrackingScene : public Scene {
 
     // polyline for collision
     ofPolyline debug_polyline; // Speichert die letzte getestete Polyline
+
+    std::vector<ofPoint> calculate_convex_hull(const ofxAzureKinect::BodySkeleton &skeleton);
+    bool check_collision_with_bodies(const std::vector<ofxAzureKinect::BodySkeleton> &skeletons);
+
+    void draw_skeletons(const std::vector<ofxAzureKinect::BodySkeleton> &skeletons);
 
     void update_bouncing_image(const std::vector<ofxAzureKinect::BodySkeleton> &skeletons); // Funktion zur Aktualisierung der Bewegung
     float of_dist_point_to_segment(const glm::vec2 &p, const glm::vec2 &a, const glm::vec2 &b);

@@ -40,6 +40,14 @@ TrackingScene::TrackingScene(ofxAzureKinect::Device *device) : kinect_device(dev
 
 void TrackingScene::update() {
     const auto &body_skeletons = kinect_device->getBodySkeletons();
+
+    for (const auto &skeleton: body_skeletons) {
+        if (!players.contains(skeleton.id)) {
+            players[skeleton.id] = Player(skeleton.id, &camera);
+        }
+        players[skeleton.id].set_skeleton(skeleton);
+    }
+
     std::vector<std::vector<ofPoint>> convex_hulls;
 
     for (const auto &skeleton: body_skeletons) {
