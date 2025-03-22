@@ -145,6 +145,7 @@ void TrackingScene::render() {
         }
         pixel_shader.end();
         */
+        
 
         dvd_logo.draw();
 

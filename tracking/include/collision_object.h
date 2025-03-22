@@ -7,6 +7,7 @@
 #include <ofImage.h>
 #include <ofxAzureKinect.h>
 #include <player.h>
+#include <string>
 
 class CollisionObject {
   public:
@@ -19,12 +20,15 @@ class CollisionObject {
     float height() const;
 
     void update(std::map<std::uint32_t, Player> &players, const ofEasyCam &camera);
+    std::string get_fake_shader();
 
   protected:
-    bool check_collision_with_bodies(std::map<std::uint32_t, Player> &players,
-                                     const ofEasyCam &camera) const;
+    bool check_collision_with_bodies(std::map<std::uint32_t, Player> &players, const ofEasyCam &camera) const;
+    void affect_player(Player &player, std::string shader) const;
 
     ofImage image;
+
+    std::string fake_shader = "No.1";
 
     glm::vec2 position;
     glm::vec2 velocity;
