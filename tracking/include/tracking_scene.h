@@ -37,6 +37,7 @@ class TrackingScene : public Scene {
     std::uniform_real_distribution<float> distribution;
 
     CollisionObject dvd_logo;
+    CollisionObject me_logo;
 
     // polyline for collision
     ofPolyline debug_polyline; // Speichert die letzte getestete Polyline

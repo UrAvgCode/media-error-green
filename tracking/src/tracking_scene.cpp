@@ -35,7 +35,13 @@ TrackingScene::TrackingScene(ofxAzureKinect::Device *device) : kinect_device(dev
     auto dvd_position = glm::vec2(ofRandom(5, 1000), ofRandom(5, 500));
     auto dvd_velocity = glm::vec2(ofRandom(-100, 100), ofRandom(-100, 100));
     dvd_velocity = 8 * glm::normalize(dvd_velocity);
-    dvd_logo = CollisionObject(dvd_position, dvd_velocity, "resources/dvd-logo.png", "green");
+    dvd_logo = CollisionObject(dvd_position, dvd_velocity, "resources/dvd-logo.png", "dvd");
+
+    // init me logo
+    auto me_position = glm::vec2(ofRandom(5, 1000), ofRandom(5, 500));
+    auto me_velocity = glm::vec2(ofRandom(-100, 100), ofRandom(-100, 100));
+    me_velocity = 8 * glm::normalize(me_velocity);
+    me_logo = CollisionObject(me_position, me_velocity, "C:/Users/Student/Documents/media-error-gruen/tracking/resources/rotateGreen.png", "me");
 }
 
 void TrackingScene::update() {
@@ -55,6 +61,7 @@ void TrackingScene::update() {
     }
 
     dvd_logo.update(players, camera);
+    me_logo.update(players, camera);
 }
 
 void TrackingScene::render() {
@@ -149,6 +156,7 @@ void TrackingScene::render() {
         
         
         dvd_logo.draw();
+        me_logo.draw();
 
         draw_fake_shaders();
 
