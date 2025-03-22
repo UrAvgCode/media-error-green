@@ -35,7 +35,7 @@ TrackingScene::TrackingScene(ofxAzureKinect::Device *device) : kinect_device(dev
     auto dvd_position = glm::vec2(ofRandom(5, 1000), ofRandom(5, 500));
     auto dvd_velocity = glm::vec2(ofRandom(-100, 100), ofRandom(-100, 100));
     dvd_velocity = 8 * glm::normalize(dvd_velocity);
-    dvd_logo = CollisionObject(dvd_position, dvd_velocity, "resources/dvd-logo.png");
+    dvd_logo = CollisionObject(dvd_position, dvd_velocity, "resources/dvd-logo.png", "green");
 }
 
 void TrackingScene::update() {

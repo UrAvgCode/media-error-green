@@ -12,7 +12,7 @@
 class CollisionObject {
   public:
     CollisionObject();
-    CollisionObject(glm::vec2 position, glm::vec2 velocity, const std::string &filename);
+    CollisionObject(glm::vec2 position, glm::vec2 velocity, const std::string &filename, std::string logo_shader);
 
     void draw() const;
 
@@ -28,7 +28,7 @@ class CollisionObject {
 
     ofImage image;
 
-    std::string fake_shader = "No.1";
+    std::string logo_shader = "No. 1";
 
     glm::vec2 position;
     glm::vec2 velocity;

@@ -6,14 +6,14 @@
 #include "ofAppRunner.h"
 
 
-CollisionObject::CollisionObject() : CollisionObject({0, 0}, {0, 0}, "") {}
+CollisionObject::CollisionObject() : CollisionObject({0, 0}, {0, 0}, "", "") {}
 
-CollisionObject::CollisionObject(glm::vec2 position, glm::vec2 velocity, const std::string &filename) :
-    position(position), velocity(velocity), can_collide(false) {
+CollisionObject::CollisionObject(glm::vec2 position, glm::vec2 velocity, const std::string &filename, std::string logo_shader) :
+    position(position), velocity(velocity), can_collide(false), logo_shader(logo_shader) {
     image.load(filename);
 }
 
-std::string CollisionObject::get_fake_shader() { return fake_shader; }
+std::string CollisionObject::get_fake_shader() { return logo_shader; }
 
 void CollisionObject::draw() const { image.draw(position.x, position.y); }
 
@@ -55,7 +55,7 @@ bool CollisionObject::check_collision_with_bodies( std::map<std::uint32_t, Playe
             auto joint_position = camera.worldToScreen(rotated_joint_position);
             if (joint_position.x > position.x && joint_position.x < position.x + width() &&
                 joint_position.y > position.y && joint_position.y < position.y + height()) {
-                affect_player(player, fake_shader);
+                affect_player(player, logo_shader);
                 return true;
             }
         }
