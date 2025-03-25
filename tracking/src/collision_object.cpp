@@ -8,7 +8,8 @@
 
 CollisionObject::CollisionObject() : CollisionObject({0, 0}, {0, 0}, "", "") {}
 
-CollisionObject::CollisionObject(glm::vec2 position, glm::vec2 velocity, const std::string &filename, std::string logo_shader) :
+CollisionObject::CollisionObject(glm::vec2 position, glm::vec2 velocity, const std::string &filename,
+                                 std::string logo_shader) :
     position(position), velocity(velocity), can_collide(false), logo_shader(logo_shader) {
     image.load(filename);
 }
@@ -21,7 +22,7 @@ float CollisionObject::width() const { return image.getWidth(); }
 
 float CollisionObject::height() const { return image.getHeight(); }
 
-void CollisionObject::update(std::map<std::uint32_t, Player> &players, const ofEasyCam &camera) {
+void CollisionObject::update(std::vector<Player> &players, const ofEasyCam &camera) {
     if (position.x <= 0 || position.x + width() >= ofGetWidth()) {
         velocity.x *= -1;
     }
@@ -40,10 +41,8 @@ void CollisionObject::update(std::map<std::uint32_t, Player> &players, const ofE
     position += velocity;
 }
 
-bool CollisionObject::check_collision_with_bodies( std::map<std::uint32_t, Player> &players,
-                                                  const ofEasyCam &camera) const {
-    for (auto &player_pair: players) {
-        Player &player = player_pair.second;
+bool CollisionObject::check_collision_with_bodies(std::vector<Player> &players, const ofEasyCam &camera) const {
+    for (auto &player: players) {
         for (const auto &joint: player.get_skeleton().joints) {
 
             auto joint_position_homogeneous = glm::vec4(joint.position, 1.0f);
@@ -64,11 +63,10 @@ bool CollisionObject::check_collision_with_bodies( std::map<std::uint32_t, Playe
     return false;
 }
 
-void CollisionObject::affect_player(Player &player, std::string shader) const { 
+void CollisionObject::affect_player(Player &player, std::string shader) const {
     if (shader.compare(player.get_fake_shader()) == 0) {
-        player.set_fake_shader("none"); 
-    }
-    else {
+        player.set_fake_shader("none");
+    } else {
         player.set_fake_shader(shader);
-    }        
+    }
 }

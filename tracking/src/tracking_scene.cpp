@@ -31,7 +31,7 @@ TrackingScene::TrackingScene(ofxAzureKinect::Device *device) : kinect_device(dev
     generator = std::mt19937(random());
     distribution = std::uniform_real_distribution<float>(min_random_value, max_random_value);
 
-    //init dvd logo
+    // init dvd logo
     auto dvd_position = glm::vec2(ofRandom(5, 1000), ofRandom(5, 500));
     auto dvd_velocity = glm::vec2(ofRandom(-100, 100), ofRandom(-100, 100));
     dvd_velocity = 8 * glm::normalize(dvd_velocity);
@@ -47,11 +47,30 @@ TrackingScene::TrackingScene(ofxAzureKinect::Device *device) : kinect_device(dev
 void TrackingScene::update() {
     const auto &body_skeletons = kinect_device->getBodySkeletons();
 
-    for (const auto &skeleton: body_skeletons) {
-        if (!players.contains(skeleton.id)) {
-            players[skeleton.id] = Player(skeleton.id, &camera);
+    std::erase_if(players, [&body_skeletons](const Player &player) {
+        for (const auto &skeleton: body_skeletons) {
+            if (skeleton.id == player.id) {
+                return false;
+            }
         }
-        players[skeleton.id].set_skeleton(skeleton);
+        return true;
+    });
+
+    for (auto &player : players) {
+        for (const auto &skeleton: body_skeletons) {
+            if (skeleton.id == player.id) {
+                player.set_skeleton(skeleton);
+                break;
+            }
+        }
+    }
+
+    for (const auto &skeleton: body_skeletons) {
+        if (!std::any_of(players.cbegin(), players.cend(), [&](auto &player) {
+            return player.id == skeleton.id;
+            })) {
+            players.emplace_back(skeleton.id, &camera);
+        }
     }
 
     std::vector<std::vector<ofPoint>> convex_hulls;
@@ -140,7 +159,7 @@ void TrackingScene::render() {
 
     frame_buffer.begin();
     {
-        ofClear(0,0,0,0);
+        ofClear(0, 0, 0, 0);
         pixel_shader_fbo.draw(0, 0);
         /*
         pixel_shader_fbo.draw(0, 0);
@@ -152,7 +171,7 @@ void TrackingScene::render() {
         }
         pixel_shader.end();
         */
-        
+
         dvd_logo.draw();
         me_logo.draw();
 

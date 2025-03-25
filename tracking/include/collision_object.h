@@ -19,11 +19,11 @@ class CollisionObject {
     float width() const;
     float height() const;
 
-    void update(std::map<std::uint32_t, Player> &players, const ofEasyCam &camera);
+    void update(std::vector<Player> &players, const ofEasyCam &camera);
     std::string get_fake_shader();
 
   protected:
-    bool check_collision_with_bodies(std::map<std::uint32_t, Player> &players, const ofEasyCam &camera) const;
+    bool check_collision_with_bodies(std::vector<Player> &players, const ofEasyCam &camera) const;
     void affect_player(Player &player, std::string shader) const;
 
     ofImage image;

@@ -1,7 +1,6 @@
 #pragma once
 
 #include <vector>
-#include <map>
 
 #include <ofMain.h>
 #include <ofxAzureKinect.h>
@@ -26,7 +25,7 @@ class TrackingScene : public Scene {
     ofVboMesh skeleton_mesh;
     const std::size_t k_max_bodies = 6;
 
-    std::map<std::uint32_t, Player> players;
+    std::vector<Player> players;
 
     ofFbo pixel_shader_fbo;
 

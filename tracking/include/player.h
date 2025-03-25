@@ -17,9 +17,9 @@ class Player {
     std::array<glm::vec2, K4ABT_JOINT_COUNT> get_projected_joints();
     std::string get_id();
 
-  private:
     std::uint32_t id;
 
+  private:
     ofEasyCam *camera;
 
     ofxAzureKinect::BodySkeleton skeleton;
