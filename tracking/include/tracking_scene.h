@@ -1,7 +1,6 @@
 #pragma once
 
 #include <vector>
-#include <map>
 
 #include <ofMain.h>
 #include <ofxAzureKinect.h>
@@ -24,8 +23,9 @@ class TrackingScene : public Scene {
 
     ofVbo points_vbo;
     ofVboMesh skeleton_mesh;
+    const std::size_t k_max_bodies = 6;
 
-    std::map<std::uint32_t, Player> players;
+    std::vector<Player> players;
 
     ofFbo pixel_shader_fbo;
 
@@ -36,6 +36,7 @@ class TrackingScene : public Scene {
     std::uniform_real_distribution<float> distribution;
 
     CollisionObject dvd_logo;
+    CollisionObject me_logo;
 
     // polyline for collision
     ofPolyline debug_polyline; // Speichert die letzte getestete Polyline
@@ -47,4 +48,5 @@ class TrackingScene : public Scene {
 
     void update_bouncing_image(const std::vector<ofxAzureKinect::BodySkeleton> &skeletons); // Funktion zur Aktualisierung der Bewegung
     float of_dist_point_to_segment(const glm::vec2 &p, const glm::vec2 &a, const glm::vec2 &b);
+    void draw_fake_shaders();
 };

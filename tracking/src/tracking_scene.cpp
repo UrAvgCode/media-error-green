@@ -31,21 +31,46 @@ TrackingScene::TrackingScene(ofxAzureKinect::Device *device) : kinect_device(dev
     generator = std::mt19937(random());
     distribution = std::uniform_real_distribution<float>(min_random_value, max_random_value);
 
-    //init dvd logo
+    // init dvd logo
     auto dvd_position = glm::vec2(ofRandom(5, 1000), ofRandom(5, 500));
     auto dvd_velocity = glm::vec2(ofRandom(-100, 100), ofRandom(-100, 100));
     dvd_velocity = 8 * glm::normalize(dvd_velocity);
-    dvd_logo = CollisionObject(dvd_position, dvd_velocity, "resources/dvd-logo.png");
+    dvd_logo = CollisionObject(dvd_position, dvd_velocity, "resources/dvd-logo.png", "dvd");
+
+    // init me logo
+    auto me_position = glm::vec2(ofRandom(5, 1000), ofRandom(5, 500));
+    auto me_velocity = glm::vec2(ofRandom(-100, 100), ofRandom(-100, 100));
+    me_velocity = 8 * glm::normalize(me_velocity);
+    me_logo = CollisionObject(me_position, me_velocity, "resources/me-logo-green.png", "me");
 }
 
 void TrackingScene::update() {
     const auto &body_skeletons = kinect_device->getBodySkeletons();
 
-    for (const auto &skeleton: body_skeletons) {
-        if (!players.contains(skeleton.id)) {
-            players[skeleton.id] = Player(skeleton.id, &camera);
+    std::erase_if(players, [&body_skeletons](const Player &player) {
+        for (const auto &skeleton: body_skeletons) {
+            if (skeleton.id == player.id) {
+                return false;
+            }
         }
-        players[skeleton.id].set_skeleton(skeleton);
+        return true;
+    });
+
+    for (auto &player : players) {
+        for (const auto &skeleton: body_skeletons) {
+            if (skeleton.id == player.id) {
+                player.set_skeleton(skeleton);
+                break;
+            }
+        }
+    }
+
+    for (const auto &skeleton: body_skeletons) {
+        if (!std::any_of(players.cbegin(), players.cend(), [&](auto &player) {
+            return player.id == skeleton.id;
+            })) {
+            players.emplace_back(skeleton.id, &camera);
+        }
     }
 
     std::vector<std::vector<ofPoint>> convex_hulls;
@@ -54,11 +79,11 @@ void TrackingScene::update() {
         convex_hulls.emplace_back(calculate_convex_hull(skeleton));
     }
 
-    dvd_logo.update(body_skeletons, camera);
+    dvd_logo.update(players, camera);
+    me_logo.update(players, camera);
 }
 
 void TrackingScene::render() {
-    const std::size_t k_max_bodies = 6;
     const auto &body_skeletons = kinect_device->getBodySkeletons();
 
     auto body_ids = std::vector<int>(k_max_bodies, 0);
@@ -134,6 +159,7 @@ void TrackingScene::render() {
 
     frame_buffer.begin();
     {
+        ofClear(0, 0, 0, 0);
         pixel_shader_fbo.draw(0, 0);
         /*
         pixel_shader_fbo.draw(0, 0);
@@ -147,6 +173,9 @@ void TrackingScene::render() {
         */
 
         dvd_logo.draw();
+        me_logo.draw();
+
+        draw_fake_shaders();
 
         ofSetColor(0, 0, 255); // Blaue Linie fÃ¼r Debug
         debug_polyline.draw();
@@ -350,4 +379,12 @@ std::vector<ofPoint> TrackingScene::calculate_convex_hull(const ofxAzureKinect::
     }
 
     return output_hull;
+}
+
+void TrackingScene::draw_fake_shaders() {
+    for (std::size_t i = 0; i < std::min(players.size(), k_max_bodies); ++i) {
+        Player player = players[i];
+        std::string player_id = player.get_id();
+        ofDrawBitmapStringHighlight("Player " + player_id + ": " + player.get_fake_shader(), 100, 20 + (i * 20));
+    }
 }
