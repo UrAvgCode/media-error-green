@@ -143,7 +143,6 @@ void TrackingScene::render() {
                     render_shader.setUniform1f("time", static_cast<float>(ofGetElapsedTimeMillis()) / 50.0f);
                     render_shader.setUniform1f("random_offset_one", distribution(generator));
                     render_shader.setUniform1f("random_offset_two", distribution(generator));
-                    render_shader.setUniform1f("screen_shake_amplitude", screen_shake_amplitude);
 
                     const int num_points = frame_width * frame_height;
                     points_vbo.drawInstanced(GL_POINTS, 0, 1, num_points);
@@ -176,29 +175,6 @@ void TrackingScene::render() {
         me_logo.draw();
 
         draw_fake_shaders();
-
-        ofSetColor(0, 0, 255); // Blaue Linie fÃ¼r Debug
-        debug_polyline.draw();
-
-        // Zeichne die roten Umrisse der Convex Hulls
-        camera.begin();
-        ofPushMatrix();
-        {
-            ofRotateXDeg(180);
-            for (const auto &hull: convex_hulls) {
-                ofPushStyle();
-                ofSetColor(255, 0, 0);
-                ofNoFill();
-                ofBeginShape();
-                for (const auto &point: hull) {
-                    ofVertex(point);
-                }
-                ofEndShape(true);
-                ofPopStyle();
-            }
-        }
-        ofPopMatrix();
-        camera.end();
 
         draw_skeletons(body_skeletons);
     }

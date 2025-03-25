@@ -19,9 +19,6 @@ uniform float time;
 uniform float random_offset_one;
 uniform float random_offset_two;
 
-// Screen Shake
-uniform float screen_shake_amplitude;
-
 out vec4 vColor;
 
 void main()
@@ -55,13 +52,6 @@ void main()
     if (posWorld.y < random_offset_two + glitch_height && posWorld.y > random_offset_two - glitch_height) {
         posWorld.x -= glitch_width;
     }
-
-    // Screen Shake
-    float screen_shake_offset_x = sin(time * 5.0) * screen_shake_amplitude;
-    float screen_shake_offset_y = cos(time * 5.0) * screen_shake_amplitude;
-
-    posWorld.x += screen_shake_offset_x;
-    posWorld.y += screen_shake_offset_y;
 
     gl_Position = modelViewProjectionMatrix * posWorld;
 }
