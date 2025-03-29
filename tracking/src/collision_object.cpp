@@ -23,7 +23,7 @@ CollisionObject::CollisionObject(glm::vec2 position, glm::vec2 velocity, const s
     pluck_d.setMultiPlay(true);
     pluck_e.setMultiPlay(true);
     pluck_g.setMultiPlay(true);
-    globalEffect.setMultiPlay(true);
+    globalEffect.setMultiPlay(false);
 }
 
 std::string CollisionObject::get_fake_shader() { return logo_shader; }
@@ -54,9 +54,13 @@ void CollisionObject::update(std::vector<Player> &players, const ofEasyCam &came
         can_collide = true;
     }
 
-    //When obj hits top left corner
-    if (position.x <= 5 && position.y <= 5) {
-        globalEffect.setVolume(0.1f);
+    int offset = 50;
+    //When obj hits any corner
+    if (position.x <= offset && position.y <= offset ||
+        position.x <= offset && position.y + height() >= (ofGetHeight() - offset) ||
+        position.x + width() >= (ofGetWidth() - offset) && position.y <= offset ||
+        position.x + width() >= (ofGetWidth() - offset) && position.y + height() >= (ofGetHeight() - offset)) {
+        globalEffect.setVolume(0.06f);
         globalEffect.play();
     }
 
