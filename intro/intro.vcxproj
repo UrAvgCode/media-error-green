@@ -122,7 +122,6 @@
     <ClCompile Include="..\openFrameworks\addons\ofxOpenCv\src\ofxCvShortImage.cpp" />
     <ClCompile Include="..\openFrameworks\addons\ofxSvg\src\ofxSvg.cpp" />
     <ClCompile Include="src\intro_scene.cpp" />
-    <ClCompile Include="src\particle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\addons\ofxAzureKinect\src\ofxAzureKinect\BodyTracker.h" />
@@ -616,6 +615,14 @@
       <FileType>Document</FileType>
       <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">data/resources/%(Filename)%(Extension)</DestinationFileName>
       <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">data/resources/%(Filename)%(Extension)</DestinationFileName>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\calculate_particle_velocity.comp">
+      <FileType>Document</FileType>
+      <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">data/shaders/%(Filename)%(Extension)</DestinationFileName>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\calculate_particle_position.comp">
+      <FileType>Document</FileType>
+      <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">data/shaders/%(Filename)%(Extension)</DestinationFileName>
     </CopyFileToFolders>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

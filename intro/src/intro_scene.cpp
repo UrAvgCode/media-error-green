@@ -63,6 +63,27 @@ IntroScene::IntroScene() {
     // Mittelpunkt und Radius des Kreises berechnen
     logo_center = ofVec2f(boundingBoxLogo.getCenter().x + logo_left, boundingBoxLogo.getCenter().y + logo_top);
     logo_radius = (std::max(boundingBoxLogo.getWidth(), boundingBoxLogo.getHeight()) / 2.0f);
+
+    for (std::size_t i = 0; i < num_particles; ++i) {
+        particles.push_back({{ofRandomWidth(), ofRandomHeight()}, {0, 0}});
+    }
+
+    // Load and compile compute shader
+    compute_shader.setupShaderFromFile(GL_COMPUTE_SHADER, "shaders/calculate_particle_velocity.comp");
+    compute_shader.linkProgram();
+
+    move_particles_shader.setupShaderFromFile(GL_COMPUTE_SHADER, "shaders/calculate_particle_position.comp");
+    move_particles_shader.linkProgram();
+
+    // Allocate and upload pixel data to GPU
+    particle_buffer.allocate(particles, GL_DYNAMIC_COPY);
+    particle_buffer.bindBase(GL_SHADER_STORAGE_BUFFER, 0);
+
+    flow_field_buffer.allocate(flow_field, GL_DYNAMIC_DRAW);
+    flow_field_buffer.bindBase(GL_SHADER_STORAGE_BUFFER, 1);
+
+    logo_vectors_buffer.allocate(all_logo_vectors, GL_DYNAMIC_DRAW);
+    logo_vectors_buffer.bindBase(GL_SHADER_STORAGE_BUFFER, 2);
 }
 
 //--------------------------------------------------------------
@@ -87,44 +108,37 @@ void IntroScene::update() {
         }
     }
 
-    // calculates particle movement in parallel threads
-    std::for_each(std::execution::par_unseq, particles.begin(), particles.end(), [&](Particle &particle) {
-        float distance_to_logo = particle.position.distance(logo_center);
-        if (distance_to_logo <= logo_radius) {
-            particle.apply_repulsion(particles, repulsion_radius, repulsion_strength);
-        }
+    // Bind the buffer and dispatch the compute shader
+    flow_field_buffer.updateData(0, flow_field);
 
-        auto x_index = static_cast<int>(particle.position.x / flow_field_resolution);
-        auto y_index = static_cast<int>(particle.position.y / flow_field_resolution);
-        auto index = y_index * flow_field_cols + x_index;
+    particle_buffer.bindBase(GL_SHADER_STORAGE_BUFFER, 0);
+    flow_field_buffer.bindBase(GL_SHADER_STORAGE_BUFFER, 1);
+    logo_vectors_buffer.bindBase(GL_SHADER_STORAGE_BUFFER, 2);
 
-        // using perlin noise as force
-        if (index >= 0 && index < flow_field.size()) {
-            ofVec2f force = flow_field[index];
-            particle.apply_force(force);
-        }
+    compute_shader.begin();
+    compute_shader.setUniform1i("fieldWidth", flow_field_rows);
+    compute_shader.setUniform1i("fieldHeight", flow_field_cols);
+    compute_shader.setUniform1f("fieldScale", flow_field_resolution);
 
-        // force, that pulls particles to the logo
-        for (auto &logo_vec: all_logo_vectors) {
-            float distance = particle.position.distance(logo_vec.first); // distance to logo_vector position
-            // particles within distance, get attracted by logo_vector
-            if (distance < attraction_radius) {
-                ofVec2f attraction_force =
-                        logo_vec.second * 0.2; // power of attractionforce calculated by logo_vector direction
-                particle.apply_force(attraction_force);
+    compute_shader.setUniform2f("logo_center", logo_center);
+    compute_shader.setUniform1f("logo_radius", logo_radius);
 
-                // movement along the logo (not sticking on one point)
-                // calculation direction from vector to current particle
-                ofVec2f direction_to_vector = logo_vec.first - particle.position;
-                direction_to_vector.normalize();
-                particle.apply_force(direction_to_vector * 0.1);
-            }
-        }
-    });
+    compute_shader.setUniform1i("number_of_particles", particles.size());
+    compute_shader.setUniform1i("logo_vectors_size", all_logo_vectors.size());
 
-    // updating particles
-    for (auto &particle: particles) {
-        particle.update(logo_vectors, logo_tolerance);
+    compute_shader.dispatchCompute(particles.size() / 1024, 1, 1);
+    compute_shader.end();
+    glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+
+    move_particles_shader.begin();
+    move_particles_shader.dispatchCompute(particles.size() / 1024, 1, 1);
+    move_particles_shader.end();
+    glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+
+    auto *mapped_particles = particle_buffer.map<Particle>(GL_READ_ONLY);
+    if (mapped_particles) {
+        memcpy(particles.data(), mapped_particles, particles.size() * sizeof(Particle));
+        particle_buffer.unmap();
     }
 }
 
@@ -132,16 +146,9 @@ void IntroScene::render() {
     particle_draw_fbo.begin();
     {
         ofClear(0);
-
-        particle_trail_shader.begin();
-        {
-            particle_trail_shader.setUniform1f("uMaxLength", 10);
-            particle_trail_shader.setUniformTexture("logo_texture", logo_fbo.getTexture(), 0);
-            for (auto &particle: particles) {
-                particle.draw();
-            }
+        for (auto &particle: particles) {
+            ofDrawCircle(particle.position, 1);
         }
-        particle_trail_shader.end();
     }
     particle_draw_fbo.end();
 
@@ -170,7 +177,7 @@ void IntroScene::create_logo_vectors() {
         std::vector<ofPolyline> outlines = path.getOutline();
 
         for (auto &outline: outlines) {
-            outline = outline.getResampledBySpacing(1); // Resample für gleichmäßige Punkte
+            outline = outline.getResampledBySpacing(8); // Resample für gleichmäßige Punkte
             for (auto &point: outline) {
                 point *= logo_scale;
             }
@@ -190,7 +197,7 @@ void IntroScene::create_logo_vectors() {
         std::vector<ofPolyline> outlines = path.getOutline();
 
         for (auto &outline: outlines) {
-            outline = outline.getResampledBySpacing(1); // Optional: Punkte gleichmäßig verteilen
+            outline = outline.getResampledBySpacing(8); // Optional: Punkte gleichmäßig verteilen
             for (int j = 0; j < outline.size() - 1; j++) {
                 ofVec2f start = ofVec2f(outline[j]) * logo_scale + offset;
                 ofVec2f end = ofVec2f(outline[j + 1]) * logo_scale + offset;
@@ -222,7 +229,7 @@ void IntroScene::create_logo_in_outs_vectors() {
         std::vector<ofPolyline> outlines = path.getOutline();
 
         for (auto &outline: outlines) {
-            outline = outline.getResampledBySpacing(1); // Resample für gleichmäßige Punkte
+            outline = outline.getResampledBySpacing(8); // Resample für gleichmäßige Punkte
             for (auto &point: outline) {
                 point *= logo_scale;
             }
@@ -242,7 +249,7 @@ void IntroScene::create_logo_in_outs_vectors() {
         std::vector<ofPolyline> outlines = path.getOutline();
 
         for (auto &outline: outlines) {
-            outline = outline.getResampledBySpacing(1); // Optional: Punkte gleichmäßig verteilen
+            outline = outline.getResampledBySpacing(8); // Optional: Punkte gleichmäßig verteilen
             for (int j = 0; j < outline.size() - 1; j++) {
                 ofVec2f start = ofVec2f(outline[j]) * logo_scale + offset;
                 ofVec2f end = ofVec2f(outline[j + 1]) * logo_scale + offset;

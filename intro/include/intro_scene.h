@@ -30,7 +30,8 @@ class IntroScene : public Scene {
     const int flow_field_rows = ofGetHeight() / flow_field_resolution;
 
     // particles
-    std::array<Particle, 2048> particles;
+    std::vector<Particle> particles;
+    const std::size_t num_particles = 2048;
     const float repulsion_radius = 25;
     const float repulsion_strength = 5;
 
@@ -62,6 +63,13 @@ class IntroScene : public Scene {
 
     ofShader particle_trail_shader;
     ofShader particle_pixel_shader;
+
+    ofShader compute_shader;
+    ofShader move_particles_shader;
+
+    ofBufferObject particle_buffer;
+    ofBufferObject flow_field_buffer;
+    ofBufferObject logo_vectors_buffer;
 
     void create_logo_vectors();
     void create_logo_in_outs_vectors();
