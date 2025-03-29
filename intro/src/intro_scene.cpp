@@ -77,7 +77,7 @@ IntroScene::IntroScene() {
     move_particles_shader.linkProgram();
 
     // Allocate and upload pixel data to GPU
-    particle_buffer.allocate(simple_particles, GL_DYNAMIC_DRAW);
+    particle_buffer.allocate(simple_particles, GL_DYNAMIC_COPY);
     particle_buffer.bindBase(GL_SHADER_STORAGE_BUFFER, 0);
 
     flow_field_buffer.allocate(flow_field, GL_DYNAMIC_DRAW);
@@ -112,6 +112,7 @@ void IntroScene::update() {
 
     // Bind the buffer and dispatch the compute shader
     flow_field_buffer.updateData(0, flow_field);
+
     particle_buffer.bindBase(GL_SHADER_STORAGE_BUFFER, 0);
     flow_field_buffer.bindBase(GL_SHADER_STORAGE_BUFFER, 1);
     logo_vectors_buffer.bindBase(GL_SHADER_STORAGE_BUFFER, 2);
@@ -127,12 +128,14 @@ void IntroScene::update() {
     compute_shader.setUniform1i("number_of_particles", simple_particles.size());
     compute_shader.setUniform1i("logo_vectors_size", all_logo_vectors.size());
 
-    compute_shader.dispatchCompute(simple_particles.size(), 1, 1);
+    compute_shader.dispatchCompute(simple_particles.size() / 1024, 1, 1);
     compute_shader.end();
+    glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 
     move_particles_shader.begin();
-    move_particles_shader.dispatchCompute(simple_particles.size(), 1, 1);
+    move_particles_shader.dispatchCompute(simple_particles.size() / 1024, 1, 1);
     move_particles_shader.end();
+    glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 
     // Map the buffer to access the updated pixel data
     auto *mapped_particles = particle_buffer.map<SimpleParticle>(GL_READ_ONLY);
@@ -218,7 +221,7 @@ void IntroScene::create_logo_vectors() {
         std::vector<ofPolyline> outlines = path.getOutline();
 
         for (auto &outline: outlines) {
-            outline = outline.getResampledBySpacing(1); // Resample für gleichmäßige Punkte
+            outline = outline.getResampledBySpacing(8); // Resample für gleichmäßige Punkte
             for (auto &point: outline) {
                 point *= logo_scale;
             }
@@ -238,7 +241,7 @@ void IntroScene::create_logo_vectors() {
         std::vector<ofPolyline> outlines = path.getOutline();
 
         for (auto &outline: outlines) {
-            outline = outline.getResampledBySpacing(1); // Optional: Punkte gleichmäßig verteilen
+            outline = outline.getResampledBySpacing(8); // Optional: Punkte gleichmäßig verteilen
             for (int j = 0; j < outline.size() - 1; j++) {
                 ofVec2f start = ofVec2f(outline[j]) * logo_scale + offset;
                 ofVec2f end = ofVec2f(outline[j + 1]) * logo_scale + offset;
@@ -290,7 +293,7 @@ void IntroScene::create_logo_in_outs_vectors() {
         std::vector<ofPolyline> outlines = path.getOutline();
 
         for (auto &outline: outlines) {
-            outline = outline.getResampledBySpacing(1); // Optional: Punkte gleichmäßig verteilen
+            outline = outline.getResampledBySpacing(8); // Optional: Punkte gleichmäßig verteilen
             for (int j = 0; j < outline.size() - 1; j++) {
                 ofVec2f start = ofVec2f(outline[j]) * logo_scale + offset;
                 ofVec2f end = ofVec2f(outline[j + 1]) * logo_scale + offset;
