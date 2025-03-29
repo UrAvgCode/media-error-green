@@ -17,11 +17,13 @@ CollisionObject::CollisionObject(glm::vec2 position, glm::vec2 velocity, const s
     pluck_d.load("resources/audio/gruen_pluck_d.wav");
     pluck_e.load("resources/audio/gruen_pluck_e.wav");
     pluck_g.load("resources/audio/gruen_pluck_g.wav");
+    globalEffect.load("resources/audio/gruen_globalEffect.wav");
 
     pluck_b.setMultiPlay(true);
     pluck_d.setMultiPlay(true);
     pluck_e.setMultiPlay(true);
     pluck_g.setMultiPlay(true);
+    globalEffect.setMultiPlay(true);
 }
 
 std::string CollisionObject::get_fake_shader() { return logo_shader; }
@@ -50,6 +52,12 @@ void CollisionObject::update(std::vector<Player> &players, const ofEasyCam &came
         can_collide = false;
     } else {
         can_collide = true;
+    }
+
+    //When obj hits top left corner
+    if (position.x <= 5 && position.y <= 5) {
+        globalEffect.setVolume(0.1f);
+        globalEffect.play();
     }
 
     position += velocity;
