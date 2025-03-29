@@ -31,22 +31,25 @@ TrackingScene::TrackingScene(ofxAzureKinect::Device *device) : kinect_device(dev
     generator = std::mt19937(random());
     distribution = std::uniform_real_distribution<float>(min_random_value, max_random_value);
 
-    // setup effect_shader
-    ofShader effect_shader1;
-    effect_shader1.load("shaders/effect_shader1");
+
+    collision_objects = createCollisionObjects();
+
+    //// setup effect_shader
+    //ofShader effect_shader1;
+    //effect_shader1.load("shaders/effect_shader1");
 
 
-    // init dvd logo
-    auto dvd_position = glm::vec2(ofRandom(5, 1000), ofRandom(5, 500));
-    auto dvd_velocity = glm::vec2(ofRandom(-100, 100), ofRandom(-100, 100));
-    dvd_velocity = 8 * glm::normalize(dvd_velocity);
-    dvd_logo = CollisionObject(dvd_position, dvd_velocity, "resources/dvd-logo.png", "dvd", effect_shader1);
+    //// init dvd logo
+    //auto dvd_position = glm::vec2(ofRandom(5, 1000), ofRandom(5, 500));
+    //auto dvd_velocity = glm::vec2(ofRandom(-100, 100), ofRandom(-100, 100));
+    //dvd_velocity = 8 * glm::normalize(dvd_velocity);
+    //dvd_logo = CollisionObject(dvd_position, dvd_velocity, "resources/dvd-logo.png", "dvd", effect_shader1);
 
-    // init me logo
-    auto me_position = glm::vec2(ofRandom(5, 1000), ofRandom(5, 500));
-    auto me_velocity = glm::vec2(ofRandom(-100, 100), ofRandom(-100, 100));
-    me_velocity = 8 * glm::normalize(me_velocity);
-    me_logo = CollisionObject(me_position, me_velocity, "resources/me-logo-green.png", "me", effect_shader1);
+    //// init me logo
+    //auto me_position = glm::vec2(ofRandom(5, 1000), ofRandom(5, 500));
+    //auto me_velocity = glm::vec2(ofRandom(-100, 100), ofRandom(-100, 100));
+    //me_velocity = 8 * glm::normalize(me_velocity);
+    //me_logo = CollisionObject(me_position, me_velocity, "resources/me-logo-green.png", "me", effect_shader1);
 }
 
 void TrackingScene::update() {
@@ -84,8 +87,11 @@ void TrackingScene::update() {
         convex_hulls.emplace_back(calculate_convex_hull(skeleton));
     }
 
-    dvd_logo.update(players, camera);
-    me_logo.update(players, camera);
+    for (auto &obj: collision_objects) {
+        obj.update(players, camera);
+    }
+    /*dvd_logo.update(players, camera);
+    me_logo.update(players, camera);*/
 }
 
 void TrackingScene::render() {
@@ -176,8 +182,12 @@ void TrackingScene::render() {
         pixel_shader.end();
         */
 
-        dvd_logo.draw();
-        me_logo.draw();
+        for (const auto &obj: collision_objects) {
+            obj.draw();
+        }
+
+        /*dvd_logo.draw();
+        me_logo.draw();*/
 
         draw_fake_shaders();
 
@@ -368,4 +378,54 @@ void TrackingScene::draw_fake_shaders() {
         std::string player_id = player.get_id();
         ofDrawBitmapStringHighlight("Player " + player_id + ": " + player.get_fake_shader(), 100, 20 + (i * 20));
     }
+}
+
+std::vector<CollisionObject> TrackingScene::createCollisionObjects() {
+    try {
+        // Verzeichnispfade
+        std::filesystem::path current_dir = std::filesystem::current_path();
+        std::string imageDir = "../tracking/resources/";
+        std::string shaderDir = "../tracking/shaders/effect/";
+
+        // Liste der Shader sammeln
+        std::vector<ofShader> shaders;
+        for (const auto &entry: std::filesystem::directory_iterator(current_dir / shaderDir)) {
+            if (entry.path().extension() == ".frag") {
+                ofShader shader;
+                std::string shaderName = entry.path().stem().string(); // Dateiname ohne Erweiterung
+                if (shader.load(current_dir / (shaderDir + shaderName + ".vert"), current_dir / (shaderDir + shaderName + ".frag"))) {
+                    shaders.push_back(shader);
+                    ofLogNotice() << "Loaded shader: " << shaderName;
+                }
+            }
+        }
+
+        // Bilder durchgehen und CollisionObjects erstellen
+        int shaderIndex = 0;
+        for (const auto &entry: std::filesystem::directory_iterator(current_dir / imageDir)) {
+            if (entry.path().extension() == ".png") {
+                std::string filename = entry.path().filename().string();
+                std::string logoShaderName = "LogoShader"; // Platzhalter für Logo-Shader
+
+                // Effektshader aus der Shaderliste wählen (zyklisch)
+                ofShader effectShader;
+                if (!shaders.empty()) {
+                    effectShader = shaders[shaderIndex % shaders.size()];
+                    shaderIndex++;
+                }
+
+                // Zufällige Position und Geschwindigkeit
+                glm::vec2 position = glm::vec2(ofRandom(0, ofGetWidth()), ofRandom(0, ofGetHeight()));
+                glm::vec2 velocity = glm::vec2(ofRandom(-5, 5), ofRandom(-5, 5));
+
+                // CollisionObject erstellen und zur Liste hinzufügen
+                collision_objects.emplace_back(position, velocity, filename, logoShaderName, effectShader);
+                ofLogNotice() << "Created CollisionObject for file: " << filename;
+            }
+        }
+    } catch (const std::filesystem::filesystem_error &e) {
+        ofLogError() << "Filesystem error: " << e.what();
+    }
+
+    return collision_objects;
 }

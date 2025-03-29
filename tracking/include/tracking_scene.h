@@ -35,6 +35,7 @@ class TrackingScene : public Scene {
     std::mt19937 generator;
     std::uniform_real_distribution<float> distribution;
 
+    std::vector<CollisionObject> collision_objects;
     CollisionObject dvd_logo;
     CollisionObject me_logo;
 
@@ -48,5 +49,6 @@ class TrackingScene : public Scene {
 
     void update_bouncing_image(const std::vector<ofxAzureKinect::BodySkeleton> &skeletons); // Funktion zur Aktualisierung der Bewegung
     float of_dist_point_to_segment(const glm::vec2 &p, const glm::vec2 &a, const glm::vec2 &b);
+    std::vector<CollisionObject> createCollisionObjects();
     void draw_fake_shaders();
 };
