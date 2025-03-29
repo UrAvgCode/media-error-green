@@ -580,6 +580,14 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
+    <CopyFileToFolders Include="effect_shader1.frag">
+      <FileType>Document</FileType>
+      <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">data/shaders/%(Filename)%(Extension)</DestinationFileName>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="effect_shader1.vert">
+      <FileType>Document</FileType>
+      <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">data/shaders/%(Filename)%(Extension)</DestinationFileName>
+    </CopyFileToFolders>
     <None Include="packages.config" />
     <CopyFileToFolders Include="shaders\render.frag">
       <FileType>Document</FileType>

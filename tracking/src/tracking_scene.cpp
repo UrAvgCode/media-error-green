@@ -31,17 +31,22 @@ TrackingScene::TrackingScene(ofxAzureKinect::Device *device) : kinect_device(dev
     generator = std::mt19937(random());
     distribution = std::uniform_real_distribution<float>(min_random_value, max_random_value);
 
+    // setup effect_shader
+    ofShader effect_shader1;
+    effect_shader1.load("shaders/effect_shader1");
+
+
     // init dvd logo
     auto dvd_position = glm::vec2(ofRandom(5, 1000), ofRandom(5, 500));
     auto dvd_velocity = glm::vec2(ofRandom(-100, 100), ofRandom(-100, 100));
     dvd_velocity = 8 * glm::normalize(dvd_velocity);
-    dvd_logo = CollisionObject(dvd_position, dvd_velocity, "resources/dvd-logo.png", "dvd");
+    dvd_logo = CollisionObject(dvd_position, dvd_velocity, "resources/dvd-logo.png", "dvd", effect_shader1);
 
     // init me logo
     auto me_position = glm::vec2(ofRandom(5, 1000), ofRandom(5, 500));
     auto me_velocity = glm::vec2(ofRandom(-100, 100), ofRandom(-100, 100));
     me_velocity = 8 * glm::normalize(me_velocity);
-    me_logo = CollisionObject(me_position, me_velocity, "resources/me-logo-green.png", "me");
+    me_logo = CollisionObject(me_position, me_velocity, "resources/me-logo-green.png", "me", effect_shader1);
 }
 
 void TrackingScene::update() {
