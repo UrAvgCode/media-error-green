@@ -32,6 +32,13 @@ void CoreApp::setup() {
     std::random_device random;
     generator = std::mt19937(random());
     distribution = std::uniform_int_distribution<int>(0, ofGetHeight());
+    
+    // load sound
+    ambient_Sound.load("resources/audio/gruen_ambient.wav");
+    ambient_Sound.play();
+    ambient_Sound.setLoop(true);
+    //ambient_Sound.setSpeed(1.75f);
+
 
     current_app_fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGBA);
     inactive_app_fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGBA);
@@ -43,6 +50,8 @@ void CoreApp::exit() { kinect_device.close(); }
 
 //--------------------------------------------------------------
 void CoreApp::update() {
+    ofSoundUpdate();
+
     const auto &body_skeletons = kinect_device.getBodySkeletons();
 
     if ((current_scene == &intro_scene && !body_skeletons.empty()) ||
