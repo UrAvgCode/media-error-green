@@ -23,6 +23,8 @@ IntroScene::IntroScene() {
     }
     logo_fbo.end();
 
+    render_particles_shader.load("shaders/render_particles");
+
     particle_trail_shader.load("shaders/particle_trail_shader.vert", "shaders/particle_trail_shader.frag",
                                "shaders/particle_trail_shader.geom");
     particle_trail_shader.setGeometryInputType(GL_LINES);
@@ -65,7 +67,7 @@ IntroScene::IntroScene() {
     logo_radius = (std::max(boundingBoxLogo.getWidth(), boundingBoxLogo.getHeight()) / 2.0f);
 
     for (std::size_t i = 0; i < num_particles; ++i) {
-        particles.push_back({{ofRandomWidth(), ofRandomHeight()}, {0, 0}});
+        particles.push_back({{ofRandomWidth(), ofRandomHeight()}, {ofRandom(-2, 2), ofRandom(-2, 2)}});
     }
 
     // Load and compile compute shader
@@ -78,12 +80,26 @@ IntroScene::IntroScene() {
     // Allocate and upload pixel data to GPU
     particle_buffer.allocate(particles, GL_DYNAMIC_COPY);
     particle_buffer.bindBase(GL_SHADER_STORAGE_BUFFER, 0);
+    particle_buffer.bind(GL_ARRAY_BUFFER);
 
     flow_field_buffer.allocate(flow_field, GL_DYNAMIC_DRAW);
     flow_field_buffer.bindBase(GL_SHADER_STORAGE_BUFFER, 1);
 
     logo_vectors_buffer.allocate(all_logo_vectors, GL_DYNAMIC_DRAW);
     logo_vectors_buffer.bindBase(GL_SHADER_STORAGE_BUFFER, 2);
+
+    // Create VBO and VAO for rendering
+    glGenVertexArrays(1, &particle_vao);
+    glBindVertexArray(particle_vao);
+
+    // Enable and describe position attribute (assuming layout(location = 0) in vertex shader)
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Particle), (void *) 0);
+
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Particle), (void *) sizeof(glm::vec2));
+
+    glBindVertexArray(0);
 }
 
 //--------------------------------------------------------------
@@ -126,29 +142,27 @@ void IntroScene::update() {
     compute_shader.setUniform1i("number_of_particles", particles.size());
     compute_shader.setUniform1i("logo_vectors_size", all_logo_vectors.size());
 
-    compute_shader.dispatchCompute(particles.size() / 1024, 1, 1);
+    compute_shader.dispatchCompute((particles.size() + 1023) / 1024, 1, 1);
     compute_shader.end();
     glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 
     move_particles_shader.begin();
-    move_particles_shader.dispatchCompute(particles.size() / 1024, 1, 1);
+    move_particles_shader.dispatchCompute((particles.size() + 1023) / 1024, 1, 1);
     move_particles_shader.end();
     glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
-
-    auto *mapped_particles = particle_buffer.map<Particle>(GL_READ_ONLY);
-    if (mapped_particles) {
-        memcpy(particles.data(), mapped_particles, particles.size() * sizeof(Particle));
-        particle_buffer.unmap();
-    }
 }
 
 void IntroScene::render() {
     particle_draw_fbo.begin();
     {
         ofClear(0);
-        for (auto &particle: particles) {
-            ofDrawCircle(particle.position, 1);
-        }
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        render_particles_shader.begin();
+        glBindVertexArray(particle_vao);
+        glDrawArrays(GL_POINTS, 0, particles.size());
+        glBindVertexArray(0);
+        render_particles_shader.end();
     }
     particle_draw_fbo.end();
 

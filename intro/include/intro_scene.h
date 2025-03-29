@@ -61,6 +61,7 @@ class IntroScene : public Scene {
 
     ofFbo particle_draw_fbo;
 
+    ofShader render_particles_shader;
     ofShader particle_trail_shader;
     ofShader particle_pixel_shader;
 
@@ -70,6 +71,9 @@ class IntroScene : public Scene {
     ofBufferObject particle_buffer;
     ofBufferObject flow_field_buffer;
     ofBufferObject logo_vectors_buffer;
+
+    ofBufferObject particle_render_buffer;
+    GLuint particle_vao;
 
     void create_logo_vectors();
     void create_logo_in_outs_vectors();
