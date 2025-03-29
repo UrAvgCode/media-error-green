@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 
+#include <ofMain.h>
+
 #include <ofEasyCam.h>
 #include <ofImage.h>
 #include <ofxAzureKinect.h>
@@ -19,14 +21,21 @@ class CollisionObject {
     float width() const;
     float height() const;
 
+
     void update(std::vector<Player> &players, const ofEasyCam &camera);
     std::string get_fake_shader();
+    void playRandomPluck();
 
   protected:
     bool check_collision_with_bodies(std::vector<Player> &players, const ofEasyCam &camera) const;
     void affect_player(Player &player, std::string shader) const;
 
     ofImage image;
+
+    ofSoundPlayer pluck_b; 
+    ofSoundPlayer pluck_d; 
+    ofSoundPlayer pluck_e; 
+    ofSoundPlayer pluck_g; 
 
     std::string logo_shader = "No. 1";
 

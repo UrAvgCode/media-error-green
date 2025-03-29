@@ -12,6 +12,16 @@ CollisionObject::CollisionObject(glm::vec2 position, glm::vec2 velocity, const s
                                  std::string logo_shader) :
     position(position), velocity(velocity), can_collide(false), logo_shader(logo_shader) {
     image.load(filename);
+
+    pluck_b.load("resources/audio/gruen_pluck_b.wav");
+    pluck_d.load("resources/audio/gruen_pluck_d.wav");
+    pluck_e.load("resources/audio/gruen_pluck_e.wav");
+    pluck_g.load("resources/audio/gruen_pluck_g.wav");
+
+    pluck_b.setMultiPlay(true);
+    pluck_d.setMultiPlay(true);
+    pluck_e.setMultiPlay(true);
+    pluck_g.setMultiPlay(true);
 }
 
 std::string CollisionObject::get_fake_shader() { return logo_shader; }
@@ -23,12 +33,16 @@ float CollisionObject::width() const { return image.getWidth(); }
 float CollisionObject::height() const { return image.getHeight(); }
 
 void CollisionObject::update(std::vector<Player> &players, const ofEasyCam &camera) {
+    ofSoundUpdate();
+
     if (position.x <= 0 || position.x + width() >= ofGetWidth()) {
         velocity.x *= -1;
+        playRandomPluck();
     }
 
     if (position.y <= 0 || position.y + height() >= ofGetHeight()) {
         velocity.y *= -1;
+        playRandomPluck();
     }
 
     if (can_collide && check_collision_with_bodies(players, camera)) {
@@ -68,5 +82,25 @@ void CollisionObject::affect_player(Player &player, std::string shader) const {
         player.set_fake_shader("none");
     } else {
         player.set_fake_shader(shader);
+    }
+}
+
+void CollisionObject::playRandomPluck() {
+    int random = ofRandom(0,4);
+    switch (random) {
+        case 0:
+            pluck_b.play();
+            break;
+        case 1:
+            pluck_d.play();
+            break;
+        case 2:
+            pluck_e.play();
+            break;
+        case 3:
+            pluck_g.play();
+            break;
+        default:
+            break;
     }
 }

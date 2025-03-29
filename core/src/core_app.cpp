@@ -46,7 +46,10 @@ void CoreApp::setup() {
 }
 
 //--------------------------------------------------------------
-void CoreApp::exit() { kinect_device.close(); }
+void CoreApp::exit() { 
+    kinect_device.close();
+    ofSoundStopAll();
+}
 
 //--------------------------------------------------------------
 void CoreApp::update() {
