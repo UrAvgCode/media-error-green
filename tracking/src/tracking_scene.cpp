@@ -31,17 +31,8 @@ TrackingScene::TrackingScene(ofxAzureKinect::Device *device) : kinect_device(dev
     generator = std::mt19937(random());
     distribution = std::uniform_real_distribution<float>(min_random_value, max_random_value);
 
-    // init dvd logo
-    auto dvd_position = glm::vec2(ofRandom(5, 1000), ofRandom(5, 500));
-    auto dvd_velocity = glm::vec2(ofRandom(-100, 100), ofRandom(-100, 100));
-    dvd_velocity = 8 * glm::normalize(dvd_velocity);
-    dvd_logo = CollisionObject(dvd_position, dvd_velocity, "resources/dvd-logo.png", "dvd");
-
-    // init me logo
-    auto me_position = glm::vec2(ofRandom(5, 1000), ofRandom(5, 500));
-    auto me_velocity = glm::vec2(ofRandom(-100, 100), ofRandom(-100, 100));
-    me_velocity = 8 * glm::normalize(me_velocity);
-    me_logo = CollisionObject(me_position, me_velocity, "resources/me-logo-green.png", "me");
+    //creates all collisionobjects with shaders and images
+    collision_objects = createCollisionObjects();
 }
 
 void TrackingScene::update() {
@@ -79,8 +70,10 @@ void TrackingScene::update() {
         convex_hulls.emplace_back(calculate_convex_hull(skeleton));
     }
 
-    dvd_logo.update(players, camera);
-    me_logo.update(players, camera);
+    //updates all collisionobjects
+    for (auto &obj: collision_objects) {
+        obj.update(players, camera);
+    }
 }
 
 void TrackingScene::render() {
@@ -171,8 +164,10 @@ void TrackingScene::render() {
         pixel_shader.end();
         */
 
-        dvd_logo.draw();
-        me_logo.draw();
+        // draws all collisionobjects
+        for (const auto &obj: collision_objects) {
+            obj.draw();
+        }
 
         draw_fake_shaders();
 
@@ -353,7 +348,6 @@ std::vector<ofPoint> TrackingScene::calculate_convex_hull(const ofxAzureKinect::
                     ofVec3f(point.x, point.y, camera.worldToScreen(ofVec3f(0, 0, front_depth)).z)));
         }
     }
-
     return output_hull;
 }
 
@@ -362,5 +356,27 @@ void TrackingScene::draw_fake_shaders() {
         Player player = players[i];
         std::string player_id = player.get_id();
         ofDrawBitmapStringHighlight("Player " + player_id + ": " + player.get_fake_shader(), 100, 20 + (i * 20));
+    }
+}
+
+std::vector<CollisionObject> TrackingScene::createCollisionObjects() {
+    if (effect_shader_paths.size() != collision_object_image_paths.size()) {
+        ofLogError(__FUNCTION__) << "Effect shader paths and collision object image paths must have the same size!";
+        return std::vector<CollisionObject>();
+    } else if (effect_shader_paths.size() == 0 && collision_object_image_paths.size() == 0) {
+        ofLogError(__FUNCTION__) << "Effect shader paths and collision object image paths must not be empty!";
+        return std::vector<CollisionObject>();
+    } else {
+        std::vector<CollisionObject> collision_objects;
+        for (std::size_t i = 0; i < effect_shader_paths.size(); ++i) {
+            auto effect_shader = ofShader();
+            effect_shader.load(effect_shader_paths[i]);
+            auto position = glm::vec2(ofRandom(5, 1000), ofRandom(5, 500));
+            auto velocity = glm::vec2(ofRandom(-100, 100), ofRandom(-100, 100));
+            velocity = 8 * glm::normalize(velocity);
+            string fake_shader = "No. " + std::to_string(i);
+            collision_objects.emplace_back(position, velocity, collision_object_image_paths[i], fake_shader, effect_shader);
+        }
+        return collision_objects;
     }
 }

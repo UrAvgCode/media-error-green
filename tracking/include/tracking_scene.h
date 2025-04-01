@@ -31,10 +31,14 @@ class TrackingScene : public Scene {
 
     ofShader pixel_shader;
     ofShader render_shader;
+    const vector<string> effect_shader_paths = {"shaders/effect/effect_shader1", "shaders/effect/effect_shader2"};
+
+    vector<string> collision_object_image_paths = {"resources/dvd-logo.png", "resources/me-logo-green.png"};
 
     std::mt19937 generator;
     std::uniform_real_distribution<float> distribution;
 
+    std::vector<CollisionObject> collision_objects;
     CollisionObject dvd_logo;
     CollisionObject me_logo;
 
@@ -42,11 +46,9 @@ class TrackingScene : public Scene {
     ofPolyline debug_polyline; // Speichert die letzte getestete Polyline
 
     std::vector<ofPoint> calculate_convex_hull(const ofxAzureKinect::BodySkeleton &skeleton);
-    bool check_collision_with_bodies(const std::vector<ofxAzureKinect::BodySkeleton> &skeletons);
 
     void draw_skeletons(const std::vector<ofxAzureKinect::BodySkeleton> &skeletons);
 
-    void update_bouncing_image(const std::vector<ofxAzureKinect::BodySkeleton> &skeletons); // Funktion zur Aktualisierung der Bewegung
-    float of_dist_point_to_segment(const glm::vec2 &p, const glm::vec2 &a, const glm::vec2 &b);
+    std::vector<CollisionObject> createCollisionObjects();
     void draw_fake_shaders();
 };

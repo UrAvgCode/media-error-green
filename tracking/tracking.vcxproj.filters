@@ -318,6 +318,9 @@
     <Filter Include="resources">
       <UniqueIdentifier>{34afb16b-49ed-4ea3-896d-5389490fc5ce}</UniqueIdentifier>
     </Filter>
+    <Filter Include="shaders\effect">
+      <UniqueIdentifier>{a859d2e8-64e8-4614-9d19-3793616d9612}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\addons\ofxConvexHull\src\ofxConvexHull.h">
@@ -1668,6 +1671,18 @@
     </CopyFileToFolders>
     <CopyFileToFolders Include="resources\me-logo-green.png">
       <Filter>resources</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\effect\effect_shader2.frag">
+      <Filter>shaders\effect</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\effect\effect_shader2.vert">
+      <Filter>shaders\effect</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\effect\effect_shader1.frag">
+      <Filter>shaders\effect</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\effect\effect_shader1.vert">
+      <Filter>shaders\effect</Filter>
     </CopyFileToFolders>
   </ItemGroup>
 </Project>

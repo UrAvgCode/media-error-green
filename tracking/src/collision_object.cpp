@@ -4,19 +4,29 @@
 #include <vector>
 
 #include "ofAppRunner.h"
+#include "ofFbo.h"
 
 
-CollisionObject::CollisionObject() : CollisionObject({0, 0}, {0, 0}, "", "") {}
+CollisionObject::CollisionObject() : CollisionObject({0, 0}, {0, 0}, "", "", ofShader()) {}
 
 CollisionObject::CollisionObject(glm::vec2 position, glm::vec2 velocity, const std::string &filename,
-                                 std::string logo_shader) :
-    position(position), velocity(velocity), can_collide(false), logo_shader(logo_shader) {
+                                 std::string logo_shader, ofShader effect_shader) :
+    position(position), velocity(velocity), can_collide(false), logo_shader(logo_shader), effect_shader(effect_shader) {
     image.load(filename);
+
 }
 
 std::string CollisionObject::get_fake_shader() { return logo_shader; }
 
-void CollisionObject::draw() const { image.draw(position.x, position.y); }
+void CollisionObject::draw() const {
+    effect_shader.begin();
+    effect_shader.setUniform1f("block_size", 10.0f);
+    effect_shader.setUniform1f("quality", 0.5f);
+
+    image.draw(position.x, position.y, 0);
+
+    effect_shader.end();
+}
 
 float CollisionObject::width() const { return image.getWidth(); }
 
