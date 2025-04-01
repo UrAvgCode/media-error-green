@@ -40,9 +40,6 @@
     <ClCompile Include="..\openFrameworks\addons\ofxSvg\src\ofxSvg.cpp">
       <Filter>addons\ofxSvg\src</Filter>
     </ClCompile>
-    <ClCompile Include="src\particle.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="src\intro_scene.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -1641,6 +1638,14 @@
     </CopyFileToFolders>
     <CopyFileToFolders Include="resources\media_error_logo_lines.svg">
       <Filter>resources</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\render_particles.frag" />
+    <CopyFileToFolders Include="shaders\render_particles.vert" />
+    <CopyFileToFolders Include="shaders\calculate_particle_position.comp">
+      <Filter>shaders</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\calculate_particle_velocity.comp">
+      <Filter>shaders</Filter>
     </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>

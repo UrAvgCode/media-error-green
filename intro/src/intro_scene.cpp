@@ -67,7 +67,11 @@ IntroScene::IntroScene() {
     logo_radius = (std::max(boundingBoxLogo.getWidth(), boundingBoxLogo.getHeight()) / 2.0f);
 
     for (std::size_t i = 0; i < num_particles; ++i) {
-        particles.push_back({{ofRandomWidth(), ofRandomHeight()}, {ofRandom(-2, 2), ofRandom(-2, 2)}});
+        auto velocity = glm::vec2{ofRandom(-2, 2), ofRandom(-2, 2)};
+        auto position = glm::vec2{ofRandomWidth(), ofRandomHeight()};
+        auto positions = std::array<glm::vec2, 100>({position});
+
+        particles.push_back({velocity, positions});
     }
 
     // Load and compile compute shader

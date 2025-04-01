@@ -3,8 +3,8 @@
 layout(local_size_x = 1024) in;
 
 struct Particle {
-    vec2 position;
     vec2 velocity;
+    vec2 positions[100];
 };
 
 layout(std430, binding = 0) buffer PixelBuffer {
@@ -42,11 +42,11 @@ void main() {
     const float repulsion_radius = 25;
     const float repulsion_strength = 5;
 
-    if (distance(particle.position, logo_center) < logo_radius) {
+    if (distance(particle.positions[0], logo_center) < logo_radius) {
         for (int i = 0; i < number_of_particles; ++i) {
             if (i == id) continue;
 
-            const vec2 diff = particle.position - particles[i].position;
+            const vec2 diff = particle.positions[0] - particles[i].positions[0];
             const float dist = length(diff);
             if (dist >= repulsion_radius || dist == 0) continue;
 
@@ -56,8 +56,8 @@ void main() {
     }
 
     // Calculate the field index based on the particle's position
-    int x_index = int(particle.position.x / fieldScale) % fieldWidth;
-    int y_index = int(particle.position.y / fieldScale) % fieldHeight;
+    int x_index = int(particle.positions[0].x / fieldScale) % fieldWidth;
+    int y_index = int(particle.positions[0].y / fieldScale) % fieldHeight;
     int vector_index = y_index * fieldWidth + x_index;
 
     acceleration += vectorField[vector_index];
@@ -67,9 +67,9 @@ void main() {
     for (int i = 0; i < logo_vectors_size; ++i) {
         vec2 vector_position = logo_vectors[i].rg;
         vec2 vector_direction = logo_vectors[i].ba;
-        if (distance(particle.position, vector_position) < attraction_radius) {
+        if (distance(particle.positions[0], vector_position) < attraction_radius) {
             acceleration += 0.2 * vector_direction;
-            acceleration += 0.1 * normalize(vector_position - particle.position);
+            acceleration += 0.1 * normalize(vector_position - particle.positions[0]);
         }
     }
 

@@ -3,8 +3,8 @@
 layout(local_size_x = 1024) in;
 
 struct Particle {
-    vec2 position;
     vec2 velocity;
+    vec2 positions[100];
 };
 
 layout(std430, binding = 0) buffer PixelBuffer {
@@ -15,19 +15,21 @@ void main() {
     uint id = gl_GlobalInvocationID.x;
     Particle particle = particles[id];
 
-    particle.position += particle.velocity;
+    vec2 position = particle.positions[0];
+    position += particle.velocity;
 
-    if (particle.position.x < 0) {
-        particle.position.x = 1920;
-    } else if (particle.position.x > 1920) {
-        particle.position.x = 0;
+    if (position.x < 0) {
+        position.x = 1920;
+    } else if (position.x > 1920) {
+        position.x = 0;
     }
 
-    if (particle.position.y < 0) {
-        particle.position.y = 1080;
-    } else if (particle.position.y > 1080) {
-        particle.position.y = 0;
+    if (position.y < 0) {
+        position.y = 1080;
+    } else if (position.y > 1080) {
+        position.y = 0;
     }
 
+    particle.positions[0] = position + vec2(1, 1);
     particles[id] = particle;
 }
