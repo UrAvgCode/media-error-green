@@ -38,9 +38,9 @@ class TrackingScene : public Scene {
     std::mt19937 generator;
     std::uniform_real_distribution<float> distribution;
 
-    std::vector<CollisionObject> collision_objects;
-    CollisionObject dvd_logo;
-    CollisionObject me_logo;
+    std::vector<EffectShader> collision_objects;
+    EffectShader dvd_logo;
+    EffectShader me_logo;
 
     // polyline for collision
     ofPolyline debug_polyline; // Speichert die letzte getestete Polyline
@@ -49,6 +49,6 @@ class TrackingScene : public Scene {
 
     void draw_skeletons(const std::vector<ofxAzureKinect::BodySkeleton> &skeletons);
 
-    std::vector<CollisionObject> createCollisionObjects();
+    std::vector<EffectShader> createCollisionObjects();
     void draw_fake_shaders();
 };

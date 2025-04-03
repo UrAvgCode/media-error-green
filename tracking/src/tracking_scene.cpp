@@ -343,15 +343,15 @@ void TrackingScene::draw_fake_shaders() {
     }
 }
 
-std::vector<CollisionObject> TrackingScene::createCollisionObjects() {
+std::vector<EffectShader> TrackingScene::createCollisionObjects() {
     if (effect_shader_paths.size() != collision_object_image_paths.size()) {
         ofLogError(__FUNCTION__) << "Effect shader paths and collision object image paths must have the same size!";
-        return std::vector<CollisionObject>();
+        return std::vector<EffectShader>();
     } else if (effect_shader_paths.size() == 0 && collision_object_image_paths.size() == 0) {
         ofLogError(__FUNCTION__) << "Effect shader paths and collision object image paths must not be empty!";
-        return std::vector<CollisionObject>();
+        return std::vector<EffectShader>();
     } else {
-        std::vector<CollisionObject> collision_objects;
+        std::vector<EffectShader> collision_objects;
         for (std::size_t i = 0; i < effect_shader_paths.size(); ++i) {
             auto effect_shader = ofShader();
             effect_shader.load(effect_shader_paths[i]);
