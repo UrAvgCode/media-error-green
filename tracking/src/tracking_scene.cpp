@@ -31,7 +31,7 @@ TrackingScene::TrackingScene(ofxAzureKinect::Device *device) : kinect_device(dev
     generator = std::mt19937(random());
     distribution = std::uniform_real_distribution<float>(min_random_value, max_random_value);
 
-    //creates all collisionobjects with shaders and images
+    // creates all collisionobjects with shaders and images
     collision_objects = createCollisionObjects();
 }
 
@@ -47,7 +47,7 @@ void TrackingScene::update() {
         return true;
     });
 
-    for (auto &player : players) {
+    for (auto &player: players) {
         for (const auto &skeleton: body_skeletons) {
             if (skeleton.id == player.id) {
                 player.set_skeleton(skeleton);
@@ -57,9 +57,7 @@ void TrackingScene::update() {
     }
 
     for (const auto &skeleton: body_skeletons) {
-        if (!std::any_of(players.cbegin(), players.cend(), [&](auto &player) {
-            return player.id == skeleton.id;
-            })) {
+        if (!std::any_of(players.cbegin(), players.cend(), [&](auto &player) { return player.id == skeleton.id; })) {
             players.emplace_back(skeleton.id, &camera);
         }
     }
@@ -70,7 +68,7 @@ void TrackingScene::update() {
         convex_hulls.emplace_back(calculate_convex_hull(skeleton));
     }
 
-    //updates all collisionobjects
+    // updates all collisionobjects
     for (auto &obj: collision_objects) {
         obj.update(players, camera);
     }
@@ -122,25 +120,11 @@ void TrackingScene::render() {
                 ofRotateXDeg(180);
                 ofEnableDepthTest();
 
-                render_shader.begin();
-                {
-                    const auto frame_width = static_cast<int>(kinect_device->getDepthTex().getWidth());
-                    const auto frame_height = static_cast<int>(kinect_device->getDepthTex().getHeight());
-
-                    render_shader.setUniformTexture("depth_texture", kinect_device->getDepthTex(), 1);
-                    render_shader.setUniformTexture("body_index_texture", kinect_device->getBodyIndexTex(), 2);
-                    render_shader.setUniformTexture("world_texture", kinect_device->getDepthToWorldTex(), 3);
-                    render_shader.setUniform2i("frame_size", frame_width, frame_height);
-                    render_shader.setUniform1iv("body_ids", body_ids.data(), k_max_bodies);
-
-                    render_shader.setUniform1f("time", static_cast<float>(ofGetElapsedTimeMillis()) / 50.0f);
-                    render_shader.setUniform1f("random_offset_one", distribution(generator));
-                    render_shader.setUniform1f("random_offset_two", distribution(generator));
-
-                    const int num_points = frame_width * frame_height;
-                    points_vbo.drawInstanced(GL_POINTS, 0, 1, num_points);
+                for (auto &player: players) {
+                    player.draw(kinect_device->getDepthTex(), kinect_device->getBodyIndexTex(),
+                                kinect_device->getDepthToWorldTex(), body_ids);
                 }
-                render_shader.end();
+
                 ofDisableDepthTest();
             }
             ofPopMatrix();
@@ -371,11 +355,13 @@ std::vector<CollisionObject> TrackingScene::createCollisionObjects() {
         for (std::size_t i = 0; i < effect_shader_paths.size(); ++i) {
             auto effect_shader = ofShader();
             effect_shader.load(effect_shader_paths[i]);
+
             auto position = glm::vec2(ofRandom(5, 1000), ofRandom(5, 500));
             auto velocity = glm::vec2(ofRandom(-100, 100), ofRandom(-100, 100));
             velocity = 8 * glm::normalize(velocity);
             string fake_shader = "No. " + std::to_string(i);
-            collision_objects.emplace_back(position, velocity, collision_object_image_paths[i], fake_shader, effect_shader);
+            collision_objects.emplace_back(position, velocity, collision_object_image_paths[i], fake_shader,
+                                           effect_shader);
         }
         return collision_objects;
     }

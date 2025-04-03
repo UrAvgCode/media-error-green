@@ -3,7 +3,33 @@
 
 Player::Player() : Player(0, nullptr) {}
 
-Player::Player(std::uint32_t id, ofEasyCam *camera) : id(id), camera(camera) {}
+Player::Player(std::uint32_t id, ofEasyCam *camera) : id(id), camera(camera) { 
+    render_shader.load("shaders/render_player");
+
+    std::vector<glm::vec3> verts(1);
+    player_vbo.setVertexData(verts.data(), static_cast<int>(verts.size()), GL_STATIC_DRAW);
+}
+
+void Player::draw(ofTexture depth_tex, ofTexture body_index_tex, ofTexture depth_to_world_tex, std::vector<int> &body_ids) {
+    render_shader.begin();
+    {
+        const auto frame_width = static_cast<int>(depth_tex.getWidth());
+        const auto frame_height = static_cast<int>(depth_tex.getHeight());
+
+        render_shader.setUniformTexture("depth_texture", depth_tex, 1);
+        render_shader.setUniformTexture("body_index_texture", body_index_tex, 2);
+        render_shader.setUniformTexture("world_texture", depth_to_world_tex, 3);
+
+        render_shader.setUniform2i("frame_size", frame_width, frame_height);
+        render_shader.setUniform1iv("body_ids", body_ids.data(), 6);
+
+        render_shader.setUniform1i("player_id", id);
+
+        const int num_points = frame_width * frame_height;
+        player_vbo.drawInstanced(GL_POINTS, 0, 1, num_points);
+    }
+    render_shader.end();
+}
 
 void Player::set_skeleton(const ofxAzureKinect::BodySkeleton &skeleton) { this->skeleton = skeleton; }
 
