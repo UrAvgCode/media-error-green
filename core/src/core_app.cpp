@@ -34,9 +34,9 @@ void CoreApp::setup() {
     distribution = std::uniform_int_distribution<int>(0, ofGetHeight());
     
     // load sound
-    ambient_Sound.load("resources/audio/gruen_ambient.wav");
-    ambient_Sound.play();
+    ambient_Sound.load("resources/audio/gruen_ambient_volumeAdjusted.wav");
     ambient_Sound.setLoop(true);
+    ambient_Sound.play();
     //ambient_Sound.setSpeed(1.75f);
 
 

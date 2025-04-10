@@ -1633,5 +1633,8 @@
     <CopyFileToFolders Include="resources\audio\gruen_ambient.wav">
       <Filter>resources\audio</Filter>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="..\..\gruen_ambient_volumeAdjusted.wav">
+      <Filter>resources\audio</Filter>
+    </CopyFileToFolders>
   </ItemGroup>
 </Project>

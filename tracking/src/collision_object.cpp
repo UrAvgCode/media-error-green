@@ -60,7 +60,7 @@ void CollisionObject::update(std::vector<Player> &players, const ofEasyCam &came
         position.x <= offset && position.y + height() >= (ofGetHeight() - offset) ||
         position.x + width() >= (ofGetWidth() - offset) && position.y <= offset ||
         position.x + width() >= (ofGetWidth() - offset) && position.y + height() >= (ofGetHeight() - offset)) {
-        globalEffect.setVolume(0.06f);
+        globalEffect.setVolume(0.6f);
         globalEffect.play();
     }
 

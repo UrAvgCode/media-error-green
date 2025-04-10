@@ -36,7 +36,7 @@ TrackingScene::TrackingScene(ofxAzureKinect::Device *device) : kinect_device(dev
     auto dvd_velocity = glm::vec2(ofRandom(-100, 100), ofRandom(-100, 100));
    
     // test-values for when logo hits top left corner
-    //auto dvd_position = glm::vec2(1000.0, 1000.0);
+    //auto dvd_position = glm::vec2(100.0, 100.0);
     //auto dvd_velocity = glm::vec2(-1.1,-1.1);
     
     dvd_velocity = 8 * glm::normalize(dvd_velocity);

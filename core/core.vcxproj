@@ -609,6 +609,12 @@ del "$(TargetDir)\*.lib"</Command>
       <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">data/resources/audio/%(Filename)%(Extension)</DestinationFileName>
     </CopyFileToFolders>
   </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="..\..\gruen_ambient_volumeAdjusted.wav">
+      <FileType>Document</FileType>
+      <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">data/resources/audio/%(Filename)%(Extension)</DestinationFileName>
+    </CopyFileToFolders>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ProjectExtensions>
     <VisualStudio>
