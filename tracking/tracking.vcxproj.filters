@@ -52,6 +52,12 @@
     <ClCompile Include="src\player.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="pixel_effect_shader.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\effect_shader.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
@@ -1634,15 +1640,18 @@
     <ClInclude Include="include\player.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="include\pixel_effect_shader.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\effect_shader.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="icon.rc" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="shaders\render_player.vert">
-      <Filter>shaders</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="shaders\render.frag">
@@ -1688,6 +1697,9 @@
       <Filter>shaders\effect</Filter>
     </CopyFileToFolders>
     <CopyFileToFolders Include="shaders\render_player.frag">
+      <Filter>shaders</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\render_player.vert">
       <Filter>shaders</Filter>
     </CopyFileToFolders>
   </ItemGroup>
