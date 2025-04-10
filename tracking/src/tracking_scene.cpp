@@ -116,6 +116,7 @@ void TrackingScene::render() {
         ofBackground(0);
 
         camera.begin();
+        camera.disableMouseInput();
         {
             ofPushMatrix();
             {
@@ -379,4 +380,9 @@ std::vector<CollisionObject> TrackingScene::createCollisionObjects() {
         }
         return collision_objects;
     }
+
+}
+
+void TrackingScene::mousePressed(int x, int y, int button) { 
+    MessageBoxA(NULL, "mousePressed triggered!", "Debug", MB_OK); // should always show a popup
 }

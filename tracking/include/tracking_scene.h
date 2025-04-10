@@ -16,6 +16,7 @@ class TrackingScene : public Scene {
 
     void update() override;
     void render() override;
+    void mousePressed(int x, int y, int button);
 
   private:
     ofxAzureKinect::Device *kinect_device;
