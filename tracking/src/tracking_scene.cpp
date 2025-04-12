@@ -209,19 +209,18 @@ void TrackingScene::draw_fake_shaders() {
 }
 
 std::vector<CollisionObject> TrackingScene::createCollisionObjects() {
-    const auto effect_shader_paths = vector<string>({"shaders/effect/effect_shader1", "shaders/effect/effect_shader2"});
-    const auto collision_object_image_paths = vector<string>({"resources/dvd-logo.png", "resources/me-logo-green.png"});
+    const auto image_paths = vector<string>({"resources/dvd-logo.png", "resources/me-logo-green.png"});
 
     const auto effect_shaders = std::vector<std::shared_ptr<EffectShader>>(
             {std::make_shared<EffectShader>(), std::make_shared<PixelEffectShader>()});
 
     auto collision_objects = std::vector<CollisionObject>();
-    for (std::size_t i = 0; i < effect_shader_paths.size(); ++i) {
+    for (std::size_t i = 0; i < image_paths.size(); ++i) {
         auto position = glm::vec2(ofRandom(5, 1000), ofRandom(5, 500));
         auto velocity = glm::vec2(ofRandom(-100, 100), ofRandom(-100, 100));
         velocity = 8 * glm::normalize(velocity);
 
-        collision_objects.emplace_back(position, velocity, collision_object_image_paths[i], effect_shaders[i]);
+        collision_objects.emplace_back(position, velocity, image_paths[i], effect_shaders[i]);
     }
     return collision_objects;
 }
