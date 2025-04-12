@@ -25,9 +25,11 @@ void CollisionObject::update(std::vector<Player> &players, const ofEasyCam &came
         velocity.y *= -1;
     }
 
-    if (can_collide && check_collision_with_bodies(players, camera)) {
-        velocity *= -1;
-        can_collide = false;
+    if (check_collision_with_bodies(players, camera)) {
+        if (can_collide) {
+            velocity *= -1;
+            can_collide = false;
+        }
     } else {
         can_collide = true;
     }
@@ -43,18 +45,14 @@ void CollisionObject::draw() const {
 
 bool CollisionObject::check_collision_with_bodies(std::vector<Player> &players, const ofEasyCam &camera) const {
     for (auto &player: players) {
-        for (const auto &joint: player.get_skeleton().joints) {
+        // Zugriff auf die Skeleton-Vertices des Spielers
+        const auto &vertices = player.get_skeleton_vertices();
 
-            auto joint_position_homogeneous = glm::vec4(joint.position, 1.0f);
-            auto rotation_matrix = glm::rotate(glm::mat4(1.0f), glm::radians(180.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-
-            auto rotated_joint_position_homogenous = rotation_matrix * joint_position_homogeneous;
-            auto rotated_joint_position = glm::vec3(rotated_joint_position_homogenous);
-
-            auto joint_position = camera.worldToScreen(rotated_joint_position);
-            if (joint_position.x > position.x && joint_position.x < position.x + width() &&
-                joint_position.y > position.y && joint_position.y < position.y + height()) {
-
+        ofRectangle bounding_box(position.x, position.y, width(), height());
+        for (const auto &vertex: vertices) {
+            // Prüfe, ob der Vertex das Objekt berührt
+            if (bounding_box.intersects(vertex[0], vertex[1])) {
+                
                 player.set_shader(effect_shader);
 
                 return true;

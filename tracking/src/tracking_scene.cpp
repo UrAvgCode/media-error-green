@@ -39,6 +39,10 @@ void TrackingScene::update() {
         }
     }
 
+    for (auto &player: players) {
+        player.calculate_skeleton_vertices();
+    }
+
     for (auto &collision_object: collision_objects) {
         collision_object.update(players, camera);
     }

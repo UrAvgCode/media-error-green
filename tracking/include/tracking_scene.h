@@ -7,8 +7,8 @@
 
 #include <scene.h>
 
-#include "player.h"
 #include "collision_object.h"
+#include "player.h"
 
 class TrackingScene : public Scene {
   public:
