@@ -43,5 +43,5 @@ class CollisionObject {
     ofSoundPlayer pluck_d;
     ofSoundPlayer pluck_e;
     ofSoundPlayer pluck_g;
-    ofSoundPlayer globalEffect;
+    ofSoundPlayer global_effect;
 };

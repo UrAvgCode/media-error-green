@@ -19,13 +19,13 @@ CollisionObject::CollisionObject(glm::vec2 position, glm::vec2 velocity, const s
     pluck_d.load("resources/audio/gruen_pluck_d.wav");
     pluck_e.load("resources/audio/gruen_pluck_e.wav");
     pluck_g.load("resources/audio/gruen_pluck_g.wav");
-    globalEffect.load("resources/audio/gruen_globalEffect.wav");
+    global_effect.load("resources/audio/gruen_globalEffect.wav");
 
     pluck_b.setMultiPlay(true);
     pluck_d.setMultiPlay(true);
     pluck_e.setMultiPlay(true);
     pluck_g.setMultiPlay(true);
-    globalEffect.setMultiPlay(false);
+    global_effect.setMultiPlay(false);
 }
 
 void CollisionObject::update(std::vector<Player> &players, const ofEasyCam &camera) {
@@ -46,6 +46,15 @@ void CollisionObject::update(std::vector<Player> &players, const ofEasyCam &came
         }
     } else {
         can_collide = true;
+    }
+
+    int offset = 50;
+    if (position.x <= offset && position.y <= offset ||
+        position.x <= offset && position.y + height() >= (ofGetHeight() - offset) ||
+        position.x + width() >= (ofGetWidth() - offset) && position.y <= offset ||
+        position.x + width() >= (ofGetWidth() - offset) && position.y + height() >= (ofGetHeight() - offset)) {
+        global_effect.setVolume(0.06f);
+        global_effect.play();
     }
 
     position += velocity;
