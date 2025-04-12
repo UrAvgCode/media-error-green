@@ -25,9 +25,11 @@ void CollisionObject::update(std::vector<Player> &players, const ofEasyCam &came
         velocity.y *= -1;
     }
 
-    if (can_collide && check_collision_with_bodies(players, camera)) {
-        velocity *= -1;
-        can_collide = false;
+    if (check_collision_with_bodies(players, camera)) {
+        if (can_collide) {
+            velocity *= -1;
+            can_collide = false;
+        }
     } else {
         can_collide = true;
     }
