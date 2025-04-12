@@ -14,7 +14,7 @@ void TrackingScene::update() {
 
     std::erase_if(players, [&body_skeletons](const Player &player) {
         for (const auto &skeleton: body_skeletons) {
-            if (skeleton.id == player.id) {
+            if (skeleton.id == player.id()) {
                 return false;
             }
         }
@@ -23,7 +23,7 @@ void TrackingScene::update() {
 
     for (auto &player: players) {
         for (const auto &skeleton: body_skeletons) {
-            if (skeleton.id == player.id) {
+            if (skeleton.id == player.id()) {
                 player.set_skeleton(skeleton);
                 break;
             }
@@ -31,7 +31,7 @@ void TrackingScene::update() {
     }
 
     for (const auto &skeleton: body_skeletons) {
-        if (!std::any_of(players.cbegin(), players.cend(), [&](auto &player) { return player.id == skeleton.id; })) {
+        if (!std::any_of(players.cbegin(), players.cend(), [&](auto &player) { return player.id() == skeleton.id; })) {
             players.emplace_back(skeleton.id, &camera);
         }
     }
@@ -201,7 +201,7 @@ void TrackingScene::draw_skeletons(const std::vector<ofxAzureKinect::BodySkeleto
 void TrackingScene::draw_fake_shaders() {
     for (std::size_t i = 0; i < std::min(players.size(), k_max_bodies); ++i) {
         auto player = players[i];
-        std::string player_id = player.get_id();
+        auto player_id = std::to_string(player.id());
         ofDrawBitmapStringHighlight("Player " + player_id + ": " + player.get_fake_shader(), 100, 20 + (i * 20));
     }
 }

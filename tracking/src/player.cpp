@@ -7,7 +7,7 @@
 
 Player::Player() : Player(0, nullptr) {}
 
-Player::Player(std::uint32_t id, ofEasyCam *camera) : id(id), camera(camera) {
+Player::Player(int id, ofEasyCam *camera) : _id(id), camera(camera) {
     auto shader_settings = ofShaderSettings();
     shader_settings.shaderFiles[GL_VERTEX_SHADER] = "shaders/render_player.vert";
     shader_settings.shaderFiles[GL_FRAGMENT_SHADER] = "shaders/render_player.frag";
@@ -47,7 +47,7 @@ void Player::render(ofTexture depth_tex, ofTexture body_index_tex, ofTexture dep
                 render_shader.setUniform2i("frame_size", frame_width, frame_height);
                 render_shader.setUniform1iv("body_ids", body_ids.data(), 6);
 
-                render_shader.setUniform1i("player_id", id);
+                render_shader.setUniform1i("player_id", _id);
 
                 const int num_points = frame_width * frame_height;
                 player_vbo.drawInstanced(GL_POINTS, 0, 1, num_points);
@@ -80,9 +80,9 @@ void Player::set_fake_shader(std::string shader) {
     fake_shader = shader;
 }
 
-std::string Player::get_fake_shader() const { return fake_shader; }
+int Player::id() const { return _id; }
 
-std::string Player::get_id() const { return std::to_string(id); }
+std::string Player::get_fake_shader() const { return fake_shader; }
 
 ofxAzureKinect::BodySkeleton Player::get_skeleton() const { return skeleton; }
 
