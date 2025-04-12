@@ -51,6 +51,7 @@ void TrackingScene::update() {
         for (const auto &skeleton: body_skeletons) {
             if (skeleton.id == player.id) {
                 player.set_skeleton(skeleton);
+                player.calculate_skeleton_vertices();
                 break;
             }
         }
@@ -331,8 +332,6 @@ void TrackingScene::draw_skeleton_connections(const ofxAzureKinect::BodySkeleton
 
     vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ELBOW_RIGHT].position);
     vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_WRIST_RIGHT].position);
-
-    player.set_skeleton_vertices(vertices);
 
     skeleton_mesh.draw();
 }
