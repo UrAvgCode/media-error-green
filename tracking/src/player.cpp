@@ -11,7 +11,7 @@ void Player::set_fake_shader(std::string shader) { fake_shader = shader; }
 std::string Player::get_fake_shader() { return fake_shader; }
 std::string Player::get_id() { return std::to_string(id); }
 
-ofxAzureKinect::BodySkeleton Player::get_skeleton() { return skeleton; }
+ofxAzureKinect::BodySkeleton Player::get_skeleton() const { return skeleton; }
 
 
 std::array<glm::vec2, K4ABT_JOINT_COUNT> Player::get_projected_joints() {

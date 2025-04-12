@@ -12,8 +12,7 @@ class Player {
     void set_skeleton(const ofxAzureKinect::BodySkeleton &skeleton);
     void set_fake_shader(std::string shader);
     std::string get_fake_shader();
-    ofxAzureKinect::BodySkeleton get_skeleton();
-
+    ofxAzureKinect::BodySkeleton get_skeleton() const;
     std::array<glm::vec2, K4ABT_JOINT_COUNT> get_projected_joints();
     std::string get_id();
 

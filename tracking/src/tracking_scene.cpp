@@ -171,18 +171,19 @@ void TrackingScene::render() {
 
         draw_fake_shaders();
 
-        draw_skeletons(body_skeletons);
+        draw_players(players);
     }
     frame_buffer.end();
 }
 
-void TrackingScene::draw_skeletons(const std::vector<ofxAzureKinect::BodySkeleton> &skeletons) {
+void TrackingScene::draw_players(const std::vector<Player> &players) {
     camera.begin();
     {
         ofPushMatrix();
         {
             ofRotateXDeg(180);
-            for (const auto &skeleton: skeletons) {
+            for (const auto &player: players) {
+                ofxAzureKinect::BodySkeleton skeleton = player.get_skeleton();
                 // Draw joints.
                 for (int i = 0; i < K4ABT_JOINT_COUNT; ++i) {
                     auto joint = skeleton.joints[i];
