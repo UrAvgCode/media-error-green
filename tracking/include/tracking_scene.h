@@ -47,9 +47,9 @@ class TrackingScene : public Scene {
 
     std::vector<ofPoint> calculate_convex_hull(const ofxAzureKinect::BodySkeleton &skeleton);
 
-    void draw_players(const std::vector<Player> &players);
+    void draw_players(std::vector<Player> &players);
 
     std::vector<CollisionObject> createCollisionObjects();
-    void draw_skeleton_connections(const ofxAzureKinect::BodySkeleton &skeleton);
+    void draw_skeleton_connections(const ofxAzureKinect::BodySkeleton &skeleton, Player &player);
     void draw_fake_shaders();
 };

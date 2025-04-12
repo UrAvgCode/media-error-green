@@ -176,13 +176,13 @@ void TrackingScene::render() {
     frame_buffer.end();
 }
 
-void TrackingScene::draw_players(const std::vector<Player> &players) {
+void TrackingScene::draw_players(std::vector<Player> &players) {
     camera.begin();
     {
         ofPushMatrix();
         {
             ofRotateXDeg(180);
-            for (const auto &player: players) {
+            for ( auto &player: players) {
                 ofxAzureKinect::BodySkeleton skeleton = player.get_skeleton();
                 // Draw joints.
                 for (int i = 0; i < K4ABT_JOINT_COUNT; ++i) {
@@ -207,62 +207,12 @@ void TrackingScene::draw_players(const std::vector<Player> &players) {
                     ofPopMatrix();
                 }
 
-                draw_skeleton_connections(skeleton);
+                draw_skeleton_connections(skeleton, player);
             }
         }
         ofPopMatrix();
     }
     camera.end();
-}
-
-std::vector<ofPoint> TrackingScene::calculate_convex_hull(const ofxAzureKinect::BodySkeleton &skeleton) {
-    ofxConvexHull convex_hull_calculator; // Instantiate the convex hull object
-    const float offset_distance = 0.1f; // Offset in meters (10 cm)
-
-    std::vector<ofPoint> projected_points; // Use ofPoint for compatibility
-    float front_depth = FLT_MAX; // Start with the maximum possible value
-
-    // Collect valid joint positions and calculate the front depth
-    for (const auto &joint: skeleton.joints) {
-        if (std::isfinite(joint.position.x) && std::isfinite(joint.position.y) && std::isfinite(joint.position.z)) {
-            ofVec3f world_position(joint.position.x, joint.position.y, joint.position.z);
-            ofVec3f screen_position = camera.worldToScreen(world_position);
-
-            // Add to the projected_points vector as ofPoint
-            projected_points.emplace_back(screen_position.x, screen_position.y);
-
-            // Track the minimum depth value (front of the bounding box)
-            front_depth = std::min(front_depth, world_position.z);
-        }
-    }
-
-    auto output_hull = std::vector<ofPoint>();
-    if (projected_points.size() > 2) {
-        // Compute the convex hull of the projected points
-        std::vector<ofPoint> hull = convex_hull_calculator.getConvexHull(projected_points);
-
-        // Expand the convex hull outward by offset_distance
-        std::vector<ofPoint> expanded_hull;
-        for (size_t i = 0; i < hull.size(); ++i) {
-            const ofPoint &current = hull[i];
-            const ofPoint &next = hull[(i + 1) % hull.size()];
-
-            // Compute the edge normal
-            ofVec2f edge = ofVec2f(next.x - current.x, next.y - current.y);
-            ofVec2f normal(-edge.y, edge.x); // Perpendicular to the edge
-            normal.normalize();
-
-            // Move the point outward by the offset distance
-            expanded_hull.emplace_back(current.x + normal.x * offset_distance, current.y + normal.y * offset_distance);
-        }
-
-        // Project the 2D hull points back into 3D using the front depth
-        for (const auto &point: expanded_hull) {
-            output_hull.emplace_back(camera.screenToWorld(
-                    ofVec3f(point.x, point.y, camera.worldToScreen(ofVec3f(0, 0, front_depth)).z)));
-        }
-    }
-    return output_hull;
 }
 
 void TrackingScene::draw_fake_shaders() {
@@ -295,7 +245,7 @@ std::vector<CollisionObject> TrackingScene::createCollisionObjects() {
     }
 }
 
-void TrackingScene::draw_skeleton_connections(const ofxAzureKinect::BodySkeleton &skeleton) {
+void TrackingScene::draw_skeleton_connections(const ofxAzureKinect::BodySkeleton &skeleton, Player &player) {
     skeleton_mesh.setMode(OF_PRIMITIVE_LINES);
     auto &vertices = skeleton_mesh.getVertices();
     vertices.resize(50);
@@ -382,5 +332,57 @@ void TrackingScene::draw_skeleton_connections(const ofxAzureKinect::BodySkeleton
     vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ELBOW_RIGHT].position);
     vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_WRIST_RIGHT].position);
 
+    player.set_skeleton_vertices(vertices);
+
     skeleton_mesh.draw();
+}
+
+std::vector<ofPoint> TrackingScene::calculate_convex_hull(const ofxAzureKinect::BodySkeleton &skeleton) {
+    ofxConvexHull convex_hull_calculator; // Instantiate the convex hull object
+    const float offset_distance = 0.1f; // Offset in meters (10 cm)
+
+    std::vector<ofPoint> projected_points; // Use ofPoint for compatibility
+    float front_depth = FLT_MAX; // Start with the maximum possible value
+
+    // Collect valid joint positions and calculate the front depth
+    for (const auto &joint: skeleton.joints) {
+        if (std::isfinite(joint.position.x) && std::isfinite(joint.position.y) && std::isfinite(joint.position.z)) {
+            ofVec3f world_position(joint.position.x, joint.position.y, joint.position.z);
+            ofVec3f screen_position = camera.worldToScreen(world_position);
+
+            // Add to the projected_points vector as ofPoint
+            projected_points.emplace_back(screen_position.x, screen_position.y);
+
+            // Track the minimum depth value (front of the bounding box)
+            front_depth = std::min(front_depth, world_position.z);
+        }
+    }
+
+    auto output_hull = std::vector<ofPoint>();
+    if (projected_points.size() > 2) {
+        // Compute the convex hull of the projected points
+        std::vector<ofPoint> hull = convex_hull_calculator.getConvexHull(projected_points);
+
+        // Expand the convex hull outward by offset_distance
+        std::vector<ofPoint> expanded_hull;
+        for (size_t i = 0; i < hull.size(); ++i) {
+            const ofPoint &current = hull[i];
+            const ofPoint &next = hull[(i + 1) % hull.size()];
+
+            // Compute the edge normal
+            ofVec2f edge = ofVec2f(next.x - current.x, next.y - current.y);
+            ofVec2f normal(-edge.y, edge.x); // Perpendicular to the edge
+            normal.normalize();
+
+            // Move the point outward by the offset distance
+            expanded_hull.emplace_back(current.x + normal.x * offset_distance, current.y + normal.y * offset_distance);
+        }
+
+        // Project the 2D hull points back into 3D using the front depth
+        for (const auto &point: expanded_hull) {
+            output_hull.emplace_back(camera.screenToWorld(
+                    ofVec3f(point.x, point.y, camera.worldToScreen(ofVec3f(0, 0, front_depth)).z)));
+        }
+    }
+    return output_hull;
 }
