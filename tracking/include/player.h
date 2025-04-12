@@ -1,9 +1,13 @@
 ﻿#pragma once
 
+#include <memory>
+
 #include <ofEasyCam.h>
 #include <ofFbo.h>
 #include <ofShader.h>
 #include <ofxAzureKinect.h>
+
+#include "effect_shader.h"
 
 class Player {
   public:
@@ -35,4 +39,6 @@ class Player {
     ofShader render_shader;
     ofVbo player_vbo;
     ofFbo player_fbo;
+
+    std::shared_ptr<EffectShader> effect_shader;
 };

@@ -3,6 +3,8 @@
 #include <ofAppRunner.h>
 #include <ofGraphics.h>
 
+#include "pixel_effect_shader.h"
+
 Player::Player() : Player(0, nullptr) {}
 
 Player::Player(std::uint32_t id, ofEasyCam *camera) : id(id), camera(camera) {
@@ -17,6 +19,8 @@ Player::Player(std::uint32_t id, ofEasyCam *camera) : id(id), camera(camera) {
     player_vbo.setVertexData(verts.data(), static_cast<int>(verts.size()), GL_STATIC_DRAW);
 
     player_fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGBA);
+
+    effect_shader = std::make_shared<PixelEffectShader>();
 }
 
 void Player::render(ofTexture depth_tex, ofTexture body_index_tex, ofTexture depth_to_world_tex,
@@ -59,7 +63,9 @@ void Player::render(ofTexture depth_tex, ofTexture body_index_tex, ofTexture dep
 }
 
 void Player::draw() {
+    effect_shader->begin();
     player_fbo.draw(0, 0);
+    effect_shader->end();
 }
 
 void Player::set_skeleton(const ofxAzureKinect::BodySkeleton &skeleton) { this->skeleton = skeleton; }

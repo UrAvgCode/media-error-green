@@ -2,7 +2,7 @@
 
 #include "effect_shader.h"
 
-class PixelEffectShader : EffectShader {
+class PixelEffectShader : public EffectShader {
   public:
     PixelEffectShader();
 
