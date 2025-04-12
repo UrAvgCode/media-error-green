@@ -21,31 +21,12 @@ class TrackingScene : public Scene {
     ofxAzureKinect::Device *kinect_device;
     ofEasyCam camera;
 
-    ofVbo points_vbo;
-    ofVboMesh skeleton_mesh;
     const std::size_t k_max_bodies = 6;
 
     std::vector<Player> players;
-
-    ofFbo pixel_shader_fbo;
-
-    ofShader pixel_shader;
-    ofShader render_shader;
-    const vector<string> effect_shader_paths = {"shaders/effect/effect_shader1", "shaders/effect/effect_shader2"};
-
-    vector<string> collision_object_image_paths = {"resources/dvd-logo.png", "resources/me-logo-green.png"};
-
-    std::mt19937 generator;
-    std::uniform_real_distribution<float> distribution;
-
     std::vector<CollisionObject> collision_objects;
-    CollisionObject dvd_logo;
-    CollisionObject me_logo;
 
-    // polyline for collision
-    ofPolyline debug_polyline; // Speichert die letzte getestete Polyline
-
-    std::vector<ofPoint> calculate_convex_hull(const ofxAzureKinect::BodySkeleton &skeleton);
+    ofVboMesh skeleton_mesh;
 
     void draw_skeletons(const std::vector<ofxAzureKinect::BodySkeleton> &skeletons);
 
