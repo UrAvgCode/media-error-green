@@ -1,13 +1,21 @@
 #version 150
 
 uniform sampler2DRect tex0;
-uniform float corner;
+uniform vec2 corner;
 uniform float time;
+uniform vec2 aspect;
 
 in vec2 vTexCoord;
 out vec4 fragColor;
 
 void main() {
+
+    vec2 dir = corner - vTexCoord;
+
+    float d = length(dir/aspect);
+    d *= 1.0 - smoothstep(0.0, 0.5, abs(d));
+
+    dir = normalize(dir);
 
      // Create horizontal offset based on vertical position and time
     float offsetR = sin(vTexCoord.y * 0.05 + time * 3.0) * 10.0; // 10 = amplitude

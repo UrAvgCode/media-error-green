@@ -170,7 +170,9 @@ void TrackingScene::render() {
         pixel_shader_fbo.draw(0, 0);
         degaussing_shader.begin();
         {
+            degaussing_shader.setUniform2f("aspect", 1, ofGetWidth()/ ofGetHeight());
             degaussing_shader.setUniform1f("time",ofGetElapsedTimef());
+            degaussing_shader.setUniform2f("corner",0.0,0.0);
             pixel_shader_fbo.draw(0, 0);
         }
         degaussing_shader.end();
