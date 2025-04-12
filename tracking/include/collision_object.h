@@ -8,6 +8,7 @@
 #include <ofFbo.h>
 #include <ofImage.h>
 #include <ofxAzureKinect.h>
+#include <ofSoundPlayer.h>
 
 #include "effect_shader.h"
 #include "player.h"
@@ -26,6 +27,7 @@ class CollisionObject {
     float height() const;
 
   protected:
+    void play_random_pluck();
     bool check_collision_with_bodies(std::vector<Player> &players, const ofEasyCam &camera) const;
 
     glm::vec2 position;
@@ -36,4 +38,10 @@ class CollisionObject {
     std::shared_ptr<EffectShader> effect_shader;
 
     bool can_collide;
+
+    ofSoundPlayer pluck_b;
+    ofSoundPlayer pluck_d;
+    ofSoundPlayer pluck_e;
+    ofSoundPlayer pluck_g;
+    ofSoundPlayer global_effect;
 };

@@ -36,10 +36,17 @@ void CoreApp::setup() {
     current_app_fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGBA);
     inactive_app_fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGBA);
     transition_shader.load("shaders/transition");
+
+    ambient_sound.load("resources/audio/gruen_ambient.wav");
+    ambient_sound.play();
+    ambient_sound.setLoop(true);
 }
 
 //--------------------------------------------------------------
-void CoreApp::exit() { kinect_device.close(); }
+void CoreApp::exit() {
+    kinect_device.close();
+    ofSoundStopAll();
+}
 
 //--------------------------------------------------------------
 void CoreApp::update() {

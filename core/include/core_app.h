@@ -8,6 +8,7 @@
 #include <random>
 
 #include <ofMain.h>
+#include <ofSoundPlayer.h>
 
 class CoreApp : public ofBaseApp {
   public:
@@ -50,4 +51,6 @@ class CoreApp : public ofBaseApp {
 
     std::mt19937 generator;
     std::uniform_int_distribution<int> distribution;
+
+    ofSoundPlayer ambient_sound;
 };
