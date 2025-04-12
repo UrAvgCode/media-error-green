@@ -22,7 +22,7 @@ void main() {
     int body_index = int(texture(body_index_texture, tex_coord).x * 255);
     vec4 ray = texture(world_texture, tex_coord);
 
-    if (depth != 0 && body_index != BODY_INDEX_MAP_BACKGROUND && body_ids[body_index] == player_id && ray.x != 0 && ray.y != 0) {
+    if (body_ids[body_index] == player_id && depth != 0 && ray.x != 0 && ray.y != 0) {
         vColor = vec4(0.0, 1.0, 0, 1.0);
     } else {
         vColor = vec4(0.0);

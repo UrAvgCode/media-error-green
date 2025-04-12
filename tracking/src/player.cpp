@@ -9,8 +9,8 @@ Player::Player() : Player(0, nullptr) {}
 
 Player::Player(std::uint32_t id, ofEasyCam *camera) : id(id), camera(camera) {
     auto shader_settings = ofShaderSettings();
-    shader_settings.shaderFiles[GL_VERTEX_SHADER] = "shaders/render.vert";
-    shader_settings.shaderFiles[GL_FRAGMENT_SHADER] = "shaders/render.frag";
+    shader_settings.shaderFiles[GL_VERTEX_SHADER] = "shaders/render_player.vert";
+    shader_settings.shaderFiles[GL_FRAGMENT_SHADER] = "shaders/render_player.frag";
     shader_settings.intDefines["BODY_INDEX_MAP_BACKGROUND"] = K4ABT_BODY_INDEX_MAP_BACKGROUND;
     shader_settings.bindDefaults = true;
     render_shader.setup(shader_settings);
@@ -20,7 +20,7 @@ Player::Player(std::uint32_t id, ofEasyCam *camera) : id(id), camera(camera) {
 
     player_fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGBA);
 
-    effect_shader = std::make_shared<PixelEffectShader>();
+    effect_shader = std::make_shared<EffectShader>();
 }
 
 void Player::render(ofTexture depth_tex, ofTexture body_index_tex, ofTexture depth_to_world_tex,
@@ -70,7 +70,15 @@ void Player::draw() {
 
 void Player::set_skeleton(const ofxAzureKinect::BodySkeleton &skeleton) { this->skeleton = skeleton; }
 
-void Player::set_fake_shader(std::string shader) { fake_shader = shader; }
+void Player::set_fake_shader(std::string shader) {
+    if (shader == "No. 0") {
+        effect_shader = std::make_shared<PixelEffectShader>();
+    } else {
+        effect_shader = std::make_shared<EffectShader>();
+    }
+
+    fake_shader = shader;
+}
 
 std::string Player::get_fake_shader() const { return fake_shader; }
 
