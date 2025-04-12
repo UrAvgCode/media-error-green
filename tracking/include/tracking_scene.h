@@ -50,5 +50,6 @@ class TrackingScene : public Scene {
     void draw_players(const std::vector<Player> &players);
 
     std::vector<CollisionObject> createCollisionObjects();
+    void draw_skeleton_connections(const ofxAzureKinect::BodySkeleton &skeleton);
     void draw_fake_shaders();
 };
