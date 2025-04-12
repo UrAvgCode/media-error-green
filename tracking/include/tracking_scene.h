@@ -24,18 +24,18 @@ class TrackingScene : public Scene {
     const std::size_t k_max_bodies = 6;
 
     std::vector<Player> players;
-    std::vector<EffectShader> collision_objects;
+    std::vector<CollisionObject> collision_objects;
 
     const vector<string> effect_shader_paths = {"shaders/effect/effect_shader1", "shaders/effect/effect_shader2"};
     const vector<string> collision_object_image_paths = {"resources/dvd-logo.png", "resources/me-logo-green.png"};
 
-    EffectShader dvd_logo;
-    EffectShader me_logo;
+    CollisionObject dvd_logo;
+    CollisionObject me_logo;
 
     ofVboMesh skeleton_mesh;
 
     void draw_skeletons(const std::vector<ofxAzureKinect::BodySkeleton> &skeletons);
 
-    std::vector<EffectShader> createCollisionObjects();
+    std::vector<CollisionObject> createCollisionObjects();
     void draw_fake_shaders();
 };

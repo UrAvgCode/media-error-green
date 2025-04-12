@@ -124,7 +124,6 @@
     <ClCompile Include="..\openFrameworks\addons\ofxSvg\src\ofxSvg.cpp" />
     <ClCompile Include="pixel_effect_shader.cpp" />
     <ClCompile Include="src\collision_object.cpp" />
-    <ClCompile Include="src\effect_shader.cpp" />
     <ClCompile Include="src\player.cpp" />
     <ClCompile Include="src\tracking_scene.cpp" />
   </ItemGroup>

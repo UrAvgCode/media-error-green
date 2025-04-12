@@ -7,18 +7,18 @@
 #include "ofFbo.h"
 
 
-EffectShader::EffectShader() : EffectShader({0, 0}, {0, 0}, "", "", ofShader()) {}
+CollisionObject::CollisionObject() : CollisionObject({0, 0}, {0, 0}, "", "", ofShader()) {}
 
-EffectShader::EffectShader(glm::vec2 position, glm::vec2 velocity, const std::string &filename,
+CollisionObject::CollisionObject(glm::vec2 position, glm::vec2 velocity, const std::string &filename,
                                  std::string logo_shader, ofShader effect_shader) :
     position(position), velocity(velocity), can_collide(false), logo_shader(logo_shader), effect_shader(effect_shader) {
     image.load(filename);
 
 }
 
-std::string EffectShader::get_fake_shader() { return logo_shader; }
+std::string CollisionObject::get_fake_shader() { return logo_shader; }
 
-void EffectShader::draw() const {
+void CollisionObject::draw() const {
     effect_shader.begin();
     effect_shader.setUniform1f("block_size", 10.0f);
     effect_shader.setUniform1f("quality", 0.5f);
@@ -28,11 +28,11 @@ void EffectShader::draw() const {
     effect_shader.end();
 }
 
-float EffectShader::width() const { return image.getWidth(); }
+float CollisionObject::width() const { return image.getWidth(); }
 
-float EffectShader::height() const { return image.getHeight(); }
+float CollisionObject::height() const { return image.getHeight(); }
 
-void EffectShader::update(std::vector<Player> &players, const ofEasyCam &camera) {
+void CollisionObject::update(std::vector<Player> &players, const ofEasyCam &camera) {
     if (position.x <= 0 || position.x + width() >= ofGetWidth()) {
         velocity.x *= -1;
     }
@@ -51,7 +51,7 @@ void EffectShader::update(std::vector<Player> &players, const ofEasyCam &camera)
     position += velocity;
 }
 
-bool EffectShader::check_collision_with_bodies(std::vector<Player> &players, const ofEasyCam &camera) const {
+bool CollisionObject::check_collision_with_bodies(std::vector<Player> &players, const ofEasyCam &camera) const {
     for (auto &player: players) {
         for (const auto &joint: player.get_skeleton().joints) {
 
@@ -73,7 +73,7 @@ bool EffectShader::check_collision_with_bodies(std::vector<Player> &players, con
     return false;
 }
 
-void EffectShader::affect_player(Player &player, std::string shader) const {
+void CollisionObject::affect_player(Player &player, std::string shader) const {
     if (shader.compare(player.get_fake_shader()) == 0) {
         player.set_fake_shader("none");
     } else {

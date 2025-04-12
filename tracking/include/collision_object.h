@@ -10,10 +10,10 @@
 
 #include "player.h"
 
-class EffectShader {
+class CollisionObject {
   public:
-    EffectShader();
-    EffectShader(glm::vec2 position, glm::vec2 velocity, const std::string &filename, std::string logo_shader,
+    CollisionObject();
+    CollisionObject(glm::vec2 position, glm::vec2 velocity, const std::string &filename, std::string logo_shader,
                     ofShader effect_shader);
 
     void draw() const;

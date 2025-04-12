@@ -30,7 +30,6 @@ class Player {
 
     ofxAzureKinect::BodySkeleton skeleton;
 
-    ofShader effect_shader;
     std::string fake_shader;
 
     ofShader render_shader;
