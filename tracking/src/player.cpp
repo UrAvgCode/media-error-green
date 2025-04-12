@@ -6,7 +6,12 @@
 Player::Player() : Player(0, nullptr) {}
 
 Player::Player(std::uint32_t id, ofEasyCam *camera) : id(id), camera(camera) {
-    render_shader.load("shaders/render_player");
+    auto shader_settings = ofShaderSettings();
+    shader_settings.shaderFiles[GL_VERTEX_SHADER] = "shaders/render.vert";
+    shader_settings.shaderFiles[GL_FRAGMENT_SHADER] = "shaders/render.frag";
+    shader_settings.intDefines["BODY_INDEX_MAP_BACKGROUND"] = K4ABT_BODY_INDEX_MAP_BACKGROUND;
+    shader_settings.bindDefaults = true;
+    render_shader.setup(shader_settings);
 
     std::vector<glm::vec3> verts(1);
     player_vbo.setVertexData(verts.data(), static_cast<int>(verts.size()), GL_STATIC_DRAW);
