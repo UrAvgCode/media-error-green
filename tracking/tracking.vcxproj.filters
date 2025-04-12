@@ -1684,5 +1684,11 @@
     <CopyFileToFolders Include="shaders\effect\effect_shader1.vert">
       <Filter>shaders\effect</Filter>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\globalDegaussing.frag">
+      <Filter>shaders</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\globalDegaussing.vert">
+      <Filter>shaders</Filter>
+    </CopyFileToFolders>
   </ItemGroup>
 </Project>

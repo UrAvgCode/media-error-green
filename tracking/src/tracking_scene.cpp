@@ -19,6 +19,8 @@ TrackingScene::TrackingScene(ofxAzureKinect::Device *device) : kinect_device(dev
     pixel_shader.load("shaders/pixel");
     pixel_shader_fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGBA);
 
+    degaussing_shader.load("shaders/globalDegaussing");
+
     // setup vbo
     std::vector<glm::vec3> verts(1);
     points_vbo.setVertexData(verts.data(), static_cast<int>(verts.size()), GL_STATIC_DRAW);
@@ -37,6 +39,17 @@ TrackingScene::TrackingScene(ofxAzureKinect::Device *device) : kinect_device(dev
 
 void TrackingScene::update() {
     const auto &body_skeletons = kinect_device->getBodySkeletons();
+
+    static bool wasMouseDown = false;
+    bool isMouseNowDown = ofGetMousePressed(OF_MOUSE_BUTTON_LEFT);
+
+    if (isMouseNowDown && !wasMouseDown) {
+        int x = ofGetMouseX();
+        int y = ofGetMouseY();
+        ofLogNotice() << "Click detected via polling at: " << x << ", " << y;
+    }
+
+    wasMouseDown = isMouseNowDown;
 
     std::erase_if(players, [&body_skeletons](const Player &player) {
         for (const auto &skeleton: body_skeletons) {
@@ -116,7 +129,6 @@ void TrackingScene::render() {
         ofBackground(0);
 
         camera.begin();
-        camera.disableMouseInput();
         {
             ofPushMatrix();
             {
@@ -154,16 +166,16 @@ void TrackingScene::render() {
     {
         ofClear(0, 0, 0, 0);
         pixel_shader_fbo.draw(0, 0);
-        /*
+        
         pixel_shader_fbo.draw(0, 0);
-        pixel_shader.begin();
+        degaussing_shader.begin();
         {
-            pixel_shader.setUniform1f("block_size", pixel_block_size);
-            pixel_shader.setUniform1f("quality", 0.5f);
+            degaussing_shader.setUniform1f("block_size", pixel_block_size);
+            degaussing_shader.setUniform1f("time",ofGetElapsedTimef());
             pixel_shader_fbo.draw(0, 0);
         }
-        pixel_shader.end();
-        */
+        degaussing_shader.end();
+        
 
         // draws all collisionobjects
         for (const auto &obj: collision_objects) {
@@ -383,6 +395,8 @@ std::vector<CollisionObject> TrackingScene::createCollisionObjects() {
 
 }
 
-void TrackingScene::mousePressed(int x, int y, int button) { 
-    MessageBoxA(NULL, "mousePressed triggered!", "Debug", MB_OK); // should always show a popup
+void TrackingScene::mousePressed(int x, int y, int button) {
+    ofLogNotice() << "Mouse pressed at: " << x << ", " << y;
 }
+
+void TrackingScene::keyPressed(int key) { ofLogNotice() << "Key pressed: " << key; }

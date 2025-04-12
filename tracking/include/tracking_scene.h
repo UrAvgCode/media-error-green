@@ -17,6 +17,7 @@ class TrackingScene : public Scene {
     void update() override;
     void render() override;
     void mousePressed(int x, int y, int button);
+    void keyPressed(int key);
 
   private:
     ofxAzureKinect::Device *kinect_device;
@@ -32,6 +33,7 @@ class TrackingScene : public Scene {
 
     ofShader pixel_shader;
     ofShader render_shader;
+    ofShader degaussing_shader;
     const vector<string> effect_shader_paths = {"shaders/effect/effect_shader1", "shaders/effect/effect_shader2"};
 
     vector<string> collision_object_image_paths = {"resources/dvd-logo.png", "resources/me-logo-green.png"};
