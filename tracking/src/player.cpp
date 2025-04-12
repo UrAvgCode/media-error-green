@@ -1,5 +1,8 @@
 ﻿#include "player.h"
 
+#include <memory>
+#include <vector>
+
 #include <ofAppRunner.h>
 #include <ofGraphics.h>
 

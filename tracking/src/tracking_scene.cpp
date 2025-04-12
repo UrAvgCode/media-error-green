@@ -1,8 +1,8 @@
 #include "tracking_scene.h"
 
-#include <ofxConvexHull.h>
-
 #include <algorithm>
+#include <memory>
+#include <string>
 #include <vector>
 
 #include "effect_shader.h"

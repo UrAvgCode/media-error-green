@@ -1,5 +1,6 @@
 ﻿#include "collision_object.h"
 
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -53,7 +54,7 @@ bool CollisionObject::check_collision_with_bodies(std::vector<Player> &players, 
             auto joint_position = camera.worldToScreen(rotated_joint_position);
             if (joint_position.x > position.x && joint_position.x < position.x + width() &&
                 joint_position.y > position.y && joint_position.y < position.y + height()) {
-                
+
                 player.set_shader(effect_shader);
 
                 return true;
