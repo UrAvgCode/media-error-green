@@ -4,11 +4,11 @@
 
 class EffectShader {
   public:
-    EffectShader();
+    virtual ~EffectShader() = default;
 
-    virtual void begin();
+    virtual void begin() = 0;
 
-    virtual void end();
+    virtual void end() = 0;
 
 protected:
     ofShader shader;

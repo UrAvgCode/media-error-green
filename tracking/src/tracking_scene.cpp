@@ -78,77 +78,23 @@ void TrackingScene::render() {
     const auto &body_skeletons = kinect_device->getBodySkeletons();
 
     auto body_ids = std::vector<int>(k_max_bodies, 0);
-
-    std::vector<std::vector<ofPoint>> convex_hulls;
     for (std::size_t i = 0; i < std::min(body_skeletons.size(), k_max_bodies); ++i) {
         body_ids[i] = static_cast<int>(body_skeletons[i].id);
-        convex_hulls.emplace_back(calculate_convex_hull(body_skeletons[i]));
     }
 
-    // Berechnung der Shake-Amplituden pro Körper
-    std::vector<float> shake_amplitudes(k_max_bodies, 0.0f);
-    float screen_shake_amplitude = 0.0f;
-    float max_shake_amplitude = 0.0f;
-    float pixel_block_size = 0;
-
-    for (std::size_t i = 0; i < convex_hulls.size(); ++i) {
-        float area = 0.0f;
-        const auto &hull = convex_hulls[i];
-
-        for (std::size_t j = 0; j < hull.size(); ++j) {
-            auto k = (j + 1) % hull.size();
-            area += hull[j].x * hull[k].y - hull[k].x * hull[j].y;
-        }
-
-        area = std::abs(area) / 2.0f;
-        const float min_area = 496604;
-        const float max_area = 1.51127e+06;
-
-        screen_shake_amplitude = ofMap(area, min_area, max_area, 0, 75, true);
-        pixel_block_size = std::max(pixel_block_size, ofMap(area, min_area, max_area, 0, 20, true));
+    for (auto &player: players) {
+        player.render(kinect_device->getDepthTex(), kinect_device->getBodyIndexTex(),
+                      kinect_device->getDepthToWorldTex(), body_ids);
     }
-
-    pixel_shader_fbo.begin();
-    {
-        ofClear(0);
-        ofBackground(0);
-
-        camera.begin();
-        {
-            ofPushMatrix();
-            {
-                ofRotateXDeg(180);
-                ofEnableDepthTest();
-
-                for (auto &player: players) {
-                    player.draw(kinect_device->getDepthTex(), kinect_device->getBodyIndexTex(),
-                                kinect_device->getDepthToWorldTex(), body_ids);
-                }
-
-                ofDisableDepthTest();
-            }
-            ofPopMatrix();
-        }
-        camera.end();
-    }
-    pixel_shader_fbo.end();
 
     frame_buffer.begin();
     {
         ofClear(0, 0, 0, 0);
-        pixel_shader_fbo.draw(0, 0);
-        /*
-        pixel_shader_fbo.draw(0, 0);
-        pixel_shader.begin();
-        {
-            pixel_shader.setUniform1f("block_size", pixel_block_size);
-            pixel_shader.setUniform1f("quality", 0.5f);
-            pixel_shader_fbo.draw(0, 0);
-        }
-        pixel_shader.end();
-        */
 
-        // draws all collisionobjects
+        for (auto &player: players) {
+            player.draw();
+        }
+
         for (const auto &obj: collision_objects) {
             obj.draw();
         }
