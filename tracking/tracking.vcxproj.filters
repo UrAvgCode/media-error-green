@@ -327,6 +327,9 @@
     <Filter Include="shaders\effect">
       <UniqueIdentifier>{a859d2e8-64e8-4614-9d19-3793616d9612}</UniqueIdentifier>
     </Filter>
+    <Filter Include="resources\audio">
+      <UniqueIdentifier>{de07983b-1189-45dd-9db1-63c03e44ebbd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\addons\ofxConvexHull\src\ofxConvexHull.h">
@@ -1701,6 +1704,21 @@
     </CopyFileToFolders>
     <CopyFileToFolders Include="shaders\render_player.vert">
       <Filter>shaders</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="resources\audio\gruen_globalEffect.wav">
+      <Filter>resources\audio</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="resources\audio\gruen_pluck_b.wav">
+      <Filter>resources\audio</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="resources\audio\gruen_pluck_d.wav">
+      <Filter>resources\audio</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="resources\audio\gruen_pluck_e.wav">
+      <Filter>resources\audio</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="resources\audio\gruen_pluck_g.wav">
+      <Filter>resources\audio</Filter>
     </CopyFileToFolders>
   </ItemGroup>
 </Project>
