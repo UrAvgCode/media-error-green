@@ -67,7 +67,7 @@ void CollisionObject::draw() const {
 }
 
 void CollisionObject::play_random_pluck() {
-    int random = std::round(ofRandom(0, 4));
+    int random = static_cast<int>(ofRandom(0, 4));
     switch (random) {
         case 0:
             pluck_b.play();
