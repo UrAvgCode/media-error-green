@@ -170,7 +170,6 @@ void TrackingScene::render() {
         pixel_shader_fbo.draw(0, 0);
         degaussing_shader.begin();
         {
-            degaussing_shader.setUniform1f("block_size", pixel_block_size);
             degaussing_shader.setUniform1f("time",ofGetElapsedTimef());
             pixel_shader_fbo.draw(0, 0);
         }
