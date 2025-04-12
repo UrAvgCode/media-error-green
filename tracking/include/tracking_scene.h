@@ -26,12 +26,6 @@ class TrackingScene : public Scene {
     std::vector<Player> players;
     std::vector<CollisionObject> collision_objects;
 
-    const vector<string> effect_shader_paths = {"shaders/effect/effect_shader1", "shaders/effect/effect_shader2"};
-    const vector<string> collision_object_image_paths = {"resources/dvd-logo.png", "resources/me-logo-green.png"};
-
-    CollisionObject dvd_logo;
-    CollisionObject me_logo;
-
     ofVboMesh skeleton_mesh;
 
     void draw_skeletons(const std::vector<ofxAzureKinect::BodySkeleton> &skeletons);

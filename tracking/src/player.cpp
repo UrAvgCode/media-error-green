@@ -70,19 +70,9 @@ void Player::draw() {
 
 void Player::set_skeleton(const ofxAzureKinect::BodySkeleton &skeleton) { this->skeleton = skeleton; }
 
-void Player::set_fake_shader(std::string shader) {
-    if (shader == "No. 0") {
-        effect_shader = std::make_shared<PixelEffectShader>();
-    } else {
-        effect_shader = std::make_shared<EffectShader>();
-    }
-
-    fake_shader = shader;
-}
+void Player::set_shader(std::shared_ptr<EffectShader> shader) { effect_shader = shader; }
 
 int Player::id() const { return _id; }
-
-std::string Player::get_fake_shader() const { return fake_shader; }
 
 ofxAzureKinect::BodySkeleton Player::get_skeleton() const { return skeleton; }
 

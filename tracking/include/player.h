@@ -20,10 +20,9 @@ class Player {
     void draw();
 
     void set_skeleton(const ofxAzureKinect::BodySkeleton &skeleton);
-    void set_fake_shader(std::string shader);
+    void set_shader(std::shared_ptr<EffectShader> shader);
 
     int id() const;
-    std::string get_fake_shader() const;
     ofxAzureKinect::BodySkeleton get_skeleton() const;
     std::array<glm::vec2, K4ABT_JOINT_COUNT> get_projected_joints() const;
 
@@ -33,8 +32,6 @@ class Player {
     ofEasyCam *camera;
 
     ofxAzureKinect::BodySkeleton skeleton;
-
-    std::string fake_shader;
 
     ofShader render_shader;
     ofVbo player_vbo;

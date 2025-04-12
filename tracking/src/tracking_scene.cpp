@@ -5,6 +5,9 @@
 #include <algorithm>
 #include <vector>
 
+#include "effect_shader.h"
+#include "pixel_effect_shader.h"
+
 TrackingScene::TrackingScene(ofxAzureKinect::Device *device) : kinect_device(device) {
     collision_objects = createCollisionObjects();
 }
@@ -199,33 +202,26 @@ void TrackingScene::draw_skeletons(const std::vector<ofxAzureKinect::BodySkeleto
 }
 
 void TrackingScene::draw_fake_shaders() {
-    for (std::size_t i = 0; i < std::min(players.size(), k_max_bodies); ++i) {
-        auto player = players[i];
-        auto player_id = std::to_string(player.id());
-        ofDrawBitmapStringHighlight("Player " + player_id + ": " + player.get_fake_shader(), 100, 20 + (i * 20));
+    for (std::size_t i = 0; i < players.size(); ++i) {
+        auto player_id = std::to_string(players[i].id());
+        ofDrawBitmapStringHighlight("Player " + player_id, 100, (i * 20) + 20);
     }
 }
 
 std::vector<CollisionObject> TrackingScene::createCollisionObjects() {
-    if (effect_shader_paths.size() != collision_object_image_paths.size()) {
-        ofLogError(__FUNCTION__) << "Effect shader paths and collision object image paths must have the same size!";
-        return std::vector<CollisionObject>();
-    } else if (effect_shader_paths.size() == 0 && collision_object_image_paths.size() == 0) {
-        ofLogError(__FUNCTION__) << "Effect shader paths and collision object image paths must not be empty!";
-        return std::vector<CollisionObject>();
-    } else {
-        std::vector<CollisionObject> collision_objects;
-        for (std::size_t i = 0; i < effect_shader_paths.size(); ++i) {
-            auto effect_shader = ofShader();
-            effect_shader.load(effect_shader_paths[i]);
+    const auto effect_shader_paths = vector<string>({"shaders/effect/effect_shader1", "shaders/effect/effect_shader2"});
+    const auto collision_object_image_paths = vector<string>({"resources/dvd-logo.png", "resources/me-logo-green.png"});
 
-            auto position = glm::vec2(ofRandom(5, 1000), ofRandom(5, 500));
-            auto velocity = glm::vec2(ofRandom(-100, 100), ofRandom(-100, 100));
-            velocity = 8 * glm::normalize(velocity);
-            string fake_shader = "No. " + std::to_string(i);
-            collision_objects.emplace_back(position, velocity, collision_object_image_paths[i], fake_shader,
-                                           effect_shader);
-        }
-        return collision_objects;
+    const auto effect_shaders = std::vector<std::shared_ptr<EffectShader>>(
+            {std::make_shared<EffectShader>(), std::make_shared<PixelEffectShader>()});
+
+    auto collision_objects = std::vector<CollisionObject>();
+    for (std::size_t i = 0; i < effect_shader_paths.size(); ++i) {
+        auto position = glm::vec2(ofRandom(5, 1000), ofRandom(5, 500));
+        auto velocity = glm::vec2(ofRandom(-100, 100), ofRandom(-100, 100));
+        velocity = 8 * glm::normalize(velocity);
+
+        collision_objects.emplace_back(position, velocity, collision_object_image_paths[i], effect_shaders[i]);
     }
+    return collision_objects;
 }
