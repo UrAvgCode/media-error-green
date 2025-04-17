@@ -324,11 +324,14 @@
     <Filter Include="resources">
       <UniqueIdentifier>{34afb16b-49ed-4ea3-896d-5389490fc5ce}</UniqueIdentifier>
     </Filter>
-    <Filter Include="shaders\effect">
-      <UniqueIdentifier>{a859d2e8-64e8-4614-9d19-3793616d9612}</UniqueIdentifier>
-    </Filter>
     <Filter Include="resources\audio">
       <UniqueIdentifier>{de07983b-1189-45dd-9db1-63c03e44ebbd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shaders\player_effects">
+      <UniqueIdentifier>{14f96a9d-18d4-4869-88f8-02cd661099ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shaders\object_effects">
+      <UniqueIdentifier>{a859d2e8-64e8-4614-9d19-3793616d9612}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1675,29 +1678,11 @@
     <CopyFileToFolders Include="shaders\chromatic.vert">
       <Filter>shaders</Filter>
     </CopyFileToFolders>
-    <CopyFileToFolders Include="shaders\pixel.frag">
-      <Filter>shaders</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="shaders\pixel.vert">
-      <Filter>shaders</Filter>
-    </CopyFileToFolders>
     <CopyFileToFolders Include="resources\dvd-logo.png">
       <Filter>resources</Filter>
     </CopyFileToFolders>
     <CopyFileToFolders Include="resources\me-logo-green.png">
       <Filter>resources</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="shaders\effect\effect_shader2.frag">
-      <Filter>shaders\effect</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="shaders\effect\effect_shader2.vert">
-      <Filter>shaders\effect</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="shaders\effect\effect_shader1.frag">
-      <Filter>shaders\effect</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="shaders\effect\effect_shader1.vert">
-      <Filter>shaders\effect</Filter>
     </CopyFileToFolders>
     <CopyFileToFolders Include="shaders\render_player.frag">
       <Filter>shaders</Filter>
@@ -1719,6 +1704,18 @@
     </CopyFileToFolders>
     <CopyFileToFolders Include="resources\audio\gruen_pluck_g.wav">
       <Filter>resources\audio</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\player_effects\pixel.frag">
+      <Filter>shaders\player_effects</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\player_effects\pixel.vert">
+      <Filter>shaders\player_effects</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\object_effects\pixel.frag">
+      <Filter>shaders\object_effects</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\object_effects\pixel.vert">
+      <Filter>shaders\object_effects</Filter>
     </CopyFileToFolders>
   </ItemGroup>
 </Project>

@@ -13,7 +13,4 @@ class EffectShader {
     virtual void begin_object();
 
     virtual void end_object();
-
-protected:
-    ofShader shader;
 };
