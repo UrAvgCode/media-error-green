@@ -24,7 +24,7 @@ void CoreApp::setup() {
 
         auto body_tracker_settings = ofxAzureKinect::BodyTrackerSettings();
         body_tracker_settings.sensorOrientation = K4ABT_SENSOR_ORIENTATION_DEFAULT;
-        body_tracker_settings.processingMode = K4ABT_TRACKER_PROCESSING_MODE_CPU;
+        body_tracker_settings.processingMode = K4ABT_TRACKER_PROCESSING_MODE_GPU;
         body_tracker_settings.updateBodiesImage = true;
         kinect_device.startBodyTracker(body_tracker_settings);
     }

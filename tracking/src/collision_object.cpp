@@ -48,6 +48,17 @@ void CollisionObject::update(std::vector<Player> &players, const ofEasyCam &came
         can_collide = true;
     }
 
+    velocity *= friction;
+
+    auto speed = glm::length(velocity);
+    if (speed != 0) {
+        if (speed < min_speed) {
+            velocity *= min_speed / speed;
+        } else if (speed > max_speed) {
+            velocity *= max_speed / speed;
+        }
+    }
+
     int offset = 50;
     if (position.x <= offset && position.y <= offset ||
         position.x <= offset && position.y + height() >= (ofGetHeight() - offset) ||
