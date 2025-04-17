@@ -28,8 +28,7 @@ class TrackingScene : public Scene {
 
     ofVboMesh skeleton_mesh;
 
-    void draw_skeletons(const std::vector<ofxAzureKinect::BodySkeleton> &skeletons);
+    ofFbo screen_fbo;
 
-    std::vector<CollisionObject> createCollisionObjects();
-    void draw_fake_shaders();
+    void draw_skeletons(const std::vector<ofxAzureKinect::BodySkeleton> &skeletons);
 };

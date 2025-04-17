@@ -39,13 +39,24 @@ void CollisionObject::update(std::vector<Player> &players, const ofEasyCam &came
         velocity.y *= -1;
     }
 
-    if (check_collision_with_bodies(players, camera)) {
+    if (auto [collided, dir] = check_collision_with_bodies(players, camera); collided) {
         if (can_collide) {
-            velocity *= -1;
+            velocity = dir;
             can_collide = false;
         }
     } else {
         can_collide = true;
+    }
+
+    velocity *= friction;
+
+    auto speed = glm::length(velocity);
+    if (speed != 0) {
+        if (speed < min_speed) {
+            velocity *= min_speed / speed;
+        } else if (speed > max_speed) {
+            velocity *= max_speed / speed;
+        }
     }
 
     int offset = 50;
@@ -86,24 +97,30 @@ void CollisionObject::play_random_pluck() {
     }
 }
 
-bool CollisionObject::check_collision_with_bodies(std::vector<Player> &players, const ofEasyCam &camera) const {
+std::pair<bool, glm::vec2> CollisionObject::check_collision_with_bodies(std::vector<Player> &players,
+                                                                        const ofEasyCam &camera) const {
     for (auto &player: players) {
         // Zugriff auf die Skeleton-Vertices des Spielers
-        const auto &vertices = player.get_skeleton_vertices();
+        const auto &lines = player.get_skeleton_lines();
+        const auto &velocities = player.get_skeleton_velocities();
 
         ofRectangle bounding_box(position.x, position.y, width(), height());
-        for (const auto &vertex: vertices) {
-            // Prüfe, ob der Vertex das Objekt berührt
-            if (bounding_box.intersects(vertex[0], vertex[1])) {
-                
+        for (std::size_t i = 0; i < lines.size(); ++i) {
+            const auto &line = lines[i];
+            const auto &line_velocity = velocities[i];
+
+            if (bounding_box.intersects(line[0], line[1])) {
                 player.set_shader(effect_shader);
 
-                return true;
+                auto new_velocity = -velocity;
+                new_velocity += line_velocity[0];
+
+                return {true, new_velocity};
             }
         }
     }
 
-    return false;
+    return {false, {0, 0}};
 }
 
 float CollisionObject::width() const { return image.getWidth(); }

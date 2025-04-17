@@ -27,8 +27,9 @@ class CollisionObject {
     float height() const;
 
   protected:
-    void play_random_pluck();
-    bool check_collision_with_bodies(std::vector<Player> &players, const ofEasyCam &camera) const;
+    const float min_speed = 5;
+    const float max_speed = 20;
+    const float friction = 0.99f;
 
     glm::vec2 position;
     glm::vec2 velocity;
@@ -44,4 +45,7 @@ class CollisionObject {
     ofSoundPlayer pluck_e;
     ofSoundPlayer pluck_g;
     ofSoundPlayer global_effect;
+
+    void play_random_pluck();
+    std::pair<bool, glm::vec2> check_collision_with_bodies(std::vector<Player> &players, const ofEasyCam &camera) const;
 };

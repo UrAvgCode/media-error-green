@@ -9,7 +9,20 @@
 #include "pixel_effect_shader.h"
 
 TrackingScene::TrackingScene(ofxAzureKinect::Device *device) : kinect_device(device) {
-    collision_objects = createCollisionObjects();
+    screen_fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGBA);
+
+    // create collision objects
+    const auto image_paths = vector<string>({"resources/dvd-logo.png", "resources/me-logo-green.png"});
+    const auto effect_shaders = std::vector<std::shared_ptr<EffectShader>>(
+            {std::make_shared<EffectShader>(), std::make_shared<PixelEffectShader>()});
+
+    for (std::size_t i = 0; i < image_paths.size(); ++i) {
+        auto position = glm::vec2(ofRandom(5, 1000), ofRandom(5, 500));
+        auto velocity = glm::vec2(ofRandom(-100, 100), ofRandom(-100, 100));
+        velocity = 8 * glm::normalize(velocity);
+
+        collision_objects.emplace_back(position, velocity, image_paths[i], effect_shaders[i]);
+    }
 }
 
 void TrackingScene::update() {
@@ -35,12 +48,12 @@ void TrackingScene::update() {
 
     for (const auto &skeleton: body_skeletons) {
         if (!std::any_of(players.cbegin(), players.cend(), [&](auto &player) { return player.id() == skeleton.id; })) {
-            players.emplace_back(skeleton.id, &camera);
+            players.emplace_back(skeleton.id, skeleton, &camera);
         }
     }
 
     for (auto &player: players) {
-        player.calculate_skeleton_vertices();
+        player.calculate_skeleton_lines();
     }
 
     for (auto &collision_object: collision_objects) {
@@ -61,7 +74,7 @@ void TrackingScene::render() {
                       kinect_device->getDepthToWorldTex(), body_ids);
     }
 
-    frame_buffer.begin();
+    screen_fbo.begin();
     {
         ofClear(0, 0, 0, 0);
 
@@ -73,9 +86,21 @@ void TrackingScene::render() {
             obj.draw();
         }
 
-        draw_fake_shaders();
-
         draw_skeletons(body_skeletons);
+    }
+    screen_fbo.end();
+
+    frame_buffer.begin();
+    {
+        ofClear(0, 0, 0, 0);
+
+        ofPushMatrix();
+        ofTranslate(screen_fbo.getWidth(), 0);
+        ofScale(-1, 1);
+
+        screen_fbo.draw(0, 0);
+
+        ofPopMatrix();
     }
     frame_buffer.end();
 }
@@ -203,28 +228,4 @@ void TrackingScene::draw_skeletons(const std::vector<ofxAzureKinect::BodySkeleto
         ofPopMatrix();
     }
     camera.end();
-}
-
-void TrackingScene::draw_fake_shaders() {
-    for (std::size_t i = 0; i < players.size(); ++i) {
-        auto player_id = std::to_string(players[i].id());
-        ofDrawBitmapStringHighlight("Player " + player_id, 100, (i * 20) + 20);
-    }
-}
-
-std::vector<CollisionObject> TrackingScene::createCollisionObjects() {
-    const auto image_paths = vector<string>({"resources/dvd-logo.png", "resources/me-logo-green.png"});
-
-    const auto effect_shaders = std::vector<std::shared_ptr<EffectShader>>(
-            {std::make_shared<EffectShader>(), std::make_shared<PixelEffectShader>()});
-
-    auto collision_objects = std::vector<CollisionObject>();
-    for (std::size_t i = 0; i < image_paths.size(); ++i) {
-        auto position = glm::vec2(ofRandom(5, 1000), ofRandom(5, 500));
-        auto velocity = glm::vec2(ofRandom(-100, 100), ofRandom(-100, 100));
-        velocity = 8 * glm::normalize(velocity);
-
-        collision_objects.emplace_back(position, velocity, image_paths[i], effect_shaders[i]);
-    }
-    return collision_objects;
 }
