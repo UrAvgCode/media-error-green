@@ -110,10 +110,12 @@ std::pair<bool, glm::vec2> CollisionObject::check_collision_with_bodies(std::vec
             const auto &line_velocity = velocities[i];
 
             if (bounding_box.intersects(line[0], line[1])) {
-
                 player.set_shader(effect_shader);
 
-                return {true, line_velocity[0]};
+                auto new_velocity = -velocity;
+                new_velocity += line_velocity[0];
+
+                return {true, new_velocity};
             }
         }
     }
