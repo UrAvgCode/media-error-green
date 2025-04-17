@@ -2,6 +2,10 @@
 
 EffectShader::EffectShader() {}
 
-void EffectShader::begin() {}
+void EffectShader::begin_player() {}
 
-void EffectShader::end() {}
+void EffectShader::end_player() {}
+
+void EffectShader::begin_object() {}
+
+void EffectShader::end_object() {}

@@ -67,9 +67,9 @@ void Player::render(ofTexture depth_tex, ofTexture body_index_tex, ofTexture dep
 }
 
 void Player::draw() {
-    effect_shader->begin();
+    effect_shader->begin_player();
     player_fbo.draw(0, 0);
-    effect_shader->end();
+    effect_shader->end_player();
 }
 
 void Player::set_skeleton(const ofxAzureKinect::BodySkeleton &skeleton) { this->skeleton = skeleton; }
