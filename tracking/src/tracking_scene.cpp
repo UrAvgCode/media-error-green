@@ -10,7 +10,19 @@
 
 TrackingScene::TrackingScene(ofxAzureKinect::Device *device) : kinect_device(device) {
     screen_fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGBA);
-    collision_objects = createCollisionObjects();
+
+    // create collision objects
+    const auto image_paths = vector<string>({"resources/dvd-logo.png", "resources/me-logo-green.png"});
+    const auto effect_shaders = std::vector<std::shared_ptr<EffectShader>>(
+            {std::make_shared<EffectShader>(), std::make_shared<PixelEffectShader>()});
+
+    for (std::size_t i = 0; i < image_paths.size(); ++i) {
+        auto position = glm::vec2(ofRandom(5, 1000), ofRandom(5, 500));
+        auto velocity = glm::vec2(ofRandom(-100, 100), ofRandom(-100, 100));
+        velocity = 8 * glm::normalize(velocity);
+
+        collision_objects.emplace_back(position, velocity, image_paths[i], effect_shaders[i]);
+    }
 }
 
 void TrackingScene::update() {
@@ -73,8 +85,6 @@ void TrackingScene::render() {
         for (const auto &obj: collision_objects) {
             obj.draw();
         }
-
-        draw_fake_shaders();
 
         draw_skeletons(body_skeletons);
     }
@@ -218,28 +228,4 @@ void TrackingScene::draw_skeletons(const std::vector<ofxAzureKinect::BodySkeleto
         ofPopMatrix();
     }
     camera.end();
-}
-
-void TrackingScene::draw_fake_shaders() {
-    for (std::size_t i = 0; i < players.size(); ++i) {
-        auto player_id = std::to_string(players[i].id());
-        ofDrawBitmapStringHighlight("Player " + player_id, 100, (i * 20) + 20);
-    }
-}
-
-std::vector<CollisionObject> TrackingScene::createCollisionObjects() {
-    const auto image_paths = vector<string>({"resources/dvd-logo.png", "resources/me-logo-green.png"});
-
-    const auto effect_shaders = std::vector<std::shared_ptr<EffectShader>>(
-            {std::make_shared<EffectShader>(), std::make_shared<PixelEffectShader>()});
-
-    auto collision_objects = std::vector<CollisionObject>();
-    for (std::size_t i = 0; i < image_paths.size(); ++i) {
-        auto position = glm::vec2(ofRandom(5, 1000), ofRandom(5, 500));
-        auto velocity = glm::vec2(ofRandom(-100, 100), ofRandom(-100, 100));
-        velocity = 8 * glm::normalize(velocity);
-
-        collision_objects.emplace_back(position, velocity, image_paths[i], effect_shaders[i]);
-    }
-    return collision_objects;
 }
