@@ -28,7 +28,7 @@ class CollisionObject {
 
   protected:
     void play_random_pluck();
-    bool check_collision_with_bodies(std::vector<Player> &players, const ofEasyCam &camera) const;
+    std::pair<bool, glm::vec2> check_collision_with_bodies(std::vector<Player> &players, const ofEasyCam &camera) const;
 
     glm::vec2 position;
     glm::vec2 velocity;

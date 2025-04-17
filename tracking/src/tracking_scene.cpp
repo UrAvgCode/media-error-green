@@ -35,12 +35,12 @@ void TrackingScene::update() {
 
     for (const auto &skeleton: body_skeletons) {
         if (!std::any_of(players.cbegin(), players.cend(), [&](auto &player) { return player.id() == skeleton.id; })) {
-            players.emplace_back(skeleton.id, &camera);
+            players.emplace_back(skeleton.id, skeleton, &camera);
         }
     }
 
     for (auto &player: players) {
-        player.calculate_skeleton_vertices();
+        player.calculate_skeleton_lines();
     }
 
     for (auto &collision_object: collision_objects) {

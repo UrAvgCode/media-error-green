@@ -8,9 +8,10 @@
 
 #include "pixel_effect_shader.h"
 
-Player::Player() : Player(0, nullptr) {}
+Player::Player() : Player(0, ofxAzureKinect::BodySkeleton{}, nullptr) {}
 
-Player::Player(int id, ofEasyCam *camera) : _id(id), camera(camera) {
+Player::Player(int id, ofxAzureKinect::BodySkeleton skeleton, ofEasyCam *camera) :
+    _id(id), camera(camera), skeleton(skeleton) {
     auto shader_settings = ofShaderSettings();
     shader_settings.shaderFiles[GL_VERTEX_SHADER] = "shaders/render_player.vert";
     shader_settings.shaderFiles[GL_FRAGMENT_SHADER] = "shaders/render_player.frag";
@@ -97,8 +98,9 @@ std::array<glm::vec2, K4ABT_JOINT_COUNT> Player::get_projected_joints() const {
     return projected_joints;
 }
 
-void Player::calculate_skeleton_vertices() {
-    skeleton_vertices.clear();
+void Player::calculate_skeleton_lines() {
+    previous_skeleton_lines = skeleton_lines;
+    skeleton_lines.clear();
     // Definiere die Verbindungen zwischen den Joints
     const std::vector<std::pair<int, int>> connections = {
             {K4ABT_JOINT_PELVIS, K4ABT_JOINT_SPINE_NAVEL},
@@ -146,8 +148,28 @@ void Player::calculate_skeleton_vertices() {
         const auto &end_joint = projected_joints[end];
 
         // Prüfe, ob die Positionen gültig sind
-        skeleton_vertices.push_back({start_joint, end_joint});
+        skeleton_lines.push_back({start_joint, end_joint});
+    }
+
+    calculate_skeleton_velocities();
+}
+
+void Player::calculate_skeleton_velocities() {
+    if (previous_skeleton_lines.empty()) {
+        previous_skeleton_lines = skeleton_lines;
+    }
+
+    skeleton_velocities.clear();
+    for (std::size_t i = 0; i < skeleton_lines.size(); ++i) {
+        const auto &current_line = skeleton_lines[i];
+        const auto &previous_line = previous_skeleton_lines[i];
+
+        glm::vec2 velocity_one = current_line[0] - previous_line[0];
+        glm::vec2 velocity_two = current_line[1] - previous_line[1];
+        skeleton_velocities.push_back({velocity_one, velocity_two});
     }
 }
 
-std::vector<std::array<glm::vec2, 2>> Player::get_skeleton_vertices() const { return skeleton_vertices; }
+std::vector<std::array<glm::vec2, 2>> Player::get_skeleton_lines() const { return skeleton_lines; }
+
+std::vector<std::array<glm::vec2, 2>> Player::get_skeleton_velocities() const { return skeleton_velocities; }
