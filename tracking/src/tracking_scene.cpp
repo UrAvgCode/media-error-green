@@ -9,6 +9,7 @@
 #include "pixel_effect_shader.h"
 
 TrackingScene::TrackingScene(ofxAzureKinect::Device *device) : kinect_device(device) {
+    screen_fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGBA);
     collision_objects = createCollisionObjects();
 }
 
@@ -61,7 +62,7 @@ void TrackingScene::render() {
                       kinect_device->getDepthToWorldTex(), body_ids);
     }
 
-    frame_buffer.begin();
+    screen_fbo.begin();
     {
         ofClear(0, 0, 0, 0);
 
@@ -76,6 +77,20 @@ void TrackingScene::render() {
         draw_fake_shaders();
 
         draw_skeletons(body_skeletons);
+    }
+    screen_fbo.end();
+
+    frame_buffer.begin();
+    {
+        ofClear(0, 0, 0, 0);
+
+        ofPushMatrix();
+        ofTranslate(screen_fbo.getWidth(), 0);
+        ofScale(-1, 1);
+
+        screen_fbo.draw(0, 0);
+
+        ofPopMatrix();
     }
     frame_buffer.end();
 }
