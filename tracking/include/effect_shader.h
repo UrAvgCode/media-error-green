@@ -6,9 +6,13 @@ class EffectShader {
   public:
     EffectShader();
 
-    virtual void begin();
+    virtual void begin_player();
 
-    virtual void end();
+    virtual void end_player();
+
+    virtual void begin_object();
+
+    virtual void end_object();
 
 protected:
     ofShader shader;

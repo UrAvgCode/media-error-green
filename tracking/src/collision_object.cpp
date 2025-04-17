@@ -73,9 +73,9 @@ void CollisionObject::update(std::vector<Player> &players, const ofEasyCam &came
 }
 
 void CollisionObject::draw() const {
-    effect_shader->begin();
+    effect_shader->begin_object();
     image.draw(position.x, position.y, 0);
-    effect_shader->end();
+    effect_shader->end_object();
 }
 
 void CollisionObject::play_random_pluck() {
