@@ -8,14 +8,23 @@ uniform vec2 aspect;
 in vec2 vTexCoord;
 out vec4 fragColor;
 
+
+bool is_in_range(float radius, float min_radius, float amplitude) {
+    float mask_offset_x = sin(vTexCoord.x * 0.05 + time * 3.0) * amplitude;
+    float mask_offset_y = sin(vTexCoord.y * 0.05 + time * 3.0) * amplitude;
+
+    float mask_distance = distance(corner, vTexCoord + vec2(mask_offset_x, mask_offset_y));
+
+    return mask_distance < radius && mask_distance > min_radius;
+}
+
+
 void main() {
 
-    vec2 dir = corner - vTexCoord;
+    vec2 uv = vTexCoord / aspect;
+    vec4 color = texture(tex0, uv);
 
-    float d = length(dir/aspect);
-    d *= 1.0 - smoothstep(0.0, 0.5, abs(d));
-
-    dir = normalize(dir);
+    float dist = distance(uv, corner);
 
      // Create horizontal offset based on vertical position and time
     float offsetR = sin(vTexCoord.y * 0.05 + time * 3.0) * 10.0; // 10 = amplitude
@@ -32,7 +41,24 @@ void main() {
     float b = texture(tex0, shiftedCoordB).b;
 
     // Invert each channel
-    vec3 invertedColor = vec3(1.0 - r, 1.0 - g, 1.0 - b);
+    vec4 invertedColor = vec4(1.0 - r, 1.0 - g, 1.0 - b, 1);
 
-    fragColor = vec4(invertedColor,1.0);
+    float mask_offset_x = sin(vTexCoord.x * 0.05 + time * 3.0) * 10.0;
+    float mask_offset_y = sin(vTexCoord.y * 0.05 + time * 3.0) * 10.0;
+    float mask_size = 600;
+
+    float mask_distance = distance(corner, vTexCoord + vec2(mask_offset_x, mask_offset_y));
+
+    if (is_in_range(200, 0, 10)) {
+        color = mix(invertedColor, vec4(1, 0, 0, 1), 0.1);
+    }
+
+    if (is_in_range(200, 0, 20)) {
+        color = mix(invertedColor, vec4(0, 0, 1, 1), 0.1);
+    }
+     if (is_in_range(200, 0, 50)) {
+        color = mix(invertedColor, vec4(0, 1, 0, 1), 0.1);
+    }
+
+    fragColor = color;
 }
