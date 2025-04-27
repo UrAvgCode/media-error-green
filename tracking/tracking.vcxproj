@@ -125,6 +125,7 @@
     <ClCompile Include="pixel_effect_shader.cpp" />
     <ClCompile Include="src\collision_object.cpp" />
     <ClCompile Include="src\effect_shader.cpp" />
+    <ClCompile Include="src\glitch_effect_shader.cpp" />
     <ClCompile Include="src\player.cpp" />
     <ClCompile Include="src\tracking_scene.cpp" />
   </ItemGroup>
@@ -565,6 +566,7 @@
     <ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\svgtiny\svgtiny\include\svgtiny.h" />
     <ClInclude Include="include\collision_object.h" />
     <ClInclude Include="include\effect_shader.h" />
+    <ClInclude Include="include\glitch_effect_shader.h" />
     <ClInclude Include="include\pixel_effect_shader.h" />
     <ClInclude Include="include\player.h" />
     <ClInclude Include="include\tracking_scene.h" />
@@ -647,6 +649,16 @@
       <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">data/shaders/object_effects/%(Filename)%(Extension)</DestinationFileName>
       <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">data/shaders/object_effects/%(Filename)%(Extension)</DestinationFileName>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\player_effects\glitch.frag">
+      <FileType>Document</FileType>
+      <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">data/shaders/player_effects/%(Filename)%(Extension)</DestinationFileName>
+      <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">data/shaders/player_effects/%(Filename)%(Extension)</DestinationFileName>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\player_effects\glitch.vert">
+      <FileType>Document</FileType>
+      <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">data/shaders/player_effects/%(Filename)%(Extension)</DestinationFileName>
+      <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">data/shaders/player_effects/%(Filename)%(Extension)</DestinationFileName>
+    </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="resources\dvd-logo.png">
@@ -685,6 +697,12 @@
       <FileType>Document</FileType>
       <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">data/resources/audio/%(Filename)%(Extension)</DestinationFileName>
       <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">data/resources/audio/%(Filename)%(Extension)</DestinationFileName>
+    </CopyFileToFolders>
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="resources\me-logo.png">
+      <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">data/resources/%(Filename)%(Extension)</DestinationFileName>
+      <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">data/resources/%(Filename)%(Extension)</DestinationFileName>
     </CopyFileToFolders>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
