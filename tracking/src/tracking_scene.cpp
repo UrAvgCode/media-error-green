@@ -8,17 +8,19 @@
 #include "effect_shader.h"
 #include "glitch_effect_shader.h"
 #include "pixel_effect_shader.h"
+#include "signalloss_effect_shader.h"
 #include "warp_effect_shader.h"
 
 TrackingScene::TrackingScene(ofxAzureKinect::Device *device) : kinect_device(device) {
     screen_fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGBA);
 
     // create collision objects
-    const auto image_paths = vector<string>(
-            {"resources/dvd-logo.png", "resources/me-logo.png", "resources/me-logo.png", "resources/me-logo.png"});
+    const auto image_paths = vector<string>({"resources/dvd-logo.png", "resources/me-logo.png", "resources/me-logo.png",
+                                             "resources/me-logo.png", "resources/me-logo.png"});
     const auto effect_shaders = std::vector<std::shared_ptr<EffectShader>>(
             {std::make_shared<EffectShader>(), std::make_shared<PixelEffectShader>(),
-             std::make_shared<GlitchEffectShader>(), std::make_shared<WarpEffectShader>()});
+             std::make_shared<GlitchEffectShader>(), std::make_shared<WarpEffectShader>(),
+             std::make_shared<SignallossEffectShader>()});
 
     for (std::size_t i = 0; i < image_paths.size(); ++i) {
         auto position = glm::vec2(ofRandom(5, 1000), ofRandom(5, 500));
