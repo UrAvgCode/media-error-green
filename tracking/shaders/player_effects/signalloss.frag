@@ -7,7 +7,7 @@ in vec2 vTexCoord;
 out vec4 fragColor;
 
 float rand(vec2 n) { 
-	return fract(sin(dot(n, vec2(12.9898, 4.1414))) * 43758.5453);
+	return fract(sin(dot(n + time, vec2(12.9898, 4.1414))) * 43758.5453);
 }
 
 float noise(vec2 p){
@@ -22,9 +22,11 @@ float noise(vec2 p){
 }
 
 void main() {
-	float value = noise(vTexCoord);
+	float block_size = 8.0;
+	vec2 block_coord = floor(vTexCoord / block_size) * block_size;
 
-	float alpha = texture(tex0, vTexCoord).a;
+    float gray_value = noise(block_coord);
+    float alpha = texture(tex0, block_coord).a;
 
-    fragColor = vec4(value, value, value, alpha);
+    fragColor = vec4(gray_value, gray_value, gray_value, alpha);
 }
