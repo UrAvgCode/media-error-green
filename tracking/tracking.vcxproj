@@ -128,6 +128,7 @@
     <ClCompile Include="src\glitch_effect_shader.cpp" />
     <ClCompile Include="src\player.cpp" />
     <ClCompile Include="src\tracking_scene.cpp" />
+    <ClCompile Include="src\warp_effect_shader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\addons\ofxConvexHull\src\ofxConvexHull.h" />
@@ -570,6 +571,7 @@
     <ClInclude Include="include\pixel_effect_shader.h" />
     <ClInclude Include="include\player.h" />
     <ClInclude Include="include\tracking_scene.h" />
+    <ClInclude Include="include\warp_effect_shader.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="$(OF_ROOT)\libs\openFrameworksCompiled\project\vs\openframeworksLib.vcxproj">
@@ -655,6 +657,16 @@
       <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">data/shaders/player_effects/%(Filename)%(Extension)</DestinationFileName>
     </CopyFileToFolders>
     <CopyFileToFolders Include="shaders\player_effects\glitch.vert">
+      <FileType>Document</FileType>
+      <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">data/shaders/player_effects/%(Filename)%(Extension)</DestinationFileName>
+      <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">data/shaders/player_effects/%(Filename)%(Extension)</DestinationFileName>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\player_effects\warp.frag">
+      <FileType>Document</FileType>
+      <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">data/shaders/player_effects/%(Filename)%(Extension)</DestinationFileName>
+      <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">data/shaders/player_effects/%(Filename)%(Extension)</DestinationFileName>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\player_effects\warp.vert">
       <FileType>Document</FileType>
       <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">data/shaders/player_effects/%(Filename)%(Extension)</DestinationFileName>
       <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">data/shaders/player_effects/%(Filename)%(Extension)</DestinationFileName>
