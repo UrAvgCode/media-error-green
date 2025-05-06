@@ -15,6 +15,7 @@ TrackingScene::TrackingScene(ofxAzureKinect::Device *device) : kinect_device(dev
     screen_fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGBA);
 
     global_effect_shader.load("shaders/global_effect");
+    global_effect_position = {0, 0};
 
     // create collision objects
     const auto image_paths = vector<string>({"resources/dvd-logo.png", "resources/me-logo.png", "resources/me-logo.png",
@@ -68,7 +69,7 @@ void TrackingScene::update() {
         collision_object.update(players, camera);
 
         if (collision_object.global_effect_triggered()) {
-            std::cout << "CORNER HIT" << std::endl;
+            global_effect_position = collision_object.position();
         }
     }
 }
@@ -107,9 +108,9 @@ void TrackingScene::render() {
         ofClear(0, 0, 0, 0);
 
         global_effect_shader.begin();
+        global_effect_shader.setUniform2f("effect_position", global_effect_position);
         global_effect_shader.setUniform2f("aspect", 1, ofGetWidth() / ofGetHeight());
         global_effect_shader.setUniform1f("time", ofGetElapsedTimef());
-        global_effect_shader.setUniform2f("corner", 0.5, 0.5);
         global_effect_shader.setUniform1f("effectAmount", 1.0f);
         global_effect_shader.setUniform1f("radius", 10.0f);
 

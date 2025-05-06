@@ -31,6 +31,7 @@ class TrackingScene : public Scene {
     ofFbo screen_fbo;
 
     ofShader global_effect_shader;
+    glm::vec2 global_effect_position;
 
     void draw_skeletons(const std::vector<ofxAzureKinect::BodySkeleton> &skeletons);
 };

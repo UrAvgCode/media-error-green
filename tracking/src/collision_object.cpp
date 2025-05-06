@@ -14,7 +14,7 @@ CollisionObject::CollisionObject() : CollisionObject({0, 0}, {0, 0}, "", std::ma
 
 CollisionObject::CollisionObject(glm::vec2 position, glm::vec2 velocity, const std::string &filename,
                                  std::shared_ptr<EffectShader> effect_shader) :
-    position(position), velocity(velocity), can_collide(false), effect_shader(effect_shader) {
+    _position(position), _velocity(velocity), can_collide(false), effect_shader(effect_shader) {
     image.load(filename);
 
     pluck_b.load("resources/audio/gruen_pluck_b.wav");
@@ -31,51 +31,51 @@ CollisionObject::CollisionObject(glm::vec2 position, glm::vec2 velocity, const s
 }
 
 void CollisionObject::update(std::vector<Player> &players, const ofEasyCam &camera) {
-    if (position.x <= 0 || position.x + width() >= ofGetWidth()) {
+    if (_position.x <= 0 || _position.x + width() >= ofGetWidth()) {
         play_random_pluck();
-        velocity.x *= -1;
+        _velocity.x *= -1;
     }
 
-    if (position.y <= 0 || position.y + height() >= ofGetHeight()) {
+    if (_position.y <= 0 || _position.y + height() >= ofGetHeight()) {
         play_random_pluck();
-        velocity.y *= -1;
+        _velocity.y *= -1;
     }
 
     if (auto [collided, dir] = check_collision_with_bodies(players, camera); collided) {
         if (can_collide) {
-            velocity = dir;
+            _velocity = dir;
             can_collide = false;
         }
     } else {
         can_collide = true;
     }
 
-    velocity *= friction;
+    _velocity *= friction;
 
-    auto speed = glm::length(velocity);
+    auto speed = glm::length(_velocity);
     if (speed != 0) {
         if (speed < min_speed) {
-            velocity *= min_speed / speed;
+            _velocity *= min_speed / speed;
         } else if (speed > max_speed) {
-            velocity *= max_speed / speed;
+            _velocity *= max_speed / speed;
         }
     }
 
-    position += velocity;
+    _position += _velocity;
 
-    // clamp the position to the screen size 
-    position.x = std::clamp(position.x, 0.0f, static_cast<float>(ofGetWidth() - width()));
-    position.y = std::clamp(position.y, 0.0f, static_cast<float>(ofGetHeight() - height()));
+    // clamp the position to the screen size
+    _position.x = std::clamp(_position.x, 0.0f, static_cast<float>(ofGetWidth() - width()));
+    _position.y = std::clamp(_position.y, 0.0f, static_cast<float>(ofGetHeight() - height()));
 }
 
 void CollisionObject::draw() const {
     effect_shader->begin_object();
-    image.draw(position.x, position.y, 0);
+    image.draw(_position.x, _position.y, 0);
     effect_shader->end_object();
 }
 
 bool CollisionObject::global_effect_triggered() {
-    auto bounding_box = ofRectangle(position.x, position.y, width(), height());
+    auto bounding_box = ofRectangle(_position.x, _position.y, width(), height());
 
     float corner_size = 50.0f;
     auto top_left = ofRectangle(0.0f, 0.0f, corner_size, corner_size);
@@ -87,8 +87,8 @@ bool CollisionObject::global_effect_triggered() {
 
     for (const auto &corner: corners) {
         if (bounding_box.intersects(corner)) {
-            //global_effect.setVolume(0.06f);
-            //global_effect.play();
+            // global_effect.setVolume(0.06f);
+            // global_effect.play();
 
             return true;
         }
@@ -124,7 +124,7 @@ std::pair<bool, glm::vec2> CollisionObject::check_collision_with_bodies(std::vec
         const auto &lines = player.get_skeleton_lines();
         const auto &velocities = player.get_skeleton_velocities();
 
-        ofRectangle bounding_box(position.x, position.y, width(), height());
+        ofRectangle bounding_box(_position.x, _position.y, width(), height());
         for (std::size_t i = 0; i < lines.size(); ++i) {
             const auto &line = lines[i];
             const auto &line_velocity = velocities[i];
@@ -132,7 +132,7 @@ std::pair<bool, glm::vec2> CollisionObject::check_collision_with_bodies(std::vec
             if (bounding_box.intersects(line[0], line[1])) {
                 player.set_shader(effect_shader);
 
-                auto new_velocity = -velocity;
+                auto new_velocity = -_velocity;
                 new_velocity += line_velocity[0];
 
                 return {true, new_velocity};
@@ -146,3 +146,5 @@ std::pair<bool, glm::vec2> CollisionObject::check_collision_with_bodies(std::vec
 float CollisionObject::width() const { return image.getWidth(); }
 
 float CollisionObject::height() const { return image.getHeight(); }
+
+glm::vec2 CollisionObject::position() const { return _position; }

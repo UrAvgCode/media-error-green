@@ -29,13 +29,15 @@ class CollisionObject {
     float width() const;
     float height() const;
 
+    glm::vec2 position() const;
+
   protected:
     const float min_speed = 5;
     const float max_speed = 20;
     const float friction = 0.99f;
 
-    glm::vec2 position;
-    glm::vec2 velocity;
+    glm::vec2 _position;
+    glm::vec2 _velocity;
 
     ofFbo fbo;
     ofImage image;
