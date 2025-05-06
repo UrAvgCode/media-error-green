@@ -61,15 +61,6 @@ void CollisionObject::update(std::vector<Player> &players, const ofEasyCam &came
         }
     }
 
-    int offset = 50;
-    if (position.x <= offset && position.y <= offset ||
-        position.x <= offset && position.y + height() >= (ofGetHeight() - offset) ||
-        position.x + width() >= (ofGetWidth() - offset) && position.y <= offset ||
-        position.x + width() >= (ofGetWidth() - offset) && position.y + height() >= (ofGetHeight() - offset)) {
-        global_effect.setVolume(0.06f);
-        global_effect.play();
-    }
-
     position += velocity;
 
     // clamp the position to the screen size 
@@ -81,6 +72,29 @@ void CollisionObject::draw() const {
     effect_shader->begin_object();
     image.draw(position.x, position.y, 0);
     effect_shader->end_object();
+}
+
+bool CollisionObject::global_effect_triggered() {
+    auto bounding_box = ofRectangle(position.x, position.y, width(), height());
+
+    float corner_size = 50.0f;
+    auto top_left = ofRectangle(0.0f, 0.0f, corner_size, corner_size);
+    auto top_right = ofRectangle(ofGetWidth() - corner_size, 0.0f, corner_size, corner_size);
+    auto bottom_left = ofRectangle(0.0f, ofGetHeight() - corner_size, corner_size, corner_size);
+    auto bottom_right = ofRectangle(ofGetWidth() - corner_size, ofGetHeight() - corner_size, corner_size, corner_size);
+
+    auto corners = std::array<ofRectangle, 4>({top_left, top_right, bottom_left, bottom_right});
+
+    for (const auto &corner: corners) {
+        if (bounding_box.intersects(corner)) {
+            //global_effect.setVolume(0.06f);
+            //global_effect.play();
+
+            return true;
+        }
+    }
+
+    return false;
 }
 
 void CollisionObject::play_random_pluck() {

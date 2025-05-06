@@ -24,6 +24,8 @@ class CollisionObject {
 
     void draw() const;
 
+    bool global_effect_triggered();
+
     float width() const;
     float height() const;
 

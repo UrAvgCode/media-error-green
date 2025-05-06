@@ -64,6 +64,10 @@ void TrackingScene::update() {
 
     for (auto &collision_object: collision_objects) {
         collision_object.update(players, camera);
+
+        if (collision_object.global_effect_triggered()) {
+            std::cout << "CORNER HIT" << std::endl;
+        }
     }
 }
 
