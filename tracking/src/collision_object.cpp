@@ -1,9 +1,10 @@
 ﻿#include "collision_object.h"
 
+#include <algorithm>
 #include <memory>
 #include <string>
-#include <vector>
 #include <utility>
+#include <vector>
 
 #include <ofAppRunner.h>
 #include <ofFbo.h>
@@ -70,6 +71,10 @@ void CollisionObject::update(std::vector<Player> &players, const ofEasyCam &came
     }
 
     position += velocity;
+
+    // clamp the position to the screen size 
+    position.x = std::clamp(position.x, 0.0f, static_cast<float>(ofGetWidth() - width()));
+    position.y = std::clamp(position.y, 0.0f, static_cast<float>(ofGetHeight() - height()));
 }
 
 void CollisionObject::draw() const {

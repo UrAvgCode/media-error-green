@@ -58,6 +58,9 @@
     <ClCompile Include="src\effect_shader.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\glitch_effect_shader.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
@@ -1652,6 +1655,9 @@
     <ClInclude Include="include\effect_shader.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="include\glitch_effect_shader.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="icon.rc" />
@@ -1716,6 +1722,15 @@
     </CopyFileToFolders>
     <CopyFileToFolders Include="shaders\object_effects\pixel.vert">
       <Filter>shaders\object_effects</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="resources\me-logo.png">
+      <Filter>resources</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\player_effects\glitch.frag">
+      <Filter>shaders\player_effects</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\player_effects\glitch.vert">
+      <Filter>shaders\player_effects</Filter>
     </CopyFileToFolders>
   </ItemGroup>
 </Project>
