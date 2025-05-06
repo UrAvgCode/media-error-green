@@ -30,5 +30,7 @@ class TrackingScene : public Scene {
 
     ofFbo screen_fbo;
 
+    ofShader global_effect_shader;
+
     void draw_skeletons(const std::vector<ofxAzureKinect::BodySkeleton> &skeletons);
 };

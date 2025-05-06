@@ -1756,5 +1756,11 @@
     <CopyFileToFolders Include="shaders\player_effects\warp.vert">
       <Filter>shaders\player_effects</Filter>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\global_effect.frag">
+      <Filter>shaders</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\global_effect.vert">
+      <Filter>shaders</Filter>
+    </CopyFileToFolders>
   </ItemGroup>
 </Project>

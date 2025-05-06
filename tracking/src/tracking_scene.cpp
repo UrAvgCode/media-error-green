@@ -14,6 +14,8 @@
 TrackingScene::TrackingScene(ofxAzureKinect::Device *device) : kinect_device(device) {
     screen_fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGBA);
 
+    global_effect_shader.load("shaders/global_effect");
+
     // create collision objects
     const auto image_paths = vector<string>({"resources/dvd-logo.png", "resources/me-logo.png", "resources/me-logo.png",
                                              "resources/me-logo.png", "resources/me-logo.png"});
@@ -104,6 +106,13 @@ void TrackingScene::render() {
     {
         ofClear(0, 0, 0, 0);
 
+        global_effect_shader.begin();
+        global_effect_shader.setUniform2f("aspect", 1, ofGetWidth() / ofGetHeight());
+        global_effect_shader.setUniform1f("time", ofGetElapsedTimef());
+        global_effect_shader.setUniform2f("corner", 0.5, 0.5);
+        global_effect_shader.setUniform1f("effectAmount", 1.0f);
+        global_effect_shader.setUniform1f("radius", 10.0f);
+
         ofPushMatrix();
         ofTranslate(screen_fbo.getWidth(), 0);
         ofScale(-1, 1);
@@ -111,6 +120,8 @@ void TrackingScene::render() {
         screen_fbo.draw(0, 0);
 
         ofPopMatrix();
+
+        global_effect_shader.end();
     }
     frame_buffer.end();
 }
