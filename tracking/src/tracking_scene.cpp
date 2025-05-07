@@ -35,6 +35,8 @@ TrackingScene::TrackingScene(ofxAzureKinect::Device *device) : kinect_device(dev
 
         collision_objects.emplace_back(position, velocity, image_paths[i], effect_shaders[i]);
     }
+
+    _skeletons_enabled = false;
 }
 
 void TrackingScene::update() {
@@ -104,7 +106,9 @@ void TrackingScene::render() {
             obj.draw();
         }
 
-        draw_skeletons(body_skeletons);
+        if (_skeletons_enabled) {
+            draw_skeletons(body_skeletons);
+        }
     }
     screen_fbo.end();
 
@@ -149,6 +153,8 @@ void TrackingScene::trigger_global_effect(glm::vec2 position) {
         global_effect_trigger_time = ofGetSystemTimeMillis();
     }
 }
+
+void TrackingScene::toggle_skeletons() { _skeletons_enabled = !_skeletons_enabled; }
 
 void TrackingScene::draw_skeletons(const std::vector<ofxAzureKinect::BodySkeleton> &skeletons) {
     camera.begin();

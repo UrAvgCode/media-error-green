@@ -19,6 +19,8 @@ class TrackingScene : public Scene {
 
     void trigger_global_effect(glm::vec2);
 
+    void toggle_skeletons();
+
   private:
     ofxAzureKinect::Device *kinect_device;
     ofEasyCam camera;
@@ -28,6 +30,7 @@ class TrackingScene : public Scene {
     std::vector<Player> players;
     std::vector<CollisionObject> collision_objects;
 
+    bool _skeletons_enabled;
     ofVboMesh skeleton_mesh;
 
     ofFbo screen_fbo;

@@ -108,6 +108,9 @@ void CoreApp::draw_fps_counter() {
 //--------------------------------------------------------------
 void CoreApp::keyPressed(int key) {
     switch (key) {
+        case 'e':
+            tracking_scene.toggle_skeletons();
+            break;
         case 'q':
             tracking_scene.trigger_global_effect({ofGetWidth(), 0});
             break;
