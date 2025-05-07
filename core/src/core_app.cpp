@@ -96,7 +96,22 @@ void CoreApp::draw_fps_counter() {
 }
 
 //--------------------------------------------------------------
-void CoreApp::keyPressed(int key) {}
+void CoreApp::keyPressed(int key) {
+    switch (key) {
+        case 'w':
+            tracking_scene.trigger_global_effect({0, 0});
+            break;
+        case 'a':
+            tracking_scene.trigger_global_effect({0, ofGetHeight()});
+            break;
+        case 's':
+            tracking_scene.trigger_global_effect({ofGetWidth(), 0});
+            break;
+        case 'd':
+            tracking_scene.trigger_global_effect({ofGetWidth(), ofGetHeight()});
+            break;
+    }
+}
 
 //--------------------------------------------------------------
 void CoreApp::keyReleased(int key) {}

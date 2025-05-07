@@ -17,6 +17,8 @@ class TrackingScene : public Scene {
     void update() override;
     void render() override;
 
+    void trigger_global_effect(glm::vec2);
+
   private:
     ofxAzureKinect::Device *kinect_device;
     ofEasyCam camera;
@@ -32,6 +34,7 @@ class TrackingScene : public Scene {
 
     ofShader global_effect_shader;
     glm::vec2 global_effect_position;
+    std::uint64_t global_effect_trigger_time;
 
     void draw_skeletons(const std::vector<ofxAzureKinect::BodySkeleton> &skeletons);
 };

@@ -2,8 +2,10 @@
 
 uniform sampler2DRect tex0;
 uniform vec2 effect_position;
-
 uniform vec2 texture_size;
+
+uniform int duration;
+uniform int elapsed_time;
 
 uniform float time;
 uniform vec2 aspect;
@@ -34,7 +36,10 @@ bool effect_area(float radius) {
 
     float side_distance = horizontal_distance * vertical_distance + mask_offset_x * mask_offset_y;
 
-    return side_distance / 8 < radius;
+    float progress = (float(elapsed_time) / float(duration));
+    float scale = (1.0 - pow(2.0 * progress - 1.0, 2.0)) * 20.0;
+
+    return side_distance / scale < radius;
 }
 
 void main() {

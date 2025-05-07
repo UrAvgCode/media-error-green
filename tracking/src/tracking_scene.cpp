@@ -16,6 +16,7 @@ TrackingScene::TrackingScene(ofxAzureKinect::Device *device) : kinect_device(dev
 
     global_effect_shader.load("shaders/global_effect");
     global_effect_position = {0, 0};
+    global_effect_trigger_time = 0;
 
     // create collision objects
     const auto image_paths = vector<string>({"resources/dvd-logo.png", "resources/me-logo.png", "resources/me-logo.png",
@@ -71,7 +72,7 @@ void TrackingScene::update() {
         auto [triggered, position] = collision_object.global_effect_triggered();
 
         if (triggered) {
-            global_effect_position = position;
+            trigger_global_effect(position);
         }
     }
 }
@@ -109,14 +110,23 @@ void TrackingScene::render() {
     {
         ofClear(0, 0, 0, 0);
 
-        global_effect_shader.begin();
-        global_effect_shader.setUniform2f("effect_position", global_effect_position);
-        global_effect_shader.setUniform2f("texture_size", ofGetWidth(), ofGetHeight());
+        std::uint64_t global_effect_duration = 3000;
 
-        global_effect_shader.setUniform2f("aspect", 1, ofGetWidth() / ofGetHeight());
-        global_effect_shader.setUniform1f("time", ofGetElapsedTimef());
-        global_effect_shader.setUniform1f("effectAmount", 1.0f);
-        global_effect_shader.setUniform1f("radius", 10.0f);
+        auto global_effect_elapsed_time = ofGetSystemTimeMillis() - global_effect_trigger_time;
+
+        if (global_effect_elapsed_time < global_effect_duration) {
+            global_effect_shader.begin();
+            global_effect_shader.setUniform2f("effect_position", global_effect_position);
+            global_effect_shader.setUniform2f("texture_size", ofGetWidth(), ofGetHeight());
+
+            global_effect_shader.setUniform1i("duration", global_effect_duration);
+            global_effect_shader.setUniform1i("elapsed_time", global_effect_elapsed_time);
+
+            global_effect_shader.setUniform2f("aspect", 1, ofGetWidth() / ofGetHeight());
+            global_effect_shader.setUniform1f("time", ofGetElapsedTimef());
+            global_effect_shader.setUniform1f("effectAmount", 1.0f);
+            global_effect_shader.setUniform1f("radius", 10.0f);
+        }
 
         ofPushMatrix();
         ofTranslate(screen_fbo.getWidth(), 0);
@@ -126,9 +136,16 @@ void TrackingScene::render() {
 
         ofPopMatrix();
 
-        global_effect_shader.end();
+        if (global_effect_elapsed_time < global_effect_duration) {
+            global_effect_shader.end();
+        }
     }
     frame_buffer.end();
+}
+
+void TrackingScene::trigger_global_effect(glm::vec2 position) {
+    global_effect_position = position;
+    global_effect_trigger_time = ofGetSystemTimeMillis();
 }
 
 void TrackingScene::draw_skeletons(const std::vector<ofxAzureKinect::BodySkeleton> &skeletons) {
