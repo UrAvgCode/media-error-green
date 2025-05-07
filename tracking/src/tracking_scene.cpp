@@ -11,7 +11,7 @@
 #include "signalloss_effect_shader.h"
 #include "warp_effect_shader.h"
 
-TrackingScene::TrackingScene(ofxAzureKinect::Device *device) : kinect_device(device) {
+TrackingScene::TrackingScene(ofxAzureKinect::Device *device) : kinect_device(device), global_effect_duration(3000) {
     screen_fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGBA);
 
     global_effect_shader.load("shaders/global_effect");
@@ -110,10 +110,7 @@ void TrackingScene::render() {
     {
         ofClear(0, 0, 0, 0);
 
-        std::uint64_t global_effect_duration = 3000;
-
         auto global_effect_elapsed_time = ofGetSystemTimeMillis() - global_effect_trigger_time;
-
         if (global_effect_elapsed_time < global_effect_duration) {
             global_effect_shader.begin();
             global_effect_shader.setUniform2f("effect_position", global_effect_position);
@@ -144,8 +141,11 @@ void TrackingScene::render() {
 }
 
 void TrackingScene::trigger_global_effect(glm::vec2 position) {
-    global_effect_position = position;
-    global_effect_trigger_time = ofGetSystemTimeMillis();
+    auto global_effect_elapsed_time = ofGetSystemTimeMillis() - global_effect_trigger_time;
+    if (global_effect_elapsed_time > global_effect_duration) {
+        global_effect_position = position;
+        global_effect_trigger_time = ofGetSystemTimeMillis();
+    }
 }
 
 void TrackingScene::draw_skeletons(const std::vector<ofxAzureKinect::BodySkeleton> &skeletons) {

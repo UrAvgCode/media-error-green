@@ -36,5 +36,7 @@ class TrackingScene : public Scene {
     glm::vec2 global_effect_position;
     std::uint64_t global_effect_trigger_time;
 
+    const std::uint64_t global_effect_duration;
+
     void draw_skeletons(const std::vector<ofxAzureKinect::BodySkeleton> &skeletons);
 };

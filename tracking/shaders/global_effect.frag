@@ -13,21 +13,9 @@ uniform vec2 aspect;
 in vec2 vTexCoord;
 out vec4 fragColor;
 
-
-bool is_in_range(float radius, float min_radius, float amplitude) {
-    float mask_offset_x = sin(vTexCoord.x * 0.05 + time * 3.0) * amplitude;
-    float mask_offset_y = sin(vTexCoord.y * 0.05 + time * 3.0) * amplitude;
-
-    float mask_distance = distance(effect_position, vTexCoord + vec2(mask_offset_x, mask_offset_y));
-
-    return mask_distance < radius && mask_distance > min_radius;
-}
-
-bool effect_area(float radius) {
-
+bool effect_area(float radius, float amplitude) {
     float corner_distance = distance(effect_position, vTexCoord);
 
-    float amplitude = 20;
     float mask_offset_x = sin(vTexCoord.x * 0.05 + time * 3.0) * amplitude;
     float mask_offset_y = sin(vTexCoord.y * 0.05 + time * 3.0) * amplitude;
 
@@ -72,22 +60,11 @@ void main() {
 
     float mask_distance = distance(effect_position, vTexCoord + vec2(mask_offset_x, mask_offset_y));
 
-    /*if (is_in_range(200, 0, 10)) {
-        color = mix(invertedColor, vec4(1, 0, 0, 1), 0.1);
-    }
-
-    if (is_in_range(200, 0, 20)) {
-        color = mix(invertedColor, vec4(0, 0, 1, 1), 0.1);
-    }
-     if (is_in_range(200, 0, 50)) {
-        color = mix(invertedColor, vec4(0, 1, 0, 1), 0.1);
-    }*/
-
-    if (effect_area(500.0)) {
+    if (effect_area(500, 20)) {
         color = vec4(1, 0, 0, 1);
     }
 
-    if (effect_area(400.0)) {
+    if (effect_area(200, 40)) {
         color = vec4(0, 0, 1, 1);
     }
 
