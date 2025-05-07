@@ -19,8 +19,9 @@ TrackingScene::TrackingScene(ofxAzureKinect::Device *device) : kinect_device(dev
     global_effect_trigger_time = 0;
 
     // create collision objects
-    const auto image_paths = vector<string>({"resources/dvd-logo.png", "resources/me-logo.png", "resources/me-logo.png",
-                                             "resources/me-logo.png", "resources/me-logo.png"});
+    const auto image_paths =
+            vector<string>({"resources/dvd-logo.png", "resources/dvd-logo.png", "resources/dvd-logo.png",
+                            "resources/dvd-logo.png", "resources/dvd-logo.png"});
     const auto effect_shaders = std::vector<std::shared_ptr<EffectShader>>(
             {std::make_shared<EffectShader>(), std::make_shared<PixelEffectShader>(),
              std::make_shared<GlitchEffectShader>(), std::make_shared<WarpEffectShader>(),
