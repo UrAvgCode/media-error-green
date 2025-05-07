@@ -13,35 +13,35 @@
 #include "warp_effect_shader.h"
 
 TrackingScene::TrackingScene(ofxAzureKinect::Device *device) :
-    kinect_device(device), number_of_objects(3), global_effect_duration(1000) {
-    screen_fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGBA);
+    _kinect_device(device), _number_of_objects(3), _global_effect_duration(1000) {
+    _screen_fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGBA);
 
-    global_effect_shader.load("shaders/global_effect");
-    global_effect_position = {0, 0};
-    global_effect_trigger_time = 0;
+    _global_effect_shader.load("shaders/global_effect");
+    _global_effect_position = {0, 0};
+    _global_effect_trigger_time = 0;
 
-    effect_shaders = {std::make_shared<EffectShader>(), std::make_shared<PixelEffectShader>(),
+    _effect_shaders = {std::make_shared<EffectShader>(), std::make_shared<PixelEffectShader>(),
                       std::make_shared<GlitchEffectShader>(), std::make_shared<WarpEffectShader>(),
                       std::make_shared<SignallossEffectShader>()};
 
-    for (std::size_t i = 0; i < number_of_objects; ++i) {
+    for (std::size_t i = 0; i < _number_of_objects; ++i) {
         auto position = glm::vec2(ofRandom(5, 1000), ofRandom(5, 500));
         auto velocity = glm::vec2(ofRandom(-100, 100), ofRandom(-100, 100));
         velocity = 8 * glm::normalize(velocity);
 
-        const auto effect_shader = effect_shaders.front();
-        effect_shaders.erase(effect_shaders.begin());
+        const auto effect_shader = _effect_shaders.front();
+        _effect_shaders.erase(_effect_shaders.begin());
 
-        collision_objects.emplace_back(position, velocity, "resources/dvd-logo.png", effect_shader);
+        _collision_objects.emplace_back(position, velocity, "resources/dvd-logo.png", effect_shader);
     }
 
     _skeletons_enabled = false;
 }
 
 void TrackingScene::update() {
-    const auto &body_skeletons = kinect_device->getBodySkeletons();
+    const auto &body_skeletons = _kinect_device->getBodySkeletons();
 
-    std::erase_if(players, [&body_skeletons](const Player &player) {
+    std::erase_if(_players, [&body_skeletons](const Player &player) {
         for (const auto &skeleton: body_skeletons) {
             if (skeleton.id == player.id()) {
                 return false;
@@ -50,7 +50,7 @@ void TrackingScene::update() {
         return true;
     });
 
-    for (auto &player: players) {
+    for (auto &player: _players) {
         for (const auto &skeleton: body_skeletons) {
             if (skeleton.id == player.id()) {
                 player.set_skeleton(skeleton);
@@ -60,29 +60,29 @@ void TrackingScene::update() {
     }
 
     for (const auto &skeleton: body_skeletons) {
-        if (!std::any_of(players.cbegin(), players.cend(), [&](auto &player) { return player.id() == skeleton.id; })) {
-            players.emplace_back(skeleton.id, skeleton, &camera);
+        if (!std::any_of(_players.cbegin(), _players.cend(), [&](auto &player) { return player.id() == skeleton.id; })) {
+            _players.emplace_back(skeleton.id, skeleton, &_camera);
         }
     }
 
-    for (auto &player: players) {
+    for (auto &player: _players) {
         player.calculate_skeleton_lines();
     }
 
-    for (auto &collision_object: collision_objects) {
-        collision_object.update(players, camera);
+    for (auto &collision_object: _collision_objects) {
+        collision_object.update(_players, _camera);
 
-        if (ofGetSystemTimeMillis() - global_effect_trigger_time > global_effect_duration) {
+        if (ofGetSystemTimeMillis() - _global_effect_trigger_time > _global_effect_duration) {
             auto [triggered, position] = collision_object.global_effect_triggered();
 
             if (triggered) {
                 trigger_global_effect(position);
 
-                auto index = static_cast<std::size_t>(ofRandom(0, effect_shaders.size() - 1));
+                auto index = static_cast<std::size_t>(ofRandom(0, _effect_shaders.size() - 1));
 
-                const auto effect_shader = effect_shaders[index];
-                effect_shaders.erase(effect_shaders.begin() + index);
-                effect_shaders.push_back(collision_object.effect_shader());
+                const auto effect_shader = _effect_shaders[index];
+                _effect_shaders.erase(_effect_shaders.begin() + index);
+                _effect_shaders.push_back(collision_object.effect_shader());
 
                 collision_object.set_effect_shader(effect_shader);
             }
@@ -91,27 +91,27 @@ void TrackingScene::update() {
 }
 
 void TrackingScene::render() {
-    const auto &body_skeletons = kinect_device->getBodySkeletons();
+    const auto &body_skeletons = _kinect_device->getBodySkeletons();
 
-    auto body_ids = std::vector<int>(k_max_bodies, 0);
-    for (std::size_t i = 0; i < std::min(body_skeletons.size(), k_max_bodies); ++i) {
+    auto body_ids = std::vector<int>(_max_bodies, 0);
+    for (std::size_t i = 0; i < std::min(body_skeletons.size(), _max_bodies); ++i) {
         body_ids[i] = static_cast<int>(body_skeletons[i].id);
     }
 
-    for (auto &player: players) {
-        player.render(kinect_device->getDepthTex(), kinect_device->getBodyIndexTex(),
-                      kinect_device->getDepthToWorldTex(), body_ids);
+    for (auto &player: _players) {
+        player.render(_kinect_device->getDepthTex(), _kinect_device->getBodyIndexTex(),
+                      _kinect_device->getDepthToWorldTex(), body_ids);
     }
 
-    screen_fbo.begin();
+    _screen_fbo.begin();
     {
         ofClear(0, 0, 0, 0);
 
-        for (auto &player: players) {
+        for (auto &player: _players) {
             player.draw();
         }
 
-        for (const auto &obj: collision_objects) {
+        for (const auto &obj: _collision_objects) {
             obj.draw();
         }
 
@@ -119,51 +119,51 @@ void TrackingScene::render() {
             draw_skeletons(body_skeletons);
         }
     }
-    screen_fbo.end();
+    _screen_fbo.end();
 
     frame_buffer.begin();
     {
         ofClear(0, 0, 0, 0);
 
-        auto global_effect_elapsed_time = ofGetSystemTimeMillis() - global_effect_trigger_time;
-        if (global_effect_elapsed_time < global_effect_duration) {
-            global_effect_shader.begin();
-            global_effect_shader.setUniform2f("effect_position", global_effect_position);
-            global_effect_shader.setUniform2f("texture_size", ofGetWidth(), ofGetHeight());
+        auto global_effect_elapsed_time = ofGetSystemTimeMillis() - _global_effect_trigger_time;
+        if (global_effect_elapsed_time < _global_effect_duration) {
+            _global_effect_shader.begin();
+            _global_effect_shader.setUniform2f("effect_position", _global_effect_position);
+            _global_effect_shader.setUniform2f("texture_size", ofGetWidth(), ofGetHeight());
 
-            global_effect_shader.setUniform1i("duration", global_effect_duration);
-            global_effect_shader.setUniform1i("elapsed_time", global_effect_elapsed_time);
+            _global_effect_shader.setUniform1i("duration", _global_effect_duration);
+            _global_effect_shader.setUniform1i("elapsed_time", global_effect_elapsed_time);
 
-            global_effect_shader.setUniform2f("aspect", 1, ofGetWidth() / ofGetHeight());
-            global_effect_shader.setUniform1f("time", ofGetElapsedTimef());
-            global_effect_shader.setUniform1f("effectAmount", 1.0f);
-            global_effect_shader.setUniform1f("radius", 10.0f);
+            _global_effect_shader.setUniform2f("aspect", 1, ofGetWidth() / ofGetHeight());
+            _global_effect_shader.setUniform1f("time", ofGetElapsedTimef());
+            _global_effect_shader.setUniform1f("effectAmount", 1.0f);
+            _global_effect_shader.setUniform1f("radius", 10.0f);
         }
 
         ofPushMatrix();
-        ofTranslate(screen_fbo.getWidth(), 0);
+        ofTranslate(_screen_fbo.getWidth(), 0);
         ofScale(-1, 1);
 
-        screen_fbo.draw(0, 0);
+        _screen_fbo.draw(0, 0);
 
         ofPopMatrix();
 
-        if (global_effect_elapsed_time < global_effect_duration) {
-            global_effect_shader.end();
+        if (global_effect_elapsed_time < _global_effect_duration) {
+            _global_effect_shader.end();
         }
     }
     frame_buffer.end();
 }
 
 void TrackingScene::trigger_global_effect(glm::vec2 position) {
-    global_effect_position = position;
-    global_effect_trigger_time = ofGetSystemTimeMillis();
+    _global_effect_position = position;
+    _global_effect_trigger_time = ofGetSystemTimeMillis();
 }
 
 void TrackingScene::toggle_skeletons() { _skeletons_enabled = !_skeletons_enabled; }
 
 void TrackingScene::draw_skeletons(const std::vector<ofxAzureKinect::BodySkeleton> &skeletons) {
-    camera.begin();
+    _camera.begin();
     ofPushMatrix();
     ofRotateXDeg(180);
     {
@@ -189,8 +189,8 @@ void TrackingScene::draw_skeletons(const std::vector<ofxAzureKinect::BodySkeleto
                 ofPopMatrix();
             }
 
-            skeleton_mesh.setMode(OF_PRIMITIVE_LINES);
-            auto &vertices = skeleton_mesh.getVertices();
+            _skeleton_mesh.setMode(OF_PRIMITIVE_LINES);
+            auto &vertices = _skeleton_mesh.getVertices();
             vertices.resize(50);
 
             int vdx = 0;
@@ -199,9 +199,9 @@ void TrackingScene::draw_skeletons(const std::vector<ofxAzureKinect::BodySkeleto
                 vertices[vdx++] = skeleton.joints[end].position;
             }
 
-            skeleton_mesh.draw();
+            _skeleton_mesh.draw();
         }
     }
     ofPopMatrix();
-    camera.end();
+    _camera.end();
 }

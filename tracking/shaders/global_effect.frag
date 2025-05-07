@@ -39,7 +39,7 @@ float blend_area(float radius, float amplitude, float thickness) {
         return 1.0;
     }
 
-    float index = floor(blend / thickness);
+    float index = floor(pow(blend, 0.5) / thickness);
 
     return mod(index, 2.0);
 }
@@ -48,8 +48,8 @@ void main() {
     vec4 color = texture(tex0, vTexCoord);
 
     float green_blend = blend_area(200.0, 40.0, 0.01);
-    float red_blend = blend_area(400.0, 50.0, 0.02);
-    float blue_blend = blend_area(600.0, 60.0, 0.03);
+    float red_blend = blend_area(400.0, 80.0, 0.02);
+    float blue_blend = blend_area(600.0, 60, 0.03);
 
     color = mix(color, vec4(0.0, 0.0, 1.0, 1.0), blue_blend);
     color = mix(color, vec4(1.0, 0.0, 0.0, 1.0), red_blend);

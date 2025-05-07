@@ -15,5 +15,5 @@ class SignallossEffectShader : public EffectShader {
     void end_object() override;
 
   private:
-    ofShader shader;
+    ofShader _shader;
 };
