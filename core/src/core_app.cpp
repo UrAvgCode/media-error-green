@@ -2,7 +2,9 @@
 
 #include <utility>
 
-CoreApp::CoreApp() : tracking_scene({&kinect_device}), current_scene(&intro_scene), inactive_scene(&tracking_scene) {}
+CoreApp::CoreApp() :
+    tracking_scene({&kinect_device}), current_scene(&intro_scene), inactive_scene(&tracking_scene),
+    keyboard_triggered_scene(nullptr) {}
 
 //--------------------------------------------------------------
 void CoreApp::setup() {
@@ -50,6 +52,11 @@ void CoreApp::exit() {
 
 //--------------------------------------------------------------
 void CoreApp::update() {
+    if (keyboard_triggered_scene) {
+        keyboard_triggered_scene->update();
+        return;
+    }
+
     const auto &body_skeletons = kinect_device.getBodySkeletons();
 
     if ((current_scene == &intro_scene && !body_skeletons.empty()) ||
@@ -58,13 +65,16 @@ void CoreApp::update() {
         std::swap(current_scene, inactive_scene);
     }
 
-    current_scene = &tracking_scene;
-
     current_scene->update();
 }
 
 //--------------------------------------------------------------
 void CoreApp::draw() {
+    if (keyboard_triggered_scene) {
+        keyboard_triggered_scene->draw();
+        return;
+    }
+
     auto current_time = std::chrono::steady_clock::now();
     auto elapsed_time = std::chrono::duration_cast<std::chrono::milliseconds>(current_time - transition_start_time);
     auto progress = static_cast<float>(elapsed_time.count()) / static_cast<float>(transition_duration.count());
@@ -98,18 +108,33 @@ void CoreApp::draw_fps_counter() {
 //--------------------------------------------------------------
 void CoreApp::keyPressed(int key) {
     switch (key) {
+        case 'q':
+            tracking_scene.trigger_global_effect({ofGetWidth(), 0});
+            break;
         case 'w':
             tracking_scene.trigger_global_effect({0, 0});
             break;
         case 'a':
-            tracking_scene.trigger_global_effect({0, ofGetHeight()});
-            break;
-        case 's':
-            tracking_scene.trigger_global_effect({ofGetWidth(), 0});
-            break;
-        case 'd':
             tracking_scene.trigger_global_effect({ofGetWidth(), ofGetHeight()});
             break;
+        case 's':
+            tracking_scene.trigger_global_effect({0, ofGetHeight()});
+            break;
+        case '1':
+            if (keyboard_triggered_scene == &intro_scene) {
+                keyboard_triggered_scene == nullptr;
+            } else {
+                keyboard_triggered_scene = &intro_scene;
+            }
+            break;
+        case '2':
+            if (keyboard_triggered_scene == &tracking_scene) {
+                keyboard_triggered_scene == nullptr;
+            } else {
+                keyboard_triggered_scene = &tracking_scene;
+            }
+            break;
+
     }
 }
 
