@@ -9,6 +9,7 @@
 #include "glitch_effect_shader.h"
 #include "pixel_effect_shader.h"
 #include "signalloss_effect_shader.h"
+#include "skeleton_utility.h"
 #include "warp_effect_shader.h"
 
 TrackingScene::TrackingScene(ofxAzureKinect::Device *device) : kinect_device(device), global_effect_duration(3000) {
@@ -156,7 +157,6 @@ void TrackingScene::draw_skeletons(const std::vector<ofxAzureKinect::BodySkeleto
         {
             ofRotateXDeg(180);
             for (const auto &skeleton: skeletons) {
-                // Draw joints.
                 for (int i = 0; i < K4ABT_JOINT_COUNT; ++i) {
                     auto joint = skeleton.joints[i];
                     ofPushMatrix();
@@ -179,92 +179,15 @@ void TrackingScene::draw_skeletons(const std::vector<ofxAzureKinect::BodySkeleto
                     ofPopMatrix();
                 }
 
-                // Draw connections.
                 skeleton_mesh.setMode(OF_PRIMITIVE_LINES);
                 auto &vertices = skeleton_mesh.getVertices();
                 vertices.resize(50);
+
                 int vdx = 0;
-
-                // Spine.
-                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_PELVIS].position);
-                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SPINE_NAVEL].position);
-
-                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SPINE_NAVEL].position);
-                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SPINE_CHEST].position);
-
-                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SPINE_CHEST].position);
-                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_NECK].position);
-
-                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_NECK].position);
-                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_HEAD].position);
-
-                // Head.
-                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_HEAD].position);
-                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_NOSE].position);
-
-                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_NOSE].position);
-                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_EYE_LEFT].position);
-
-                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_EYE_LEFT].position);
-                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_EAR_LEFT].position);
-
-                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_NOSE].position);
-                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_EYE_RIGHT].position);
-
-                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_EYE_RIGHT].position);
-                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_EAR_RIGHT].position);
-
-                // Left Leg.
-                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_PELVIS].position);
-                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_HIP_LEFT].position);
-
-                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_HIP_LEFT].position);
-                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_KNEE_LEFT].position);
-
-                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_KNEE_LEFT].position);
-                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ANKLE_LEFT].position);
-
-                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ANKLE_LEFT].position);
-                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_FOOT_LEFT].position);
-
-                // Right leg.
-                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_PELVIS].position);
-                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_HIP_RIGHT].position);
-
-                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_HIP_RIGHT].position);
-                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_KNEE_RIGHT].position);
-
-                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_KNEE_RIGHT].position);
-                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ANKLE_RIGHT].position);
-
-                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ANKLE_RIGHT].position);
-                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_FOOT_RIGHT].position);
-
-                // Left arm.
-                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_NECK].position);
-                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_CLAVICLE_LEFT].position);
-
-                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_CLAVICLE_LEFT].position);
-                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SHOULDER_LEFT].position);
-
-                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SHOULDER_LEFT].position);
-                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ELBOW_LEFT].position);
-
-                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ELBOW_LEFT].position);
-                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_WRIST_LEFT].position);
-
-                // Right arm.
-                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_NECK].position);
-                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_CLAVICLE_RIGHT].position);
-
-                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_CLAVICLE_RIGHT].position);
-                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SHOULDER_RIGHT].position);
-
-                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_SHOULDER_RIGHT].position);
-                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ELBOW_RIGHT].position);
-
-                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_ELBOW_RIGHT].position);
-                vertices[vdx++] = toGlm(skeleton.joints[K4ABT_JOINT_WRIST_RIGHT].position);
+                for (const auto &[start, end]: skeleton::connections) {
+                    vertices[vdx++] = toGlm(skeleton.joints[start].position);
+                    vertices[vdx++] = toGlm(skeleton.joints[end].position);
+                }
 
                 skeleton_mesh.draw();
             }
