@@ -16,6 +16,7 @@ CollisionObject::CollisionObject(glm::vec2 position, glm::vec2 velocity, const s
                                  std::shared_ptr<EffectShader> effect_shader) :
     _position(position), _velocity(velocity), can_collide(false), effect_shader(effect_shader) {
     image.load(filename);
+    image.mirror(false, true);
 
     pluck_b.load("resources/audio/gruen_pluck_b.wav");
     pluck_d.load("resources/audio/gruen_pluck_d.wav");
