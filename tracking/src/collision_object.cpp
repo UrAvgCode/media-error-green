@@ -74,7 +74,7 @@ void CollisionObject::draw() const {
     effect_shader->end_object();
 }
 
-bool CollisionObject::global_effect_triggered() {
+std::pair<bool, glm::vec2> CollisionObject::global_effect_triggered() {
     auto bounding_box = ofRectangle(_position.x, _position.y, width(), height());
 
     float corner_size = 50.0f;
@@ -85,16 +85,22 @@ bool CollisionObject::global_effect_triggered() {
 
     auto corners = std::array<ofRectangle, 4>({top_left, top_right, bottom_left, bottom_right});
 
-    for (const auto &corner: corners) {
+    auto corner_positions =
+            std::array<glm::vec2, 4>({{0, 0}, {ofGetWidth(), 0}, {0, ofGetHeight()}, {ofGetWidth(), ofGetHeight()}});
+
+    for (std::size_t i = 0; i < corners.size(); ++i) {
+        const auto &corner = corners[i];
+        const auto &corner_position = corner_positions[i];
+
         if (bounding_box.intersects(corner)) {
             // global_effect.setVolume(0.06f);
             // global_effect.play();
 
-            return true;
+            return {true, corner_position};
         }
     }
 
-    return false;
+    return {false, {0, 0}};
 }
 
 void CollisionObject::play_random_pluck() {

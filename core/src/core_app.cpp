@@ -58,6 +58,8 @@ void CoreApp::update() {
         std::swap(current_scene, inactive_scene);
     }
 
+    current_scene = &tracking_scene;
+
     current_scene->update();
 }
 

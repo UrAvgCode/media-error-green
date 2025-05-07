@@ -3,6 +3,8 @@
 uniform sampler2DRect tex0;
 uniform vec2 effect_position;
 
+uniform vec2 texture_size;
+
 uniform float time;
 uniform vec2 aspect;
 
@@ -19,6 +21,21 @@ bool is_in_range(float radius, float min_radius, float amplitude) {
     return mask_distance < radius && mask_distance > min_radius;
 }
 
+bool effect_area(float radius) {
+
+    float corner_distance = distance(effect_position, vTexCoord);
+
+    float amplitude = 20;
+    float mask_offset_x = sin(vTexCoord.x * 0.05 + time * 3.0) * amplitude;
+    float mask_offset_y = sin(vTexCoord.y * 0.05 + time * 3.0) * amplitude;
+
+    float horizontal_distance = abs(effect_position.x - vTexCoord.x);
+    float vertical_distance = abs(effect_position.y - vTexCoord.y);
+
+    float side_distance = horizontal_distance * vertical_distance + mask_offset_x * mask_offset_y;
+
+    return side_distance / 8 < radius;
+}
 
 void main() {
 
@@ -50,7 +67,7 @@ void main() {
 
     float mask_distance = distance(effect_position, vTexCoord + vec2(mask_offset_x, mask_offset_y));
 
-    if (is_in_range(200, 0, 10)) {
+    /*if (is_in_range(200, 0, 10)) {
         color = mix(invertedColor, vec4(1, 0, 0, 1), 0.1);
     }
 
@@ -59,6 +76,14 @@ void main() {
     }
      if (is_in_range(200, 0, 50)) {
         color = mix(invertedColor, vec4(0, 1, 0, 1), 0.1);
+    }*/
+
+    if (effect_area(500.0)) {
+        color = vec4(1, 0, 0, 1);
+    }
+
+    if (effect_area(400.0)) {
+        color = vec4(0, 0, 1, 1);
     }
 
     fragColor = color;

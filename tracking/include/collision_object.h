@@ -24,7 +24,7 @@ class CollisionObject {
 
     void draw() const;
 
-    bool global_effect_triggered();
+    std::pair<bool, glm::vec2> global_effect_triggered();
 
     float width() const;
     float height() const;

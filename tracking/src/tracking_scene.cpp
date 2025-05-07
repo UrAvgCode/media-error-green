@@ -68,8 +68,10 @@ void TrackingScene::update() {
     for (auto &collision_object: collision_objects) {
         collision_object.update(players, camera);
 
-        if (collision_object.global_effect_triggered()) {
-            global_effect_position = collision_object.position();
+        auto [triggered, position] = collision_object.global_effect_triggered();
+
+        if (triggered) {
+            global_effect_position = position;
         }
     }
 }
@@ -109,6 +111,8 @@ void TrackingScene::render() {
 
         global_effect_shader.begin();
         global_effect_shader.setUniform2f("effect_position", global_effect_position);
+        global_effect_shader.setUniform2f("texture_size", ofGetWidth(), ofGetHeight());
+
         global_effect_shader.setUniform2f("aspect", 1, ofGetWidth() / ofGetHeight());
         global_effect_shader.setUniform1f("time", ofGetElapsedTimef());
         global_effect_shader.setUniform1f("effectAmount", 1.0f);
