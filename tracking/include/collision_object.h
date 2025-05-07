@@ -21,7 +21,6 @@ class CollisionObject {
                     std::shared_ptr<EffectShader> effect_shader);
 
     void update(std::vector<Player> &players, const ofEasyCam &camera);
-
     void draw() const;
 
     std::pair<bool, glm::vec2> global_effect_triggered();

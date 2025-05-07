@@ -13,7 +13,7 @@
 #include "warp_effect_shader.h"
 
 TrackingScene::TrackingScene(ofxAzureKinect::Device *device) :
-    kinect_device(device), number_of_objects(3), global_effect_duration(3000) {
+    kinect_device(device), number_of_objects(3), global_effect_duration(1000) {
     screen_fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGBA);
 
     global_effect_shader.load("shaders/global_effect");
@@ -72,11 +72,10 @@ void TrackingScene::update() {
     for (auto &collision_object: collision_objects) {
         collision_object.update(players, camera);
 
-        auto [triggered, position] = collision_object.global_effect_triggered();
+        if (ofGetSystemTimeMillis() - global_effect_trigger_time > global_effect_duration) {
+            auto [triggered, position] = collision_object.global_effect_triggered();
 
-        if (triggered) {
-            auto global_effect_elapsed_time = ofGetSystemTimeMillis() - global_effect_trigger_time;
-            if (global_effect_elapsed_time > global_effect_duration) {
+            if (triggered) {
                 trigger_global_effect(position);
 
                 auto index = static_cast<std::size_t>(ofRandom(0, effect_shaders.size() - 1));
@@ -157,8 +156,8 @@ void TrackingScene::render() {
 }
 
 void TrackingScene::trigger_global_effect(glm::vec2 position) {
-        global_effect_position = position;
-        global_effect_trigger_time = ofGetSystemTimeMillis();
+    global_effect_position = position;
+    global_effect_trigger_time = ofGetSystemTimeMillis();
 }
 
 void TrackingScene::toggle_skeletons() { _skeletons_enabled = !_skeletons_enabled; }
