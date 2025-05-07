@@ -13,60 +13,38 @@ uniform vec2 aspect;
 in vec2 vTexCoord;
 out vec4 fragColor;
 
-bool effect_area(float radius, float amplitude) {
-    float corner_distance = distance(effect_position, vTexCoord);
-
-    float mask_offset_x = sin(vTexCoord.x * 0.05 + time * 3.0) * amplitude;
-    float mask_offset_y = sin(vTexCoord.y * 0.05 + time * 3.0) * amplitude;
-
+float effect_area(float radius, float amplitude) {
     float horizontal_distance = abs(effect_position.x - vTexCoord.x);
     float vertical_distance = abs(effect_position.y - vTexCoord.y);
+    float hyperbole_distance = horizontal_distance * vertical_distance;
 
-    float side_distance = horizontal_distance * vertical_distance + mask_offset_x * mask_offset_y;
+    float distortion_x = sin(vTexCoord.x * 0.05 + time * 3.0) * amplitude;
+    float distortion_y = sin(vTexCoord.y * 0.05 + time * 3.0) * amplitude;
+    float distortion = distortion_x * distortion_y;
+    float distorted_distance = hyperbole_distance + distortion;
 
+    const float max_scale = 100;
     float progress = (float(elapsed_time) / float(duration));
-    float scale = (1.0 - pow(2.0 * progress - 1.0, 2.0)) * 20.0;
+    float scale = (1.0 - pow(2.0 * progress - 1.0, 2.0)) * max_scale;
 
-    return side_distance / scale < radius;
+    float scaled_distance = distorted_distance / scale;
+
+    float fade_start = 0; //radius * 0.8;
+    float blend = 1.0 - smoothstep(fade_start, radius, scaled_distance);
+
+    return clamp(blend, 0.0, 1.0);
 }
 
 void main() {
+    vec4 color = texture(tex0, vTexCoord);
 
-    vec2 uv = vTexCoord / aspect;
-    vec4 color = texture(tex0, uv);
+    float green_blend = effect_area(200.0, 20.0);
+    float red_blend = effect_area(400.0, 40.0);
+    float blue_blend = effect_area(600.0, 60.0);
 
-    float dist = distance(uv, effect_position);
-
-     // Create horizontal offset based on vertical position and time
-    float offsetR = sin(vTexCoord.y * 0.05 + time * 3.0) * 10.0; // 10 = amplitude
-    float offsetG = sin(vTexCoord.y * 0.07 + time * 2.5) * 10.0; // 10 = amplitude
-    float offsetB = sin(vTexCoord.y * 0.09 + time * 2.0) * 10.0; // 10 = amplitude
-
-    // Shift texture coordinate
-    vec2 shiftedCoordR = vec2(vTexCoord.x + offsetR, vTexCoord.y);
-    vec2 shiftedCoordG = vec2(vTexCoord.x + offsetG, vTexCoord.y);
-    vec2 shiftedCoordB = vec2(vTexCoord.x + offsetB, vTexCoord.y);
-
-    float r = texture(tex0, shiftedCoordR).r;
-    float g = texture(tex0, shiftedCoordG).g;
-    float b = texture(tex0, shiftedCoordB).b;
-
-    // Invert each channel
-    vec4 invertedColor = vec4(1.0 - r, 1.0 - g, 1.0 - b, 1);
-
-    float mask_offset_x = sin(vTexCoord.x * 0.05 + time * 3.0) * 10.0;
-    float mask_offset_y = sin(vTexCoord.y * 0.05 + time * 3.0) * 10.0;
-    float mask_size = 600;
-
-    float mask_distance = distance(effect_position, vTexCoord + vec2(mask_offset_x, mask_offset_y));
-
-    if (effect_area(500, 20)) {
-        color = vec4(1, 0, 0, 1);
-    }
-
-    if (effect_area(200, 40)) {
-        color = vec4(0, 0, 1, 1);
-    }
+    color = mix(color, vec4(0.0, 0.0, 1.0, 1.0), blue_blend);
+    color = mix(color, vec4(1.0, 0.0, 0.0, 1.0), red_blend);
+    color = mix(color, vec4(0.0, 1.0, 0.0, 1.0), green_blend);
 
     fragColor = color;
 }
