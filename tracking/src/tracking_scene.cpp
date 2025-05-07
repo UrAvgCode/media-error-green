@@ -152,47 +152,44 @@ void TrackingScene::trigger_global_effect(glm::vec2 position) {
 
 void TrackingScene::draw_skeletons(const std::vector<ofxAzureKinect::BodySkeleton> &skeletons) {
     camera.begin();
+    ofPushMatrix();
+    ofRotateXDeg(180);
     {
-        ofPushMatrix();
-        {
-            ofRotateXDeg(180);
-            for (const auto &skeleton: skeletons) {
-                for (int i = 0; i < K4ABT_JOINT_COUNT; ++i) {
-                    auto joint = skeleton.joints[i];
-                    ofPushMatrix();
-                    {
-                        glm::mat4 transform = glm::translate(joint.position) * glm::toMat4(joint.orientation);
-                        ofMultMatrix(transform);
+        for (const auto &skeleton: skeletons) {
+            for (const auto joint: skeleton.joints) {
+                ofPushMatrix();
+                {
+                    glm::mat4 transform = glm::translate(joint.position) * glm::toMat4(joint.orientation);
+                    ofMultMatrix(transform);
 
-                        ofDrawAxis(50.0f);
+                    ofDrawAxis(50.0f);
 
-                        if (joint.confidenceLevel >= K4ABT_JOINT_CONFIDENCE_MEDIUM) {
-                            ofSetColor(ofColor::green);
-                        } else if (joint.confidenceLevel >= K4ABT_JOINT_CONFIDENCE_LOW) {
-                            ofSetColor(ofColor::yellow);
-                        } else {
-                            ofSetColor(ofColor::red);
-                        }
-
-                        ofDrawSphere(10.0f);
+                    if (joint.confidenceLevel >= K4ABT_JOINT_CONFIDENCE_MEDIUM) {
+                        ofSetColor(ofColor::green);
+                    } else if (joint.confidenceLevel >= K4ABT_JOINT_CONFIDENCE_LOW) {
+                        ofSetColor(ofColor::yellow);
+                    } else {
+                        ofSetColor(ofColor::red);
                     }
-                    ofPopMatrix();
+
+                    ofDrawSphere(10.0f);
                 }
-
-                skeleton_mesh.setMode(OF_PRIMITIVE_LINES);
-                auto &vertices = skeleton_mesh.getVertices();
-                vertices.resize(50);
-
-                int vdx = 0;
-                for (const auto &[start, end]: skeleton::connections) {
-                    vertices[vdx++] = toGlm(skeleton.joints[start].position);
-                    vertices[vdx++] = toGlm(skeleton.joints[end].position);
-                }
-
-                skeleton_mesh.draw();
+                ofPopMatrix();
             }
+
+            skeleton_mesh.setMode(OF_PRIMITIVE_LINES);
+            auto &vertices = skeleton_mesh.getVertices();
+            vertices.resize(50);
+
+            int vdx = 0;
+            for (const auto &[start, end]: skeleton::connections) {
+                vertices[vdx++] = skeleton.joints[start].position;
+                vertices[vdx++] = skeleton.joints[end].position;
+            }
+
+            skeleton_mesh.draw();
         }
-        ofPopMatrix();
     }
+    ofPopMatrix();
     camera.end();
 }
