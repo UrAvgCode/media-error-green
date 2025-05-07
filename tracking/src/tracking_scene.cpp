@@ -12,28 +12,27 @@
 #include "skeleton_utility.h"
 #include "warp_effect_shader.h"
 
-TrackingScene::TrackingScene(ofxAzureKinect::Device *device) : kinect_device(device), global_effect_duration(3000) {
+TrackingScene::TrackingScene(ofxAzureKinect::Device *device) :
+    kinect_device(device), number_of_objects(3), global_effect_duration(3000) {
     screen_fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGBA);
 
     global_effect_shader.load("shaders/global_effect");
     global_effect_position = {0, 0};
     global_effect_trigger_time = 0;
 
-    // create collision objects
-    const auto image_paths =
-            vector<string>({"resources/dvd-logo.png", "resources/dvd-logo.png", "resources/dvd-logo.png",
-                            "resources/dvd-logo.png", "resources/dvd-logo.png"});
-    const auto effect_shaders = std::vector<std::shared_ptr<EffectShader>>(
-            {std::make_shared<EffectShader>(), std::make_shared<PixelEffectShader>(),
-             std::make_shared<GlitchEffectShader>(), std::make_shared<WarpEffectShader>(),
-             std::make_shared<SignallossEffectShader>()});
+    effect_shaders = {std::make_shared<EffectShader>(), std::make_shared<PixelEffectShader>(),
+                      std::make_shared<GlitchEffectShader>(), std::make_shared<WarpEffectShader>(),
+                      std::make_shared<SignallossEffectShader>()};
 
-    for (std::size_t i = 0; i < image_paths.size(); ++i) {
+    for (std::size_t i = 0; i < number_of_objects; ++i) {
         auto position = glm::vec2(ofRandom(5, 1000), ofRandom(5, 500));
         auto velocity = glm::vec2(ofRandom(-100, 100), ofRandom(-100, 100));
         velocity = 8 * glm::normalize(velocity);
 
-        collision_objects.emplace_back(position, velocity, image_paths[i], effect_shaders[i]);
+        const auto effect_shader = effect_shaders.front();
+        effect_shaders.erase(effect_shaders.begin());
+
+        collision_objects.emplace_back(position, velocity, "resources/dvd-logo.png", effect_shader);
     }
 
     _skeletons_enabled = false;
@@ -76,7 +75,18 @@ void TrackingScene::update() {
         auto [triggered, position] = collision_object.global_effect_triggered();
 
         if (triggered) {
-            trigger_global_effect(position);
+            auto global_effect_elapsed_time = ofGetSystemTimeMillis() - global_effect_trigger_time;
+            if (global_effect_elapsed_time > global_effect_duration) {
+                trigger_global_effect(position);
+
+                auto index = static_cast<std::size_t>(ofRandom(0, effect_shaders.size() - 1));
+
+                const auto effect_shader = effect_shaders[index];
+                effect_shaders.erase(effect_shaders.begin() + index);
+                effect_shaders.push_back(collision_object.effect_shader());
+
+                collision_object.set_effect_shader(effect_shader);
+            }
         }
     }
 }
@@ -147,11 +157,8 @@ void TrackingScene::render() {
 }
 
 void TrackingScene::trigger_global_effect(glm::vec2 position) {
-    auto global_effect_elapsed_time = ofGetSystemTimeMillis() - global_effect_trigger_time;
-    if (global_effect_elapsed_time > global_effect_duration) {
         global_effect_position = position;
         global_effect_trigger_time = ofGetSystemTimeMillis();
-    }
 }
 
 void TrackingScene::toggle_skeletons() { _skeletons_enabled = !_skeletons_enabled; }

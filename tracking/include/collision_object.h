@@ -26,10 +26,12 @@ class CollisionObject {
 
     std::pair<bool, glm::vec2> global_effect_triggered();
 
+    void set_effect_shader(std::shared_ptr<EffectShader>);
+
     float width() const;
     float height() const;
-
     glm::vec2 position() const;
+    std::shared_ptr<EffectShader> effect_shader() const;
 
   protected:
     const float min_speed = 5;
@@ -41,7 +43,7 @@ class CollisionObject {
 
     ofFbo fbo;
     ofImage image;
-    std::shared_ptr<EffectShader> effect_shader;
+    std::shared_ptr<EffectShader> _effect_shader;
 
     bool can_collide;
 

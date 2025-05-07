@@ -26,9 +26,11 @@ class TrackingScene : public Scene {
     ofEasyCam camera;
 
     const std::size_t k_max_bodies = 6;
-
     std::vector<Player> players;
+    
+    const std::size_t number_of_objects;
     std::vector<CollisionObject> collision_objects;
+    std::vector<std::shared_ptr<EffectShader>> effect_shaders;
 
     bool _skeletons_enabled;
     ofVboMesh skeleton_mesh;

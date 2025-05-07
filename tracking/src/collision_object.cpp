@@ -14,7 +14,7 @@ CollisionObject::CollisionObject() : CollisionObject({0, 0}, {0, 0}, "", std::ma
 
 CollisionObject::CollisionObject(glm::vec2 position, glm::vec2 velocity, const std::string &filename,
                                  std::shared_ptr<EffectShader> effect_shader) :
-    _position(position), _velocity(velocity), can_collide(false), effect_shader(effect_shader) {
+    _position(position), _velocity(velocity), can_collide(false), _effect_shader(effect_shader) {
     image.load(filename);
     image.mirror(false, true);
 
@@ -70,9 +70,9 @@ void CollisionObject::update(std::vector<Player> &players, const ofEasyCam &came
 }
 
 void CollisionObject::draw() const {
-    effect_shader->begin_object();
+    _effect_shader->begin_object();
     image.draw(_position.x, _position.y, 0);
-    effect_shader->end_object();
+    _effect_shader->end_object();
 }
 
 std::pair<bool, glm::vec2> CollisionObject::global_effect_triggered() {
@@ -103,6 +103,8 @@ std::pair<bool, glm::vec2> CollisionObject::global_effect_triggered() {
 
     return {false, {0, 0}};
 }
+
+void CollisionObject::set_effect_shader(std::shared_ptr<EffectShader> shader) { _effect_shader = shader; }
 
 void CollisionObject::play_random_pluck() {
     int random = static_cast<int>(ofRandom(0, 4));
@@ -137,7 +139,7 @@ std::pair<bool, glm::vec2> CollisionObject::check_collision_with_bodies(std::vec
             const auto &line_velocity = velocities[i];
 
             if (bounding_box.intersects(line[0], line[1])) {
-                player.set_shader(effect_shader);
+                player.set_shader(_effect_shader);
 
                 auto new_velocity = -_velocity;
                 new_velocity += line_velocity[0];
@@ -155,3 +157,5 @@ float CollisionObject::width() const { return image.getWidth(); }
 float CollisionObject::height() const { return image.getHeight(); }
 
 glm::vec2 CollisionObject::position() const { return _position; }
+
+std::shared_ptr<EffectShader> CollisionObject::effect_shader() const { return _effect_shader; }
