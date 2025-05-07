@@ -13,7 +13,7 @@ uniform vec2 aspect;
 in vec2 vTexCoord;
 out vec4 fragColor;
 
-float blend_area(float radius, float amplitude) {
+float blend_area(float radius, float amplitude, float thickness) {
     float horizontal_distance = abs(effect_position.x - vTexCoord.x);
     float vertical_distance = abs(effect_position.y - vTexCoord.y);
     float hyperbole_distance = horizontal_distance * vertical_distance;
@@ -29,7 +29,7 @@ float blend_area(float radius, float amplitude) {
 
     float scaled_distance = distorted_distance / scale;
 
-    float fade_start = 0;
+    float fade_start = radius * 0.0;
     float blend = 1.0 - smoothstep(fade_start, radius, scaled_distance);
     blend = clamp(blend, 0.0, 1.0);
 
@@ -39,7 +39,7 @@ float blend_area(float radius, float amplitude) {
         return 1.0;
     }
 
-    float index = floor(blend / 0.01);
+    float index = floor(blend / thickness);
 
     return mod(index, 2.0);
 }
@@ -47,9 +47,9 @@ float blend_area(float radius, float amplitude) {
 void main() {
     vec4 color = texture(tex0, vTexCoord);
 
-    float green_blend = blend_area(200.0, 60.0);
-    float red_blend = blend_area(400.0, 40.0);
-    float blue_blend = blend_area(600.0, 20.0);
+    float green_blend = blend_area(200.0, 40.0, 0.01);
+    float red_blend = blend_area(400.0, 50.0, 0.02);
+    float blue_blend = blend_area(600.0, 60.0, 0.03);
 
     color = mix(color, vec4(0.0, 0.0, 1.0, 1.0), blue_blend);
     color = mix(color, vec4(1.0, 0.0, 0.0, 1.0), red_blend);
