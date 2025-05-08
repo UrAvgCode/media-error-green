@@ -121,8 +121,7 @@ void CollisionObject::play_random_pluck() {
     }
 }
 
-std::pair<bool, glm::vec2> CollisionObject::check_collision_with_bodies(std::vector<Player> &players,
-                                                                        const ofEasyCam &camera) const {
+std::pair<bool, glm::vec2> CollisionObject::check_collision_with_bodies(std::vector<Player> &players, const ofEasyCam &camera) {
     for (auto &player: players) {
         // Zugriff auf die Skeleton-Vertices des Spielers
         const auto &lines = player.get_skeleton_lines();
@@ -134,6 +133,7 @@ std::pair<bool, glm::vec2> CollisionObject::check_collision_with_bodies(std::vec
             const auto &line_velocity = velocities[i];
 
             if (bounding_box.intersects(line[0], line[1])) {
+                play_random_pluck();
                 player.set_shader(_effect_shader);
 
                 auto new_velocity = -_velocity;

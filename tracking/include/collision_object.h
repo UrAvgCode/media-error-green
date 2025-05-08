@@ -2,14 +2,14 @@
 
 #include <memory>
 #include <string>
-#include <vector>
 #include <utility>
+#include <vector>
 
 #include <ofEasyCam.h>
 #include <ofFbo.h>
 #include <ofImage.h>
-#include <ofxAzureKinect.h>
 #include <ofSoundPlayer.h>
+#include <ofxAzureKinect.h>
 
 #include "effect_shader.h"
 #include "player.h"
@@ -34,7 +34,7 @@ class CollisionObject {
 
   protected:
     void play_random_pluck();
-    std::pair<bool, glm::vec2> check_collision_with_bodies(std::vector<Player> &players, const ofEasyCam &camera) const;
+    std::pair<bool, glm::vec2> check_collision_with_bodies(std::vector<Player> &players, const ofEasyCam &camera);
 
     const float _min_speed = 5;
     const float _max_speed = 20;
