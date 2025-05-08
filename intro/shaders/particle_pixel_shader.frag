@@ -1,7 +1,6 @@
 #version 150
 
 uniform sampler2DRect tex0;
-uniform vec2 texture_size;
 
 uniform float block_size;
 uniform float quality;
@@ -45,6 +44,7 @@ vec4 scanlines(vec4 color) {
 }
 
 vec4 vignette(vec4 color) {
+    vec2 texture_size = textureSize(tex0);
     float radius = 400.0;
     float scale = 32;
 
@@ -60,44 +60,26 @@ vec4 vignette(vec4 color) {
 }
 
 void main() {
-    vec2 texSize = textureSize(tex0);
+    vec2 texture_size = textureSize(tex0);
     vec2 block_pos = floor((vTexCoord + offset()) / block_size) * block_size;
 
-    vec4 colorSum = vec4(0.0);
-    int sampleCount = 0;
-
-    // Iterate over the pixels within the block size
+    int sample_count = 0;
+    vec4 color_sum = vec4(0.0);
     for (float y = 0.0; y < block_size; ++y) {
         for (float x = 0.0; x < block_size; ++x) {
             vec2 samplePos = block_pos + vec2(x, y);
-            if (samplePos.x < texSize.x && samplePos.y < texSize.y) {
-                colorSum += texture(tex0, samplePos);
-                sampleCount++;
+            if (samplePos.x < texture_size.x && samplePos.y < texture_size.y) {
+                color_sum += texture(tex0, samplePos);
+                sample_count++;
             }
         }
     }
 
-    // Compute the average color
-    vec4 color = colorSum / float(sampleCount);
+    // compute the average color
+    vec4 color = color_sum / float(sample_count);
 
-    // Apply quality quantization
+    // apply quality quantization
     color.rgb = floor(color.rgb * (quality * 256.0)) / (quality * 256.0);
-
-    {
-        float index = floor((vTexCoord.y - line_position) / 20.0);
-        float value = mod(index, 2.0);
-        if (value == 1.0) {
-            //avgColor.g -= 0.3;
-        }
-    }
-    
-    {
-        float index = floor((vTexCoord.y - line_position) / 200.0);
-        float value = mod(index, 2.0);
-        if (value == 1.0) {
-            //avgColor.g /= 2;
-        }
-    }
 
     color = scanlines(color);
     color = vignette(color);
