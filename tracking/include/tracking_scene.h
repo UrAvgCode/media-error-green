@@ -43,4 +43,6 @@ class TrackingScene : public Scene {
     std::uint64_t _global_effect_trigger_time;
     ofShader _global_effect_shader;
     glm::vec2 _global_effect_position;
+
+    int _line_position;
 };

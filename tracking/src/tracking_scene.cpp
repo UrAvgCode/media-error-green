@@ -21,8 +21,8 @@ TrackingScene::TrackingScene(ofxAzureKinect::Device *device) :
     _global_effect_trigger_time = 0;
 
     _effect_shaders = {std::make_shared<EffectShader>(), std::make_shared<PixelEffectShader>(),
-                      std::make_shared<GlitchEffectShader>(), std::make_shared<WarpEffectShader>(),
-                      std::make_shared<SignallossEffectShader>()};
+                       std::make_shared<GlitchEffectShader>(), std::make_shared<WarpEffectShader>(),
+                       std::make_shared<SignallossEffectShader>()};
 
     for (std::size_t i = 0; i < _number_of_objects; ++i) {
         auto position = glm::vec2(ofRandom(5, 1000), ofRandom(5, 500));
@@ -36,6 +36,7 @@ TrackingScene::TrackingScene(ofxAzureKinect::Device *device) :
     }
 
     _skeletons_enabled = false;
+    _line_position = 0;
 }
 
 void TrackingScene::update() {
@@ -60,7 +61,8 @@ void TrackingScene::update() {
     }
 
     for (const auto &skeleton: body_skeletons) {
-        if (!std::any_of(_players.cbegin(), _players.cend(), [&](auto &player) { return player.id() == skeleton.id; })) {
+        if (!std::any_of(_players.cbegin(), _players.cend(),
+                         [&](auto &player) { return player.id() == skeleton.id; })) {
             _players.emplace_back(skeleton.id, skeleton, &_camera);
         }
     }
@@ -123,22 +125,22 @@ void TrackingScene::render() {
 
     frame_buffer.begin();
     {
-        ofClear(0, 0, 0, 0);
+        ofClear(0, 0, 0, 1);
 
-        auto global_effect_elapsed_time = ofGetSystemTimeMillis() - _global_effect_trigger_time;
-        if (global_effect_elapsed_time < _global_effect_duration) {
-            _global_effect_shader.begin();
-            _global_effect_shader.setUniform2f("effect_position", _global_effect_position);
-            _global_effect_shader.setUniform2f("texture_size", ofGetWidth(), ofGetHeight());
+        _global_effect_shader.begin();
+        _global_effect_shader.setUniform2f("effect_position", _global_effect_position);
+        _global_effect_shader.setUniform2f("texture_size", ofGetWidth(), ofGetHeight());
 
-            _global_effect_shader.setUniform1i("duration", _global_effect_duration);
-            _global_effect_shader.setUniform1i("elapsed_time", global_effect_elapsed_time);
+        _global_effect_shader.setUniform1i("duration", _global_effect_duration);
+        _global_effect_shader.setUniform1i("elapsed_time", ofGetSystemTimeMillis() - _global_effect_trigger_time);
 
-            _global_effect_shader.setUniform2f("aspect", 1, ofGetWidth() / ofGetHeight());
-            _global_effect_shader.setUniform1f("time", ofGetElapsedTimef());
-            _global_effect_shader.setUniform1f("effectAmount", 1.0f);
-            _global_effect_shader.setUniform1f("radius", 10.0f);
-        }
+        _global_effect_shader.setUniform2f("aspect", 1, ofGetWidth() / ofGetHeight());
+        _global_effect_shader.setUniform1f("time", ofGetElapsedTimef());
+        _global_effect_shader.setUniform1f("effectAmount", 1.0f);
+        _global_effect_shader.setUniform1f("radius", 10.0f);
+
+        _line_position = (_line_position + 1) % ofGetHeight();
+        _global_effect_shader.setUniform1i("line_position", _line_position);
 
         ofPushMatrix();
         ofTranslate(_screen_fbo.getWidth(), 0);
@@ -148,9 +150,7 @@ void TrackingScene::render() {
 
         ofPopMatrix();
 
-        if (global_effect_elapsed_time < _global_effect_duration) {
-            _global_effect_shader.end();
-        }
+        _global_effect_shader.end();
     }
     frame_buffer.end();
 }

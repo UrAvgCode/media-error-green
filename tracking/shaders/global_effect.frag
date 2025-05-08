@@ -10,8 +10,15 @@ uniform int elapsed_time;
 uniform float time;
 uniform vec2 aspect;
 
+uniform int line_position;
+
 in vec2 vTexCoord;
 out vec4 fragColor;
+
+vec4 scanlines(vec4 color) {
+    color.g += 0.05 * sin((vTexCoord.y - line_position) * 0.5);
+    return color;
+}
 
 float blend_area(float radius, float amplitude, float thickness) {
     float horizontal_distance = abs(effect_position.x - vTexCoord.x);
@@ -44,16 +51,26 @@ float blend_area(float radius, float amplitude, float thickness) {
     return mod(index, 2.0);
 }
 
+vec4 apply_corner_effect(vec4 color) {
+    if (elapsed_time < duration) {
+        float green_blend = blend_area(200.0, 40.0, 0.01);
+        float red_blend = blend_area(400.0, 80.0, 0.02);
+        float blue_blend = blend_area(600.0, 60, 0.03);
+
+        color = mix(color, vec4(0.0, 0.0, 1.0, 1.0), blue_blend);
+        color = mix(color, vec4(1.0, 0.0, 0.0, 1.0), red_blend);
+        color = mix(color, vec4(0.0, 1.0, 0.0, 1.0), green_blend);
+    }
+
+    return color;
+}
+
 void main() {
     vec4 color = texture(tex0, vTexCoord);
+    color.a = 1.0;
 
-    float green_blend = blend_area(200.0, 40.0, 0.01);
-    float red_blend = blend_area(400.0, 80.0, 0.02);
-    float blue_blend = blend_area(600.0, 60, 0.03);
-
-    color = mix(color, vec4(0.0, 0.0, 1.0, 1.0), blue_blend);
-    color = mix(color, vec4(1.0, 0.0, 0.0, 1.0), red_blend);
-    color = mix(color, vec4(0.0, 1.0, 0.0, 1.0), green_blend);
-
+    color = scanlines(color);
+    color = apply_corner_effect(color);
+    
     fragColor = color;
 }
