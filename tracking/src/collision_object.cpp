@@ -18,15 +18,18 @@ CollisionObject::CollisionObject(glm::vec2 position, glm::vec2 velocity, const s
     _image.load(filename);
     _image.mirror(false, true);
 
-    _pluck_b.load("resources/audio/gruen_pluck_b.wav");
-    _pluck_d.load("resources/audio/gruen_pluck_d.wav");
-    _pluck_e.load("resources/audio/gruen_pluck_e.wav");
-    _pluck_g.load("resources/audio/gruen_pluck_g.wav");
+    auto audio_filenames = std::vector<std::string>(
+            {"gruen_pluck_b.wav", "gruen_pluck_d.wav", "gruen_pluck_e.wav", "gruen_pluck_g.wav"});
 
-    _pluck_b.setMultiPlay(true);
-    _pluck_d.setMultiPlay(true);
-    _pluck_e.setMultiPlay(true);
-    _pluck_g.setMultiPlay(true);
+    for (const auto &filename: audio_filenames) {
+        auto sound_player = ofSoundPlayer();
+
+        sound_player.load("resources/audio/" + filename);
+        sound_player.setVolume(0.15f);
+        sound_player.setMultiPlay(true);
+
+        puck_sounds.push_back(sound_player);
+    }
 }
 
 void CollisionObject::update(std::vector<Player> &players, const ofEasyCam &camera) {
@@ -42,6 +45,7 @@ void CollisionObject::update(std::vector<Player> &players, const ofEasyCam &came
 
     if (auto [collided, dir] = check_collision_with_bodies(players, camera); collided) {
         if (_can_collide) {
+            play_random_pluck();
             _velocity = dir;
             _can_collide = false;
         }
@@ -102,26 +106,12 @@ std::pair<bool, glm::vec2> CollisionObject::global_effect_triggered() {
 void CollisionObject::set_effect_shader(std::shared_ptr<EffectShader> shader) { _effect_shader = shader; }
 
 void CollisionObject::play_random_pluck() {
-    int random = static_cast<int>(ofRandom(0, 4));
-    switch (random) {
-        case 0:
-            _pluck_b.play();
-            break;
-        case 1:
-            _pluck_d.play();
-            break;
-        case 2:
-            _pluck_e.play();
-            break;
-        case 3:
-            _pluck_g.play();
-            break;
-        default:
-            break;
-    }
+    auto random = static_cast<std::size_t>(ofRandom(puck_sounds.size()));
+    puck_sounds[random].play();
 }
 
-std::pair<bool, glm::vec2> CollisionObject::check_collision_with_bodies(std::vector<Player> &players, const ofEasyCam &camera) {
+std::pair<bool, glm::vec2> CollisionObject::check_collision_with_bodies(std::vector<Player> &players,
+                                                                        const ofEasyCam &camera) {
     for (auto &player: players) {
         // Zugriff auf die Skeleton-Vertices des Spielers
         const auto &lines = player.get_skeleton_lines();
@@ -133,7 +123,6 @@ std::pair<bool, glm::vec2> CollisionObject::check_collision_with_bodies(std::vec
             const auto &line_velocity = velocities[i];
 
             if (bounding_box.intersects(line[0], line[1])) {
-                play_random_pluck();
                 player.set_shader(_effect_shader);
 
                 auto new_velocity = -_velocity;

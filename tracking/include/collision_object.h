@@ -49,8 +49,5 @@ class CollisionObject {
 
     bool _can_collide;
 
-    ofSoundPlayer _pluck_b;
-    ofSoundPlayer _pluck_d;
-    ofSoundPlayer _pluck_e;
-    ofSoundPlayer _pluck_g;
+    std::vector<ofSoundPlayer> puck_sounds;
 };
