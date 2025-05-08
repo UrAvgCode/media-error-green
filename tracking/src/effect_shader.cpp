@@ -16,6 +16,18 @@ EffectShader::EffectShader() {
     _render_shader.setup(shader_settings);
 }
 
+EffectShader::EffectShader(std::string vertex_shader, std::string fragment_shader) {
+    auto verts = std::vector<glm::vec3>(1);
+    _player_vbo.setVertexData(verts.data(), static_cast<int>(verts.size()), GL_STATIC_DRAW);
+
+    auto shader_settings = ofShaderSettings();
+    shader_settings.shaderFiles[GL_VERTEX_SHADER] = vertex_shader;
+    shader_settings.shaderFiles[GL_FRAGMENT_SHADER] = fragment_shader;
+    shader_settings.intDefines["BODY_INDEX_MAP_BACKGROUND"] = K4ABT_BODY_INDEX_MAP_BACKGROUND;
+    shader_settings.bindDefaults = true;
+    _render_shader.setup(shader_settings);
+}
+
 void EffectShader::begin_player() {}
 
 void EffectShader::end_player() {}

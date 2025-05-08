@@ -1,5 +1,7 @@
 #pragma once
 
+#include <k4abttypes.h>
+
 #include <ofEasyCam.h>
 #include <ofShader.h>
 #include <ofTexture.h>
@@ -8,6 +10,7 @@
 class EffectShader {
   public:
     EffectShader();
+    EffectShader(std::string vertex_shader, std::string fragment_shader);
 
     virtual void begin_player();
 
