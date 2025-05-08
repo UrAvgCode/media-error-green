@@ -1,0 +1,46 @@
+#pragma once
+
+#include <vector>
+
+#include <k4abttypes.h>
+
+namespace skeleton {
+    static const std::vector<std::pair<int, int>> connections = {
+            // Spine
+            {K4ABT_JOINT_PELVIS, K4ABT_JOINT_SPINE_NAVEL},
+            {K4ABT_JOINT_SPINE_NAVEL, K4ABT_JOINT_SPINE_CHEST},
+            {K4ABT_JOINT_SPINE_CHEST, K4ABT_JOINT_NECK},
+            {K4ABT_JOINT_NECK, K4ABT_JOINT_HEAD},
+
+            // Head
+            {K4ABT_JOINT_HEAD, K4ABT_JOINT_NOSE},
+            {K4ABT_JOINT_NOSE, K4ABT_JOINT_EYE_LEFT},
+            {K4ABT_JOINT_EYE_LEFT, K4ABT_JOINT_EAR_LEFT},
+            {K4ABT_JOINT_NOSE, K4ABT_JOINT_EYE_RIGHT},
+            {K4ABT_JOINT_EYE_RIGHT, K4ABT_JOINT_EAR_RIGHT},
+
+            // Left Leg
+            {K4ABT_JOINT_PELVIS, K4ABT_JOINT_HIP_LEFT},
+            {K4ABT_JOINT_HIP_LEFT, K4ABT_JOINT_KNEE_LEFT},
+            {K4ABT_JOINT_KNEE_LEFT, K4ABT_JOINT_ANKLE_LEFT},
+            {K4ABT_JOINT_ANKLE_LEFT, K4ABT_JOINT_FOOT_LEFT},
+
+            // Right leg
+            {K4ABT_JOINT_PELVIS, K4ABT_JOINT_HIP_RIGHT},
+            {K4ABT_JOINT_HIP_RIGHT, K4ABT_JOINT_KNEE_RIGHT},
+            {K4ABT_JOINT_KNEE_RIGHT, K4ABT_JOINT_ANKLE_RIGHT},
+            {K4ABT_JOINT_ANKLE_RIGHT, K4ABT_JOINT_FOOT_RIGHT},
+
+            // Left arm
+            {K4ABT_JOINT_NECK, K4ABT_JOINT_CLAVICLE_LEFT},
+            {K4ABT_JOINT_CLAVICLE_LEFT, K4ABT_JOINT_SHOULDER_LEFT},
+            {K4ABT_JOINT_SHOULDER_LEFT, K4ABT_JOINT_ELBOW_LEFT},
+            {K4ABT_JOINT_ELBOW_LEFT, K4ABT_JOINT_WRIST_LEFT},
+
+            // Right arm
+            {K4ABT_JOINT_NECK, K4ABT_JOINT_CLAVICLE_RIGHT},
+            {K4ABT_JOINT_CLAVICLE_RIGHT, K4ABT_JOINT_SHOULDER_RIGHT},
+            {K4ABT_JOINT_SHOULDER_RIGHT, K4ABT_JOINT_ELBOW_RIGHT},
+            {K4ABT_JOINT_ELBOW_RIGHT, K4ABT_JOINT_WRIST_RIGHT},
+    };
+}

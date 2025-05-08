@@ -4,19 +4,19 @@
 #include <ofAppRunner.h>
 
 SignallossEffectShader::SignallossEffectShader() {
-    shader.load("shaders/player_effects/signalloss");
+    _shader.load("shaders/player_effects/signalloss");
 }
 
 void SignallossEffectShader::begin_player() {
-    shader.begin();
-    shader.setUniform1f("time", ofGetElapsedTimeMillis());
+    _shader.begin();
+    _shader.setUniform1f("time", ofGetElapsedTimeMillis());
 }
 
-void SignallossEffectShader::end_player() { shader.end(); }
+void SignallossEffectShader::end_player() { _shader.end(); }
 
 void SignallossEffectShader::begin_object() {
-    shader.begin();
-    shader.setUniform1f("time", ofGetElapsedTimeMillis());
+    _shader.begin();
+    _shader.setUniform1f("time", ofGetElapsedTimeMillis());
 }
 
-void SignallossEffectShader::end_object() { shader.end(); }
+void SignallossEffectShader::end_object() { _shader.end(); }

@@ -4,21 +4,21 @@
 #include <ofAppRunner.h>
 
 GlitchEffectShader::GlitchEffectShader() {
-    shader.load("shaders/player_effects/glitch");
+    _shader.load("shaders/player_effects/glitch");
 }
 
 void GlitchEffectShader::begin_player() {
-    shader.begin();
-    shader.setUniform1f("rand1", ofRandomHeight());
-    shader.setUniform1f("rand2", ofRandomHeight());
+    _shader.begin();
+    _shader.setUniform1f("rand1", ofRandomHeight());
+    _shader.setUniform1f("rand2", ofRandomHeight());
 }
 
-void GlitchEffectShader::end_player() { shader.end(); }
+void GlitchEffectShader::end_player() { _shader.end(); }
 
 void GlitchEffectShader::begin_object() {
-    shader.begin();
-    shader.setUniform1f("rand1", ofRandomHeight());
-    shader.setUniform1f("rand2", ofRandomHeight());
+    _shader.begin();
+    _shader.setUniform1f("rand1", ofRandomHeight());
+    _shader.setUniform1f("rand2", ofRandomHeight());
 }
 
-void GlitchEffectShader::end_object() { shader.end(); }
+void GlitchEffectShader::end_object() { _shader.end(); }

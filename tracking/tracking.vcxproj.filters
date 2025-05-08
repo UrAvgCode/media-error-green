@@ -61,6 +61,12 @@
     <ClCompile Include="src\glitch_effect_shader.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\signalloss_effect_shader.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\warp_effect_shader.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
@@ -1658,6 +1664,12 @@
     <ClInclude Include="include\glitch_effect_shader.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="include\signalloss_effect_shader.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\warp_effect_shader.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="icon.rc" />
@@ -1731,6 +1743,24 @@
     </CopyFileToFolders>
     <CopyFileToFolders Include="shaders\player_effects\glitch.vert">
       <Filter>shaders\player_effects</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\player_effects\signalloss.frag">
+      <Filter>shaders\player_effects</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\player_effects\signalloss.vert">
+      <Filter>shaders\player_effects</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\player_effects\warp.frag">
+      <Filter>shaders\player_effects</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\player_effects\warp.vert">
+      <Filter>shaders\player_effects</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\global_effect.frag">
+      <Filter>shaders</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\global_effect.vert">
+      <Filter>shaders</Filter>
     </CopyFileToFolders>
   </ItemGroup>
 </Project>
