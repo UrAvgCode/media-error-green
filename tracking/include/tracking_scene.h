@@ -34,7 +34,7 @@ class TrackingScene : public Scene {
 
     bool _skeletons_enabled;
     ofVboMesh _skeleton_mesh;
-    
+
     const std::size_t _number_of_objects;
     std::vector<CollisionObject> _collision_objects;
     std::vector<std::shared_ptr<EffectShader>> _effect_shaders;
@@ -43,4 +43,8 @@ class TrackingScene : public Scene {
     std::uint64_t _global_effect_trigger_time;
     ofShader _global_effect_shader;
     glm::vec2 _global_effect_position;
+
+    ofSoundPlayer _global_effect;
+
+    int _line_position;
 };

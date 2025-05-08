@@ -63,6 +63,8 @@ class IntroScene : public Scene {
     ofShader particle_trail_shader;
     ofShader particle_pixel_shader;
 
+    int line_position = 0;
+
     void create_logo_vectors();
     void create_logo_in_outs_vectors();
 };
