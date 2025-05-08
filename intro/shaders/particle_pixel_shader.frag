@@ -14,6 +14,20 @@ uniform int line_position;
 in vec2 vTexCoord;
 out vec4 fragColor;
 
+vec2 barrel_distortion(vec2 coord) {
+    vec2 texture_size = textureSize(tex0);
+    coord /= texture_size;
+
+    coord = coord * 2.0 - 1.0;
+    float radial = dot(coord, coord);
+    float strength = 0.6;
+    coord *= 1.0 + strength * radial;
+    coord = (coord + 1.0) * 0.5;
+
+    coord *= texture_size;
+    return coord; 
+}
+
 vec2 offset() {
     vec2 offset = vec2(0, 0);
     if (random < 0.2) {
@@ -39,7 +53,8 @@ vec2 offset() {
 }
 
 vec4 scanlines(vec4 color) {
-    color.rgb *= 1 - 0.8 * 0.5 + sin((vTexCoord.y - line_position)) * 0.8 * 0.5;
+    vec2 distorted_coords = barrel_distortion(vTexCoord);
+    color.rgb *= 1 - 0.8 * 0.5 + sin((distorted_coords.y - line_position)) * 0.8 * 0.5;
     return color;
 }
 
@@ -52,8 +67,7 @@ vec4 vignette(vec4 color) {
     float vertical_distance = min(vTexCoord.y, texture_size.y - vTexCoord.y);
     float hyperbole_distance = (horizontal_distance * vertical_distance) / scale;
 
-    float fade_start = radius * 0.3;
-    float blend = 1.0 - smoothstep(fade_start, radius, hyperbole_distance);
+    float blend = 1.0 - smoothstep(0, radius, hyperbole_distance);
     blend = clamp(blend, 0.0, 1.0);
 
     return mix(color, vec4(0, 0, 0, 1), blend);
