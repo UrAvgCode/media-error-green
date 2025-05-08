@@ -67,6 +67,9 @@
     <ClCompile Include="src\warp_effect_shader.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\waves_effect_shader.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
@@ -1673,6 +1676,9 @@
     <ClInclude Include="include\skeleton_utility.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="include\waves_effect_shader.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="icon.rc" />
@@ -1764,6 +1770,12 @@
     </CopyFileToFolders>
     <CopyFileToFolders Include="shaders\global_effect.vert">
       <Filter>shaders</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\player_effects\waves.frag">
+      <Filter>shaders\player_effects</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\player_effects\waves.vert">
+      <Filter>shaders\player_effects</Filter>
     </CopyFileToFolders>
   </ItemGroup>
 </Project>

@@ -130,6 +130,7 @@
     <ClCompile Include="src\signalloss_effect_shader.cpp" />
     <ClCompile Include="src\tracking_scene.cpp" />
     <ClCompile Include="src\warp_effect_shader.cpp" />
+    <ClCompile Include="src\waves_effect_shader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\addons\ofxConvexHull\src\ofxConvexHull.h" />
@@ -575,6 +576,7 @@
     <ClInclude Include="include\skeleton_utility.h" />
     <ClInclude Include="include\tracking_scene.h" />
     <ClInclude Include="include\warp_effect_shader.h" />
+    <ClInclude Include="include\waves_effect_shader.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="$(OF_ROOT)\libs\openFrameworksCompiled\project\vs\openframeworksLib.vcxproj">
@@ -691,6 +693,14 @@
     <CopyFileToFolders Include="shaders\global_effect.vert">
       <FileType>Document</FileType>
       <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">data/shaders/%(Filename)%(Extension)</DestinationFileName>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\player_effects\waves.frag">
+      <FileType>Document</FileType>
+      <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">data/shaders/player_effects/%(Filename)%(Extension)</DestinationFileName>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\player_effects\waves.vert">
+      <FileType>Document</FileType>
+      <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">data/shaders/player_effects/%(Filename)%(Extension)</DestinationFileName>
     </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
