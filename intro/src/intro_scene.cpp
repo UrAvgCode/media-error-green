@@ -148,9 +148,16 @@ void IntroScene::render() {
     frame_buffer.begin();
     {
         particle_pixel_shader.begin();
-
         particle_pixel_shader.setUniform1f("block_size", 5);
         particle_pixel_shader.setUniform1f("quality", 0.5f);
+
+        particle_pixel_shader.setUniform1f("random", ofRandom(1));
+        particle_pixel_shader.setUniform1f("random_width", ofRandomWidth());
+        particle_pixel_shader.setUniform1f("random_height", ofRandomHeight());
+
+        line_position = (line_position + 2) % ofGetHeight();
+        particle_pixel_shader.setUniform1i("line_position", line_position);
+
         particle_draw_fbo.draw(0, 0);
 
         particle_pixel_shader.end();
