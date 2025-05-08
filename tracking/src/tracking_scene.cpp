@@ -20,6 +20,9 @@ TrackingScene::TrackingScene(ofxAzureKinect::Device *device) :
     _global_effect_position = {0, 0};
     _global_effect_trigger_time = 0;
 
+    _global_effect.load("resources/audio/gruen_globalEffect.wav");
+    _global_effect.setMultiPlay(false);
+
     _effect_shaders = {std::make_shared<EffectShader>(), std::make_shared<PixelEffectShader>(),
                        std::make_shared<GlitchEffectShader>(), std::make_shared<WarpEffectShader>(),
                        std::make_shared<SignallossEffectShader>()};
@@ -156,6 +159,9 @@ void TrackingScene::render() {
 }
 
 void TrackingScene::trigger_global_effect(glm::vec2 position) {
+    _global_effect.setVolume(0.06f);
+    _global_effect.play();
+
     _global_effect_position = position;
     _global_effect_trigger_time = ofGetSystemTimeMillis();
 }

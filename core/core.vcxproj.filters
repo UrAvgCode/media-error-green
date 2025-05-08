@@ -306,6 +306,12 @@
     <Filter Include="shaders">
       <UniqueIdentifier>{4c5f9425-aa90-43b3-a07f-69a9e6eb0f12}</UniqueIdentifier>
     </Filter>
+    <Filter Include="resources">
+      <UniqueIdentifier>{95bbe7ff-2cb9-4150-8257-900d98e350b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\audio">
+      <UniqueIdentifier>{4c470500-b8c7-43a3-9803-6e989101200a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\addons\ofxAzureKinect\src\ofxAzureKinect\BodyTracker.h">
@@ -1623,6 +1629,9 @@
     </CopyFileToFolders>
     <CopyFileToFolders Include="shaders\transition.vert">
       <Filter>shaders</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="resources\gruen_ambient.wav">
+      <Filter>resources\audio</Filter>
     </CopyFileToFolders>
   </ItemGroup>
 </Project>

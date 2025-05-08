@@ -22,13 +22,11 @@ CollisionObject::CollisionObject(glm::vec2 position, glm::vec2 velocity, const s
     _pluck_d.load("resources/audio/gruen_pluck_d.wav");
     _pluck_e.load("resources/audio/gruen_pluck_e.wav");
     _pluck_g.load("resources/audio/gruen_pluck_g.wav");
-    _global_effect.load("resources/audio/gruen_globalEffect.wav");
 
     _pluck_b.setMultiPlay(true);
     _pluck_d.setMultiPlay(true);
     _pluck_e.setMultiPlay(true);
     _pluck_g.setMultiPlay(true);
-    _global_effect.setMultiPlay(false);
 }
 
 void CollisionObject::update(std::vector<Player> &players, const ofEasyCam &camera) {
@@ -94,9 +92,6 @@ std::pair<bool, glm::vec2> CollisionObject::global_effect_triggered() {
         const auto &corner_position = corner_positions[i];
 
         if (bounding_box.intersects(corner)) {
-            // global_effect.setVolume(0.06f);
-            // global_effect.play();
-
             return {true, corner_position};
         }
     }
