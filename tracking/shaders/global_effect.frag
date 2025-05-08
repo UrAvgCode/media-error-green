@@ -25,7 +25,7 @@ vec2 barrel_distortion(vec2 coord) {
     coord = (coord + 1.0) * 0.5;
 
     coord *= texture_size;
-    return coord; 
+    return coord;
 }
 
 vec4 scanlines(vec4 color) {

@@ -49,6 +49,15 @@ vec2 offset() {
         }
     }
 
+    const float thickness = 8;
+    const int number_of_lines = 6;
+    for (int i = 0; i < number_of_lines; ++i) {
+        int current_pos = (line_position + i * (1080 / number_of_lines)) % 1080;
+        if (vTexCoord.y > current_pos - thickness && vTexCoord.y < current_pos + thickness) {
+            offset.x -= 8;
+        }
+    }
+
     return offset;
 }
 
