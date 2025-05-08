@@ -1670,6 +1670,9 @@
     <ClInclude Include="include\warp_effect_shader.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="include\skeleton_utility.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="icon.rc" />

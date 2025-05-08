@@ -43,4 +43,4 @@ namespace skeleton {
             {K4ABT_JOINT_SHOULDER_RIGHT, K4ABT_JOINT_ELBOW_RIGHT},
             {K4ABT_JOINT_ELBOW_RIGHT, K4ABT_JOINT_WRIST_RIGHT},
     };
-}
+} // namespace skeleton
