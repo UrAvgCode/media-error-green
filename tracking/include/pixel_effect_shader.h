@@ -15,6 +15,5 @@ class PixelEffectShader : public EffectShader {
     void end_object() override;
 
   private:
-    ofShader _player_shader;
-    ofShader _object_shader;
+    ofShader _shader;
 };
