@@ -39,8 +39,10 @@ class CoreApp : public ofBaseApp {
 
     IntroScene intro_scene;
     TrackingScene tracking_scene;
+
     Scene *current_scene;
     Scene *inactive_scene;
+    Scene *keyboard_triggered_scene;
 
     ofFbo current_app_fbo;
     ofFbo inactive_app_fbo;
