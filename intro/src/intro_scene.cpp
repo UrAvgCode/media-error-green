@@ -29,8 +29,7 @@ IntroScene::IntroScene() {
     particle_trail_shader.setGeometryOutputType(GL_LINE_STRIP);
     particle_trail_shader.setGeometryOutputCount(2);
 
-    //particle_pixel_shader.load("shaders/particle_pixel_shader");
-    particle_dither_shader.load("shaders/particle_dither_shader");
+    particle_pixel_shader.load("shaders/particle_pixel_shader");
 
     particle_draw_fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGB);
 
@@ -148,21 +147,13 @@ void IntroScene::render() {
 
     frame_buffer.begin();
     {
-        /*particle_pixel_shader.begin();
+        particle_pixel_shader.begin();
 
         particle_pixel_shader.setUniform1f("block_size", 5);
         particle_pixel_shader.setUniform1f("quality", 0.5f);
         particle_draw_fbo.draw(0, 0);
 
-        particle_pixel_shader.end();*/
-
-        particle_dither_shader.begin();
-
-        particle_dither_shader.setUniform2f("resolution", ofGetWidth(), ofGetHeight());
-        particle_draw_fbo.draw(0, 0);
-
-        particle_dither_shader.end();
-        //particle_draw_fbo.draw(0, 0);
+        particle_pixel_shader.end();
     }
     frame_buffer.end();
 }
