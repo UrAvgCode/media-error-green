@@ -1642,6 +1642,12 @@
     <CopyFileToFolders Include="resources\media_error_logo_lines.svg">
       <Filter>resources</Filter>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\particle_dither_shader.frag">
+      <Filter>shaders</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\particle_dither_shader.vert">
+      <Filter>shaders</Filter>
+    </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
