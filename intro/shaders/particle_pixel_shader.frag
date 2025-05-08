@@ -1,6 +1,8 @@
 #version 150
 
 uniform sampler2DRect tex0;
+uniform vec2 texture_size;
+
 uniform float block_size;
 uniform float quality;
 
@@ -40,6 +42,21 @@ vec2 offset() {
 vec4 scanlines(vec4 color) {
     color.rgb *= 1 - 0.8 * 0.5 + sin((vTexCoord.y - line_position)) * 0.8 * 0.5;
     return color;
+}
+
+vec4 vignette(vec4 color) {
+    float radius = 400.0;
+    float scale = 32;
+
+    float horizontal_distance = min(vTexCoord.x, texture_size.x - vTexCoord.x);
+    float vertical_distance = min(vTexCoord.y, texture_size.y - vTexCoord.y);
+    float hyperbole_distance = (horizontal_distance * vertical_distance) / scale;
+
+    float fade_start = radius * 0.3;
+    float blend = 1.0 - smoothstep(fade_start, radius, hyperbole_distance);
+    blend = clamp(blend, 0.0, 1.0);
+
+    return mix(color, vec4(0, 0, 0, 1), blend);
 }
 
 void main() {
@@ -83,6 +100,7 @@ void main() {
     }
 
     color = scanlines(color);
+    color = vignette(color);
 
     fragColor = color;
 }

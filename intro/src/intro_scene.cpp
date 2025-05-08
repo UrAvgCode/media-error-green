@@ -158,6 +158,8 @@ void IntroScene::render() {
         line_position = (line_position + 2) % ofGetHeight();
         particle_pixel_shader.setUniform1i("line_position", line_position);
 
+        particle_pixel_shader.setUniform2f("texture_size", ofGetWidth(), ofGetHeight());
+
         particle_draw_fbo.draw(0, 0);
 
         particle_pixel_shader.end();
