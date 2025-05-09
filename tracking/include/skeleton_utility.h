@@ -1,11 +1,12 @@
 #pragma once
 
-#include <vector>
+#include <array>
+#include <utility>
 
 #include <k4abttypes.h>
 
 namespace skeleton {
-    static const std::vector<std::pair<int, int>> connections = {
+    constexpr auto connections = std::array<std::pair<int, int>, 26>({
             // Spine
             {K4ABT_JOINT_PELVIS, K4ABT_JOINT_SPINE_NAVEL},
             {K4ABT_JOINT_SPINE_NAVEL, K4ABT_JOINT_SPINE_CHEST},
@@ -42,5 +43,5 @@ namespace skeleton {
             {K4ABT_JOINT_CLAVICLE_RIGHT, K4ABT_JOINT_SHOULDER_RIGHT},
             {K4ABT_JOINT_SHOULDER_RIGHT, K4ABT_JOINT_ELBOW_RIGHT},
             {K4ABT_JOINT_ELBOW_RIGHT, K4ABT_JOINT_WRIST_RIGHT},
-    };
+    });
 } // namespace skeleton
