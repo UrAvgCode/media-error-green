@@ -127,6 +127,7 @@
     <ClCompile Include="src\collision_object.cpp" />
     <ClCompile Include="src\effect_shader.cpp" />
     <ClCompile Include="src\glitch_effect_shader.cpp" />
+    <ClCompile Include="src\matrix_effect_shader.cpp" />
     <ClCompile Include="src\player.cpp" />
     <ClCompile Include="src\signalloss_effect_shader.cpp" />
     <ClCompile Include="src\tracking_scene.cpp" />
@@ -571,6 +572,7 @@
     <ClInclude Include="include\collision_object.h" />
     <ClInclude Include="include\effect_shader.h" />
     <ClInclude Include="include\glitch_effect_shader.h" />
+    <ClInclude Include="include\matrix_effect_shader.h" />
     <ClInclude Include="include\pixel_effect_shader.h" />
     <ClInclude Include="include\player.h" />
     <ClInclude Include="include\signalloss_effect_shader.h" />
@@ -682,6 +684,16 @@
       <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">data/shaders/effect/%(Filename)%(Extension)</DestinationFileName>
       <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">data/shaders/effect/%(Filename)%(Extension)</DestinationFileName>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\effect\matrix.frag">
+      <FileType>Document</FileType>
+      <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">data/shaders/effect/%(Filename)%(Extension)</DestinationFileName>
+      <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">data/shaders/effect/%(Filename)%(Extension)</DestinationFileName>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\effect\matrix.vert">
+      <FileType>Document</FileType>
+      <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">data/shaders/effect/%(Filename)%(Extension)</DestinationFileName>
+      <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">data/shaders/effect/%(Filename)%(Extension)</DestinationFileName>
+    </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="resources\dvd-logo.png">
@@ -724,6 +736,12 @@
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="resources\me-logo.png">
+      <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">data/resources/%(Filename)%(Extension)</DestinationFileName>
+      <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">data/resources/%(Filename)%(Extension)</DestinationFileName>
+    </CopyFileToFolders>
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="resources\matrix.png">
       <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">data/resources/%(Filename)%(Extension)</DestinationFileName>
       <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">data/resources/%(Filename)%(Extension)</DestinationFileName>
     </CopyFileToFolders>
