@@ -1,7 +1,7 @@
 #include "pixel_effect_shader.h"
 
 PixelEffectShader::PixelEffectShader() {
-    _shader.load("shaders/object_effects/pixel");
+    _shader.load("shaders/effect/pixel");
 }
 
 void PixelEffectShader::begin_player() {

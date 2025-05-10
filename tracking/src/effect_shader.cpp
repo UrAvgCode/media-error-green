@@ -4,17 +4,9 @@
 
 #include <ofGraphics.h>
 
-EffectShader::EffectShader() {
-    auto verts = std::vector<glm::vec3>(1);
-    _player_vbo.setVertexData(verts.data(), static_cast<int>(verts.size()), GL_STATIC_DRAW);
+EffectShader::EffectShader() : EffectShader("shaders/render/default") {}
 
-    auto shader_settings = ofShaderSettings();
-    shader_settings.shaderFiles[GL_VERTEX_SHADER] = "shaders/render_player.vert";
-    shader_settings.shaderFiles[GL_FRAGMENT_SHADER] = "shaders/render_player.frag";
-    shader_settings.intDefines["BODY_INDEX_MAP_BACKGROUND"] = K4ABT_BODY_INDEX_MAP_BACKGROUND;
-    shader_settings.bindDefaults = true;
-    _render_shader.setup(shader_settings);
-}
+EffectShader::EffectShader(std::string shader) : EffectShader(shader + ".vert", shader + ".frag") {}
 
 EffectShader::EffectShader(std::string vertex_shader, std::string fragment_shader) {
     auto verts = std::vector<glm::vec3>(1);
@@ -60,6 +52,8 @@ void EffectShader::draw_player(ofTexture depth_tex, ofTexture body_index_tex, of
                 _render_shader.setUniform1iv("body_ids", body_ids.data(), 6);
 
                 _render_shader.setUniform1i("player_id", id);
+
+                _render_shader.setUniform1i("time", ofGetElapsedTimeMillis());
 
                 const int num_points = frame_width * frame_height;
                 _player_vbo.drawInstanced(GL_POINTS, 0, 1, num_points);

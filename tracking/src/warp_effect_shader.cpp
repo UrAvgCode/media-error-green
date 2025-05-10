@@ -4,7 +4,7 @@
 #include <ofAppRunner.h>
 
 WarpEffectShader::WarpEffectShader() {
-    _shader.load("shaders/player_effects/warp");
+    _shader.load("shaders/effect/warp");
 }
 
 void WarpEffectShader::begin_player() {

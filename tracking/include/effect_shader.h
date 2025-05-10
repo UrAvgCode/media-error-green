@@ -10,7 +10,8 @@
 class EffectShader {
   public:
     EffectShader();
-    EffectShader(std::string vertex_shader, std::string fragment_shader);
+    EffectShader(std::string);
+    EffectShader(std::string, std::string);
 
     virtual void begin_player();
 

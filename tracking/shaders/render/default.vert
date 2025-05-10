@@ -13,7 +13,7 @@ uniform int[6] body_ids;
 
 uniform int player_id;
 
-//uniform int time;
+uniform int time;
 
 out vec4 vColor;
 
@@ -25,7 +25,7 @@ void main() {
     vec4 ray = texture(world_texture, tex_coord);
 
     if (body_ids[body_index] == player_id && depth != 0 && ray.x != 0 && ray.y != 0) {
-        vColor = vec4(1.0, 1.0, 1.0, 1.0);
+        vColor = vec4(0.0, 1.0, 0, 1.0);
     } else {
         vColor = vec4(0.0);
     }
@@ -34,10 +34,6 @@ void main() {
     posWorld.z = depth * 65535.0;
     posWorld.x = ray.x * posWorld.z;
     posWorld.y = ray.y * posWorld.z;
-
-    posWorld.x = floor(posWorld.x / 20.0) * 20.0;
-    posWorld.y = floor(posWorld.y / 20.0) * 20.0;
-    posWorld.z = floor(posWorld.z / 20.0) * 20.0;
 
     gl_Position = modelViewProjectionMatrix * posWorld;
 }
