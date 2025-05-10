@@ -9,14 +9,21 @@
 #include <ofAppRunner.h>
 #include <ofFbo.h>
 #include <ofMath.h>
+#include <ofGraphics.h>
 
 CollisionObject::CollisionObject() : CollisionObject({0, 0}, {0, 0}, "", std::make_shared<EffectShader>()) {}
 
 CollisionObject::CollisionObject(glm::vec2 position, glm::vec2 velocity, const std::string &filename,
                                  std::shared_ptr<EffectShader> effect_shader) :
-    _position(position), _velocity(velocity), _can_collide(false), _effect_shader(effect_shader) {
+    _position(position), _velocity(velocity), _can_collide(false), _effect_shader(effect_shader), _fbo_padding(50) {
     _image.load(filename);
     _image.mirror(false, true);
+
+    _fbo.allocate(_image.getWidth() + 2 * _fbo_padding, _image.getHeight() + 2 * _fbo_padding, GL_RGBA);
+
+    _fbo.begin();
+    _image.draw(_fbo_padding, _fbo_padding);
+    _fbo.end();
 
     auto audio_filenames = std::vector<std::string>(
             {"gruen_pluck_b.wav", "gruen_pluck_d.wav", "gruen_pluck_e.wav", "gruen_pluck_g.wav"});
@@ -73,7 +80,7 @@ void CollisionObject::update(std::vector<Player> &players, const ofEasyCam &came
 
 void CollisionObject::draw() const {
     _effect_shader->begin_object();
-    _image.draw(_position.x, _position.y, 0);
+    _fbo.draw(_position.x - _fbo_padding, _position.y - _fbo_padding);
     _effect_shader->end_object();
 }
 
@@ -123,7 +130,7 @@ std::pair<bool, glm::vec2> CollisionObject::check_collision_with_bodies(std::vec
             const auto &line_velocity = velocities[i];
 
             if (bounding_box.intersects(line[0], line[1])) {
-                player.set_shader(_effect_shader);
+                //player.set_shader(_effect_shader);
 
                 auto new_velocity = -_velocity;
                 new_velocity += line_velocity[0];

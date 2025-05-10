@@ -123,6 +123,7 @@
     <ClCompile Include="..\openFrameworks\addons\ofxOpenCv\src\ofxCvShortImage.cpp" />
     <ClCompile Include="..\openFrameworks\addons\ofxSvg\src\ofxSvg.cpp" />
     <ClCompile Include="pixel_effect_shader.cpp" />
+    <ClCompile Include="src\chromatic_effect_shader.cpp" />
     <ClCompile Include="src\collision_object.cpp" />
     <ClCompile Include="src\effect_shader.cpp" />
     <ClCompile Include="src\glitch_effect_shader.cpp" />
@@ -566,6 +567,7 @@
     <ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\libxml2\libxml2\include\libxml\xpathInternals.h" />
     <ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\libxml2\libxml2\include\libxml\xpointer.h" />
     <ClInclude Include="..\openFrameworks\addons\ofxSvg\libs\svgtiny\svgtiny\include\svgtiny.h" />
+    <ClInclude Include="include\chromatic_effect_shader.h" />
     <ClInclude Include="include\collision_object.h" />
     <ClInclude Include="include\effect_shader.h" />
     <ClInclude Include="include\glitch_effect_shader.h" />
@@ -598,16 +600,6 @@
       <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">data/shaders/%(Filename)%(Extension)</DestinationFileName>
     </CopyFileToFolders>
     <CopyFileToFolders Include="shaders\blur.vert">
-      <FileType>Document</FileType>
-      <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">data/shaders/%(Filename)%(Extension)</DestinationFileName>
-      <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">data/shaders/%(Filename)%(Extension)</DestinationFileName>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="shaders\chromatic.frag">
-      <FileType>Document</FileType>
-      <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">data/shaders/%(Filename)%(Extension)</DestinationFileName>
-      <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">data/shaders/%(Filename)%(Extension)</DestinationFileName>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="shaders\chromatic.vert">
       <FileType>Document</FileType>
       <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">data/shaders/%(Filename)%(Extension)</DestinationFileName>
       <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">data/shaders/%(Filename)%(Extension)</DestinationFileName>
@@ -676,6 +668,16 @@
       <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">data/shaders/effect/%(Filename)%(Extension)</DestinationFileName>
     </CopyFileToFolders>
     <CopyFileToFolders Include="shaders\effect\warp.vert">
+      <FileType>Document</FileType>
+      <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">data/shaders/effect/%(Filename)%(Extension)</DestinationFileName>
+      <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">data/shaders/effect/%(Filename)%(Extension)</DestinationFileName>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\effect\chromatic.frag">
+      <FileType>Document</FileType>
+      <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">data/shaders/effect/%(Filename)%(Extension)</DestinationFileName>
+      <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">data/shaders/effect/%(Filename)%(Extension)</DestinationFileName>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\effect\chromatic.vert">
       <FileType>Document</FileType>
       <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">data/shaders/effect/%(Filename)%(Extension)</DestinationFileName>
       <DestinationFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">data/shaders/effect/%(Filename)%(Extension)</DestinationFileName>
