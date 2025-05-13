@@ -179,7 +179,7 @@ void IntroScene::create_logo_vectors() {
         std::vector<ofPolyline> outlines = path.getOutline();
 
         for (auto &outline: outlines) {
-            outline = outline.getResampledBySpacing(1); // Resample für gleichmäßige Punkte
+            outline = outline.getResampledBySpacing(4); // Resample für gleichmäßige Punkte
             for (auto &point: outline) {
                 point *= logo_scale;
             }
@@ -199,7 +199,7 @@ void IntroScene::create_logo_vectors() {
         std::vector<ofPolyline> outlines = path.getOutline();
 
         for (auto &outline: outlines) {
-            outline = outline.getResampledBySpacing(1); // Optional: Punkte gleichmäßig verteilen
+            outline = outline.getResampledBySpacing(4); // Optional: Punkte gleichmäßig verteilen
             for (int j = 0; j < outline.size() - 1; j++) {
                 ofVec2f start = ofVec2f(outline[j]) * logo_scale + offset;
                 ofVec2f end = ofVec2f(outline[j + 1]) * logo_scale + offset;
@@ -231,7 +231,7 @@ void IntroScene::create_logo_in_outs_vectors() {
         std::vector<ofPolyline> outlines = path.getOutline();
 
         for (auto &outline: outlines) {
-            outline = outline.getResampledBySpacing(1); // Resample für gleichmäßige Punkte
+            outline = outline.getResampledBySpacing(4); // Resample für gleichmäßige Punkte
             for (auto &point: outline) {
                 point *= logo_scale;
             }
@@ -251,7 +251,7 @@ void IntroScene::create_logo_in_outs_vectors() {
         std::vector<ofPolyline> outlines = path.getOutline();
 
         for (auto &outline: outlines) {
-            outline = outline.getResampledBySpacing(1); // Optional: Punkte gleichmäßig verteilen
+            outline = outline.getResampledBySpacing(4); // Optional: Punkte gleichmäßig verteilen
             for (int j = 0; j < outline.size() - 1; j++) {
                 ofVec2f start = ofVec2f(outline[j]) * logo_scale + offset;
                 ofVec2f end = ofVec2f(outline[j + 1]) * logo_scale + offset;
