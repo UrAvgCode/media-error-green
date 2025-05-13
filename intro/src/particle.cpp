@@ -88,12 +88,3 @@ void Particle::apply_repulsion(const std::array<Particle, 2048> &particles, floa
                 return diff * force;
             });
 }
-
-void Particle::set_color(const ofColor &color) {
-    auto &colors = mesh.getColors();
-    for (std::size_t i = 0; i < colors.size(); ++i) {
-        float alpha = colors[i].a; // Behalte den Alpha-Wert
-        colors[i] = color;
-        colors[i].a = alpha; // Setze Alpha wieder zurück
-    }
-}

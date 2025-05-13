@@ -28,9 +28,8 @@ class Particle {
     void apply_repulsion(const std::array<Particle, 2048> &particles, float repulsion_radius, float repulsion_strength);
 
   protected:
-    ofMesh mesh;
-
     void move_vertices();
     void wrap_position();
-    void Particle::set_color(const ofColor &color);
+
+    ofMesh mesh;
 };
