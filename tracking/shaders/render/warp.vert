@@ -35,8 +35,8 @@ void main() {
     posWorld.x = ray.x * posWorld.z;
     posWorld.y = ray.y * posWorld.z;
 
-    float amplitude = 10.0;
-    posWorld.x += sin(posWorld.y * 0.1 + time / 100.0) * amplitude;
+    float amplitude = 20.0;
+    posWorld.x += sin(posWorld.y * 0.05 + time / 100.0) * amplitude;
 
     gl_Position = modelViewProjectionMatrix * posWorld;
 }
