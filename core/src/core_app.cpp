@@ -31,10 +31,6 @@ void CoreApp::setup() {
         kinect_device.startBodyTracker(body_tracker_settings);
     }
 
-    std::random_device random;
-    generator = std::mt19937(random());
-    distribution = std::uniform_int_distribution<int>(0, ofGetHeight());
-
     current_app_fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGBA);
     inactive_app_fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGBA);
     transition_shader.load("shaders/transition");
@@ -88,8 +84,8 @@ void CoreApp::draw() {
         {
             transition_shader.setUniformTexture("transition_tex", inactive_scene->get_frame_buffer().getTexture(), 1);
             transition_shader.setUniform1f("progress", progress);
-            transition_shader.setUniform1i("random_offset_one", distribution(generator));
-            transition_shader.setUniform1i("random_offset_two", distribution(generator));
+            transition_shader.setUniform1f("random_offset_one", ofRandomHeight());
+            transition_shader.setUniform1f("random_offset_two", ofRandomHeight());
             current_scene->get_frame_buffer().draw(0, 0);
         }
         transition_shader.end();

@@ -51,9 +51,6 @@ class CoreApp : public ofBaseApp {
     const std::chrono::milliseconds transition_duration = 500ms;
     std::chrono::steady_clock::time_point transition_start_time;
 
-    std::mt19937 generator;
-    std::uniform_int_distribution<int> distribution;
-
     ofSoundPlayer ambient_sound;
 
     bool show_debug_info = false;
