@@ -8,8 +8,8 @@
 
 #include <ofAppRunner.h>
 #include <ofFbo.h>
-#include <ofMath.h>
 #include <ofGraphics.h>
+#include <ofMath.h>
 
 CollisionObject::CollisionObject() : CollisionObject({0, 0}, {0, 0}, "", std::make_shared<EffectShader>()) {}
 
@@ -39,7 +39,8 @@ CollisionObject::CollisionObject(glm::vec2 position, glm::vec2 velocity, const s
     }
 }
 
-void CollisionObject::update(std::vector<Player> &players, const ofEasyCam &camera) {
+void CollisionObject::update(std::vector<Player> &players, const std::vector<CollisionObject> &objects,
+                             const ofEasyCam &camera) {
     if (_position.x <= 0 || _position.x + width() >= ofGetWidth()) {
         play_random_pluck();
         _velocity.x *= -1;
@@ -58,6 +59,10 @@ void CollisionObject::update(std::vector<Player> &players, const ofEasyCam &came
         }
     } else {
         _can_collide = true;
+    }
+
+    if (auto [collided, dir] = check_collision_with_objects(objects); collided) {
+        _velocity = dir;
     }
 
     _velocity *= _friction;
@@ -143,10 +148,47 @@ std::pair<bool, glm::vec2> CollisionObject::check_collision_with_bodies(std::vec
     return {false, {0, 0}};
 }
 
+std::pair<bool, glm::vec2> CollisionObject::check_collision_with_objects(const std::vector<CollisionObject> &objects) {
+    auto this_bounds = ofRectangle(position().x, position().y, width(), height());
+    for (const auto &object: objects) {
+        if (this == &object) {
+            continue;
+        }
+
+        auto other_bounds = ofRectangle(object.position().x, object.position().y, object.width(), object.height());
+        if (this_bounds.intersects(other_bounds)) {
+            glm::vec2 new_velocity = _velocity;
+
+            // Calculate overlap on X and Y axes
+            float overlap_left = this_bounds.getRight() - other_bounds.getLeft();
+            float overlap_right = other_bounds.getRight() - this_bounds.getLeft();
+            float overlap_top = this_bounds.getBottom() - other_bounds.getTop();
+            float overlap_bottom = other_bounds.getBottom() - this_bounds.getTop();
+
+            float x_overlap = std::min(overlap_left, overlap_right);
+            float y_overlap = std::min(overlap_top, overlap_bottom);
+
+            const auto intersection = this_bounds.getIntersection(other_bounds);
+
+            if (x_overlap < y_overlap) {
+                new_velocity.x = -(new_velocity.x); // bounce horizontally
+            } else {
+                new_velocity.y = -(new_velocity.y); // bounce vertically
+            }
+
+            return {true, new_velocity};
+        }
+    }
+
+    return {false, _velocity};
+}
+
 float CollisionObject::width() const { return _image.getWidth(); }
 
 float CollisionObject::height() const { return _image.getHeight(); }
 
 glm::vec2 CollisionObject::position() const { return _position; }
+
+glm::vec2 CollisionObject::velocity() const { return _velocity; }
 
 std::shared_ptr<EffectShader> CollisionObject::effect_shader() const { return _effect_shader; }

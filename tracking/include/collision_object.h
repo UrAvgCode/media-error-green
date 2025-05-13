@@ -20,7 +20,7 @@ class CollisionObject {
     CollisionObject(glm::vec2 position, glm::vec2 velocity, const std::string &filename,
                     std::shared_ptr<EffectShader> effect_shader);
 
-    void update(std::vector<Player> &players, const ofEasyCam &camera);
+    void update(std::vector<Player> &players, const std::vector<CollisionObject> &objects, const ofEasyCam &camera);
     void draw() const;
 
     std::pair<bool, glm::vec2> global_effect_triggered();
@@ -30,11 +30,13 @@ class CollisionObject {
     float width() const;
     float height() const;
     glm::vec2 position() const;
+    glm::vec2 velocity() const;
     std::shared_ptr<EffectShader> effect_shader() const;
 
   protected:
     void play_random_pluck();
     std::pair<bool, glm::vec2> check_collision_with_bodies(std::vector<Player> &players, const ofEasyCam &camera);
+    std::pair<bool, glm::vec2> check_collision_with_objects(const std::vector<CollisionObject> &objects);
 
     const float _min_speed = 5;
     const float _max_speed = 20;
