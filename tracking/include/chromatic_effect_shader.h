@@ -2,9 +2,9 @@
 
 #include "effect_shader.h"
 
-class PixelEffectShader : public EffectShader {
+class ChromaticEffectShader : public EffectShader {
   public:
-    PixelEffectShader();
+    ChromaticEffectShader();
 
     void begin_player() override;
 

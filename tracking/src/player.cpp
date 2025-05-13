@@ -13,57 +13,14 @@ Player::Player() : Player(0, ofxAzureKinect::BodySkeleton{}, nullptr) {}
 
 Player::Player(int id, ofxAzureKinect::BodySkeleton skeleton, ofEasyCam *camera) :
     _id(id), _camera(camera), _skeleton(skeleton) {
-    auto shader_settings = ofShaderSettings();
-    shader_settings.shaderFiles[GL_VERTEX_SHADER] = "shaders/render_player.vert";
-    shader_settings.shaderFiles[GL_FRAGMENT_SHADER] = "shaders/render_player.frag";
-    shader_settings.intDefines["BODY_INDEX_MAP_BACKGROUND"] = K4ABT_BODY_INDEX_MAP_BACKGROUND;
-    shader_settings.bindDefaults = true;
-    _render_shader.setup(shader_settings);
-
-    std::vector<glm::vec3> verts(1);
-    _player_vbo.setVertexData(verts.data(), static_cast<int>(verts.size()), GL_STATIC_DRAW);
-
     _player_fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGBA);
-
     _effect_shader = std::make_shared<EffectShader>();
 }
 
 void Player::render(ofTexture depth_tex, ofTexture body_index_tex, ofTexture depth_to_world_tex,
                     std::vector<int> &body_ids) {
     _player_fbo.begin();
-    ofClear(0, 0, 0, 0);
-
-    _camera->begin();
-    {
-        ofPushMatrix();
-        {
-            ofRotateXDeg(180);
-            ofEnableDepthTest();
-
-            _render_shader.begin();
-            {
-                const auto frame_width = static_cast<int>(depth_tex.getWidth());
-                const auto frame_height = static_cast<int>(depth_tex.getHeight());
-
-                _render_shader.setUniformTexture("depth_texture", depth_tex, 1);
-                _render_shader.setUniformTexture("body_index_texture", body_index_tex, 2);
-                _render_shader.setUniformTexture("world_texture", depth_to_world_tex, 3);
-
-                _render_shader.setUniform2i("frame_size", frame_width, frame_height);
-                _render_shader.setUniform1iv("body_ids", body_ids.data(), 6);
-
-                _render_shader.setUniform1i("player_id", _id);
-
-                const int num_points = frame_width * frame_height;
-                _player_vbo.drawInstanced(GL_POINTS, 0, 1, num_points);
-            }
-            _render_shader.end();
-
-            ofDisableDepthTest();
-        }
-        ofPopMatrix();
-    }
-    _camera->end();
+    _effect_shader->draw_player(depth_tex, body_index_tex, depth_to_world_tex, body_ids, _camera, _id);
     _player_fbo.end();
 }
 

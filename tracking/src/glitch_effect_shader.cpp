@@ -4,7 +4,7 @@
 #include <ofAppRunner.h>
 
 GlitchEffectShader::GlitchEffectShader() {
-    _shader.load("shaders/player_effects/glitch");
+    _shader.load("shaders/effect/glitch");
 }
 
 void GlitchEffectShader::begin_player() {

@@ -5,8 +5,11 @@
 #include <string>
 #include <vector>
 
+#include "chromatic_effect_shader.h"
+#include "cloud_effect_shader.h"
 #include "effect_shader.h"
 #include "glitch_effect_shader.h"
+#include "matrix_effect_shader.h"
 #include "pixel_effect_shader.h"
 #include "signalloss_effect_shader.h"
 #include "skeleton_utility.h"
@@ -23,9 +26,10 @@ TrackingScene::TrackingScene(ofxAzureKinect::Device *device) :
     _global_effect.load("resources/audio/gruen_globalEffect.wav");
     _global_effect.setMultiPlay(false);
 
-    _effect_shaders = {std::make_shared<EffectShader>(), std::make_shared<PixelEffectShader>(),
-                       std::make_shared<GlitchEffectShader>(), std::make_shared<WarpEffectShader>(),
-                       std::make_shared<SignallossEffectShader>()};
+    _effect_shaders = {std::make_shared<CloudEffectShader>(),    std::make_shared<MatrixEffectShader>(),
+                       std::make_shared<PixelEffectShader>(),    std::make_shared<GlitchEffectShader>(),
+                       std::make_shared<WarpEffectShader>(),     std::make_shared<SignallossEffectShader>(),
+                       std::make_shared<ChromaticEffectShader>()};
 
     for (std::size_t i = 0; i < _number_of_objects; ++i) {
         auto position = glm::vec2(ofRandom(5, 1000), ofRandom(5, 500));

@@ -43,6 +43,8 @@ class CollisionObject {
     glm::vec2 _position;
     glm::vec2 _velocity;
 
+    const float _fbo_padding;
+
     ofFbo _fbo;
     ofImage _image;
     std::shared_ptr<EffectShader> _effect_shader;

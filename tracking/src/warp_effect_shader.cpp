@@ -3,16 +3,14 @@
 #include <ofUtils.h>
 #include <ofAppRunner.h>
 
-WarpEffectShader::WarpEffectShader() {
-    _shader.load("shaders/player_effects/warp");
+WarpEffectShader::WarpEffectShader() :
+    EffectShader("shaders/render/warp.vert", "shaders/render/warp.frag") {
+    _shader.load("shaders/effect/warp");
 }
 
-void WarpEffectShader::begin_player() {
-    _shader.begin();
-    _shader.setUniform1f("time", ofGetElapsedTimeMillis());
-}
+void WarpEffectShader::begin_player() {}
 
-void WarpEffectShader::end_player() { _shader.end(); }
+void WarpEffectShader::end_player() {}
 
 void WarpEffectShader::begin_object() {
     _shader.begin();

@@ -2,9 +2,14 @@
 
 #include "effect_shader.h"
 
-class PixelEffectShader : public EffectShader {
+#include <ofGraphics.h>
+#include <ofImage.h>
+#include <ofShader.h>
+#include <ofPixels.h>
+
+class MatrixEffectShader : public EffectShader {
   public:
-    PixelEffectShader();
+    MatrixEffectShader();
 
     void begin_player() override;
 
@@ -16,4 +21,6 @@ class PixelEffectShader : public EffectShader {
 
   private:
     ofShader _shader;
+    ofImage _matrix;
+    ofImage _matrix_logo;
 };

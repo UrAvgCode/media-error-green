@@ -2,6 +2,7 @@
 
 uniform sampler2DRect tex0;
 uniform float time;
+uniform float block_size;
 
 in vec2 vTexCoord;
 out vec4 fragColor;
@@ -22,11 +23,10 @@ float noise(vec2 p){
 }
 
 void main() {
-	float block_size = 8.0;
 	vec2 block_coord = floor(vTexCoord / block_size) * block_size;
 
     float gray_value = noise(block_coord);
     float alpha = texture(tex0, block_coord).a;
 
-    fragColor = vec4(gray_value, gray_value, gray_value, alpha);
+    fragColor = vec4(0, gray_value, 0, alpha);
 }
