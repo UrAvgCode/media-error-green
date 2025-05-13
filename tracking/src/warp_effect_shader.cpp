@@ -1,10 +1,9 @@
 #include "warp_effect_shader.h"
 
-#include <ofUtils.h>
 #include <ofAppRunner.h>
+#include <ofUtils.h>
 
-WarpEffectShader::WarpEffectShader() :
-    EffectShader("shaders/render/warp.vert", "shaders/render/warp.frag") {
+WarpEffectShader::WarpEffectShader() : EffectShader("shaders/render/warp") {
     _shader.load("shaders/effect/warp");
 }
 

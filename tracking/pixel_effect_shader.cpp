@@ -1,8 +1,6 @@
 #include "pixel_effect_shader.h"
 
-PixelEffectShader::PixelEffectShader() {
-    _shader.load("shaders/effect/pixel");
-}
+PixelEffectShader::PixelEffectShader() { _shader.load("shaders/effect/pixel"); }
 
 void PixelEffectShader::begin_player() {
     _shader.begin();

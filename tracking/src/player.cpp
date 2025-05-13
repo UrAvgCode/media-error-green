@@ -17,8 +17,8 @@ Player::Player(int id, ofxAzureKinect::BodySkeleton skeleton, ofEasyCam *camera)
     _effect_shader = std::make_shared<EffectShader>();
 }
 
-void Player::render(ofTexture depth_tex, ofTexture body_index_tex, ofTexture depth_to_world_tex,
-                    std::vector<int> &body_ids) {
+void Player::render(const ofTexture &depth_tex, const ofTexture &body_index_tex, const ofTexture &depth_to_world_tex,
+            const std::vector<int> &body_ids) {
     _player_fbo.begin();
     _effect_shader->draw_player(depth_tex, body_index_tex, depth_to_world_tex, body_ids, _camera, _id);
     _player_fbo.end();

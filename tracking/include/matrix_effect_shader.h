@@ -12,11 +12,9 @@ class MatrixEffectShader : public EffectShader {
     MatrixEffectShader();
 
     void begin_player() override;
-
     void end_player() override;
 
     void begin_object() override;
-
     void end_object() override;
 
   private:

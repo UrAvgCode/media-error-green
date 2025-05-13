@@ -1,11 +1,9 @@
 #include "chromatic_effect_shader.h"
 
-#include <ofUtils.h>
 #include <ofAppRunner.h>
+#include <ofUtils.h>
 
-ChromaticEffectShader::ChromaticEffectShader() {
-    _shader.load("shaders/effect/chromatic");
-}
+ChromaticEffectShader::ChromaticEffectShader() { _shader.load("shaders/effect/chromatic"); }
 
 void ChromaticEffectShader::begin_player() {
     _shader.begin();

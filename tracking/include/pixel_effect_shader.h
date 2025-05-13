@@ -7,11 +7,9 @@ class PixelEffectShader : public EffectShader {
     PixelEffectShader();
 
     void begin_player() override;
-
     void end_player() override;
 
     void begin_object() override;
-
     void end_object() override;
 
   private:

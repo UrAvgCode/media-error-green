@@ -1,10 +1,9 @@
 #include "cloud_effect_shader.h"
 
-#include <ofUtils.h>
 #include <ofAppRunner.h>
+#include <ofUtils.h>
 
-CloudEffectShader::CloudEffectShader() :
-    EffectShader("shaders/render/cloud.vert", "shaders/render/cloud.frag") {
+CloudEffectShader::CloudEffectShader() : EffectShader("shaders/render/cloud") {
     _shader.load("shaders/effect/cloud");
 }
 

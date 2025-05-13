@@ -1,11 +1,9 @@
 #include "signalloss_effect_shader.h"
 
-#include <ofUtils.h>
 #include <ofAppRunner.h>
+#include <ofUtils.h>
 
-SignallossEffectShader::SignallossEffectShader() {
-    _shader.load("shaders/effect/signalloss");
-}
+SignallossEffectShader::SignallossEffectShader() { _shader.load("shaders/effect/signalloss"); }
 
 void SignallossEffectShader::begin_player() {
     _shader.begin();

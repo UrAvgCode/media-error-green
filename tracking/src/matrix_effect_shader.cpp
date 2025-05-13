@@ -1,7 +1,7 @@
 #include "matrix_effect_shader.h"
 
-#include <ofUtils.h>
 #include <ofAppRunner.h>
+#include <ofUtils.h>
 
 MatrixEffectShader::MatrixEffectShader() {
     _shader.load("shaders/effect/matrix");

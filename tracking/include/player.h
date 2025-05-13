@@ -15,8 +15,8 @@ class Player {
     Player();
     Player(int id, ofxAzureKinect::BodySkeleton skeleton, ofEasyCam *camera);
 
-    void render(ofTexture depth_tex, ofTexture body_index_tex, ofTexture depth_to_world_tex,
-                std::vector<int> &body_ids);
+    void render(const ofTexture &depth_tex, const ofTexture &body_index_tex, const ofTexture &depth_to_world_tex,
+                const std::vector<int> &body_ids);
 
     void draw();
 
