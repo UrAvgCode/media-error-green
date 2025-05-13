@@ -67,7 +67,10 @@
     <ClCompile Include="src\warp_effect_shader.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\waves_effect_shader.cpp">
+    <ClCompile Include="src\matrix_effect_shader.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\chromatic_effect_shader.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
@@ -339,11 +342,11 @@
     <Filter Include="resources\audio">
       <UniqueIdentifier>{de07983b-1189-45dd-9db1-63c03e44ebbd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="shaders\player_effects">
-      <UniqueIdentifier>{14f96a9d-18d4-4869-88f8-02cd661099ca}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="shaders\object_effects">
+    <Filter Include="shaders\render">
       <UniqueIdentifier>{a859d2e8-64e8-4614-9d19-3793616d9612}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shaders\effect">
+      <UniqueIdentifier>{14f96a9d-18d4-4869-88f8-02cd661099ca}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1676,7 +1679,10 @@
     <ClInclude Include="include\skeleton_utility.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="include\waves_effect_shader.h">
+    <ClInclude Include="include\chromatic_effect_shader.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\matrix_effect_shader.h">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>
@@ -1687,22 +1693,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <CopyFileToFolders Include="shaders\render.frag">
-      <Filter>shaders</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="shaders\render.vert">
-      <Filter>shaders</Filter>
-    </CopyFileToFolders>
     <CopyFileToFolders Include="shaders\blur.frag">
       <Filter>shaders</Filter>
     </CopyFileToFolders>
     <CopyFileToFolders Include="shaders\blur.vert">
-      <Filter>shaders</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="shaders\chromatic.frag">
-      <Filter>shaders</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="shaders\chromatic.vert">
       <Filter>shaders</Filter>
     </CopyFileToFolders>
     <CopyFileToFolders Include="resources\dvd-logo.png">
@@ -1710,12 +1704,6 @@
     </CopyFileToFolders>
     <CopyFileToFolders Include="resources\me-logo-green.png">
       <Filter>resources</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="shaders\render_player.frag">
-      <Filter>shaders</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="shaders\render_player.vert">
-      <Filter>shaders</Filter>
     </CopyFileToFolders>
     <CopyFileToFolders Include="resources\audio\gruen_globalEffect.wav">
       <Filter>resources\audio</Filter>
@@ -1732,38 +1720,8 @@
     <CopyFileToFolders Include="resources\audio\gruen_pluck_g.wav">
       <Filter>resources\audio</Filter>
     </CopyFileToFolders>
-    <CopyFileToFolders Include="shaders\player_effects\pixel.frag">
-      <Filter>shaders\player_effects</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="shaders\player_effects\pixel.vert">
-      <Filter>shaders\player_effects</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="shaders\object_effects\pixel.frag">
-      <Filter>shaders\object_effects</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="shaders\object_effects\pixel.vert">
-      <Filter>shaders\object_effects</Filter>
-    </CopyFileToFolders>
     <CopyFileToFolders Include="resources\me-logo.png">
       <Filter>resources</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="shaders\player_effects\glitch.frag">
-      <Filter>shaders\player_effects</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="shaders\player_effects\glitch.vert">
-      <Filter>shaders\player_effects</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="shaders\player_effects\signalloss.frag">
-      <Filter>shaders\player_effects</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="shaders\player_effects\signalloss.vert">
-      <Filter>shaders\player_effects</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="shaders\player_effects\warp.frag">
-      <Filter>shaders\player_effects</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="shaders\player_effects\warp.vert">
-      <Filter>shaders\player_effects</Filter>
     </CopyFileToFolders>
     <CopyFileToFolders Include="shaders\global_effect.frag">
       <Filter>shaders</Filter>
@@ -1771,11 +1729,56 @@
     <CopyFileToFolders Include="shaders\global_effect.vert">
       <Filter>shaders</Filter>
     </CopyFileToFolders>
-    <CopyFileToFolders Include="shaders\player_effects\waves.frag">
-      <Filter>shaders\player_effects</Filter>
+    <CopyFileToFolders Include="resources\matrix.png">
+      <Filter>resources</Filter>
     </CopyFileToFolders>
-    <CopyFileToFolders Include="shaders\player_effects\waves.vert">
-      <Filter>shaders\player_effects</Filter>
+    <CopyFileToFolders Include="shaders\effect\warp.vert">
+      <Filter>shaders\effect</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\effect\pixel.frag">
+      <Filter>shaders\effect</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\effect\pixel.vert">
+      <Filter>shaders\effect</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\effect\signalloss.frag">
+      <Filter>shaders\effect</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\effect\signalloss.vert">
+      <Filter>shaders\effect</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\effect\warp.frag">
+      <Filter>shaders\effect</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\effect\matrix.vert">
+      <Filter>shaders\effect</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\effect\matrix.frag">
+      <Filter>shaders\effect</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\effect\glitch.vert">
+      <Filter>shaders\effect</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\effect\glitch.frag">
+      <Filter>shaders\effect</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\effect\chromatic.vert">
+      <Filter>shaders\effect</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\effect\chromatic.frag">
+      <Filter>shaders\effect</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\render\default.vert">
+      <Filter>shaders\render</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\render\default.frag">
+      <Filter>shaders\render</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\render\warp.vert">
+      <Filter>shaders\render</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\render\warp.frag">
+      <Filter>shaders\render</Filter>
     </CopyFileToFolders>
   </ItemGroup>
 </Project>
