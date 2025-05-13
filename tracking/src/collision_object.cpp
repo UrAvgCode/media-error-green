@@ -159,11 +159,21 @@ std::pair<bool, glm::vec2> CollisionObject::check_collision_with_objects(const s
         if (this_bounds.intersects(other_bounds)) {
             glm::vec2 new_velocity = _velocity;
 
+            // Calculate overlap on X and Y axes
+            float overlap_left = this_bounds.getRight() - other_bounds.getLeft();
+            float overlap_right = other_bounds.getRight() - this_bounds.getLeft();
+            float overlap_top = this_bounds.getBottom() - other_bounds.getTop();
+            float overlap_bottom = other_bounds.getBottom() - this_bounds.getTop();
+
+            float x_overlap = std::min(overlap_left, overlap_right);
+            float y_overlap = std::min(overlap_top, overlap_bottom);
+
             const auto intersection = this_bounds.getIntersection(other_bounds);
-            if (intersection.getWidth() < intersection.getHeight()) {
+
+            if (x_overlap < y_overlap) {
                 new_velocity.x = -(new_velocity.x); // bounce horizontally
             } else {
-                new_velocity.y = -new_velocity.y; // bounce vertically
+                new_velocity.y = -(new_velocity.y); // bounce vertically
             }
 
             return {true, new_velocity};
