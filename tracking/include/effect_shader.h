@@ -1,5 +1,8 @@
 #pragma once
 
+#include <string>
+#include <vector>
+
 #include <k4abttypes.h>
 
 #include <ofEasyCam.h>
@@ -9,9 +12,9 @@
 
 class EffectShader {
   public:
-    EffectShader();
-    EffectShader(std::string);
-    EffectShader(std::string, std::string);
+    explicit EffectShader();
+    explicit EffectShader(std::string);
+    explicit EffectShader(std::string, std::string);
 
     virtual void begin_player();
 

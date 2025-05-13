@@ -6,7 +6,7 @@
 #include <ofAppRunner.h>
 #include <ofGraphics.h>
 
-#include "pixel_effect_shader.h"
+#include "effect_shader.h"
 #include "skeleton_utility.h"
 
 Player::Player() : Player(0, ofxAzureKinect::BodySkeleton{}, nullptr) {}

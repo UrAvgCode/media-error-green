@@ -1,5 +1,8 @@
 #include "effect_shader.h"
 
+#include <string>
+#include <vector>
+
 #include <k4abttypes.h>
 
 #include <ofGraphics.h>
