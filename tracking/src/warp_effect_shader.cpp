@@ -10,7 +10,7 @@ WarpEffectShader::WarpEffectShader() :
 
 void WarpEffectShader::begin_player() {}
 
-void WarpEffectShader::end_player() { _shader.end(); }
+void WarpEffectShader::end_player() {}
 
 void WarpEffectShader::begin_object() {
     _shader.begin();

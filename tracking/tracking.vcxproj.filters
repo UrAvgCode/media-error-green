@@ -73,6 +73,9 @@
     <ClCompile Include="src\chromatic_effect_shader.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\cloud_effect_shader.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
@@ -1685,6 +1688,9 @@
     <ClInclude Include="include\matrix_effect_shader.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="include\cloud_effect_shader.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="icon.rc" />
@@ -1782,6 +1788,18 @@
     </CopyFileToFolders>
     <CopyFileToFolders Include="resources\matrix_logo.png">
       <Filter>resources</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\effect\cloud.frag">
+      <Filter>shaders\effect</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\effect\cloud.vert">
+      <Filter>shaders\effect</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\render\cloud.frag">
+      <Filter>shaders\render</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\render\cloud.vert">
+      <Filter>shaders\render</Filter>
     </CopyFileToFolders>
   </ItemGroup>
 </Project>
