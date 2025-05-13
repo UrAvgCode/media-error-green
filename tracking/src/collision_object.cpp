@@ -15,7 +15,8 @@ CollisionObject::CollisionObject() : CollisionObject({0, 0}, {0, 0}, "", std::ma
 
 CollisionObject::CollisionObject(glm::vec2 position, glm::vec2 velocity, const std::string &filename,
                                  std::shared_ptr<EffectShader> effect_shader) :
-    _position(position), _velocity(velocity), _can_collide(false), _effect_shader(effect_shader), _fbo_padding(50) {
+    _position(position), _velocity(velocity), _can_collide_with_player(false), _can_collide_with_object(false),
+    _effect_shader(effect_shader), _fbo_padding(50) {
     _image.load(filename);
     _image.mirror(false, true);
 
@@ -52,17 +53,22 @@ void CollisionObject::update(std::vector<Player> &players, const std::vector<Col
     }
 
     if (auto [collided, dir] = check_collision_with_bodies(players, camera); collided) {
-        if (_can_collide) {
+        if (_can_collide_with_player) {
             play_random_pluck();
             _velocity = dir;
-            _can_collide = false;
+            _can_collide_with_player = false;
         }
     } else {
-        _can_collide = true;
+        _can_collide_with_player = true;
     }
 
     if (auto [collided, dir] = check_collision_with_objects(objects); collided) {
-        _velocity = dir;
+        if (_can_collide_with_object) {
+            _velocity = dir;
+            _can_collide_with_object = false;
+        }
+    } else {
+        _can_collide_with_object = true;
     }
 
     _velocity *= _friction;

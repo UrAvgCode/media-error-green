@@ -51,7 +51,8 @@ class CollisionObject {
     ofImage _image;
     std::shared_ptr<EffectShader> _effect_shader;
 
-    bool _can_collide;
-
     std::vector<ofSoundPlayer> puck_sounds;
+
+    bool _can_collide_with_player;
+    bool _can_collide_with_object;
 };
