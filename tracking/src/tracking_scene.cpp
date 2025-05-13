@@ -215,3 +215,5 @@ void TrackingScene::draw_skeletons(const std::vector<ofxAzureKinect::BodySkeleto
     ofPopMatrix();
     _camera.end();
 }
+
+void TrackingScene::reset_camera() { _camera.reset(); }

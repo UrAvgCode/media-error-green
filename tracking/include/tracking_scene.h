@@ -21,6 +21,8 @@ class TrackingScene : public Scene {
 
     void toggle_skeletons();
 
+    void reset_camera();
+
   private:
     void draw_skeletons(const std::vector<ofxAzureKinect::BodySkeleton> &skeletons);
 

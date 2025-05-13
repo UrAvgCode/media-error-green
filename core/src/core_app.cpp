@@ -123,21 +123,18 @@ void CoreApp::keyPressed(int key) {
         case 's':
             tracking_scene.trigger_global_effect({0, ofGetHeight()});
             break;
+        case 'r':
+            tracking_scene.reset_camera();
+            break;
         case '1':
-            if (keyboard_triggered_scene == &intro_scene) {
-                keyboard_triggered_scene == nullptr;
-            } else {
-                keyboard_triggered_scene = &intro_scene;
-            }
+            keyboard_triggered_scene = &intro_scene;
             break;
         case '2':
-            if (keyboard_triggered_scene == &tracking_scene) {
-                keyboard_triggered_scene == nullptr;
-            } else {
-                keyboard_triggered_scene = &tracking_scene;
-            }
+            keyboard_triggered_scene = &tracking_scene;
             break;
-
+        case '3':
+            keyboard_triggered_scene == nullptr;
+            break;
     }
 }
 
