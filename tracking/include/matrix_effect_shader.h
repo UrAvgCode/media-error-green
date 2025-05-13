@@ -22,4 +22,5 @@ class MatrixEffectShader : public EffectShader {
   private:
     ofShader _shader;
     ofImage _matrix;
+    ofImage _matrix_logo;
 };

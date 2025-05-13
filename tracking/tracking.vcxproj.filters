@@ -1780,5 +1780,8 @@
     <CopyFileToFolders Include="shaders\render\warp.frag">
       <Filter>shaders\render</Filter>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="resources\matrix_logo.png">
+      <Filter>resources</Filter>
+    </CopyFileToFolders>
   </ItemGroup>
 </Project>
