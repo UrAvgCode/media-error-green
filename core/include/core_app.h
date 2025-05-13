@@ -33,7 +33,7 @@ class CoreApp : public ofBaseApp {
     void gotMessage(ofMessage msg) override;
 
   private:
-    static void draw_fps_counter();
+    void draw_fps_counter();
 
     ofxAzureKinect::Device kinect_device;
 
@@ -55,4 +55,6 @@ class CoreApp : public ofBaseApp {
     std::uniform_int_distribution<int> distribution;
 
     ofSoundPlayer ambient_sound;
+
+    bool show_debug_info = false;
 };

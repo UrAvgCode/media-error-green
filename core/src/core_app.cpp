@@ -72,6 +72,7 @@ void CoreApp::update() {
 void CoreApp::draw() {
     if (keyboard_triggered_scene) {
         keyboard_triggered_scene->draw();
+        draw_fps_counter();
         return;
     }
 
@@ -100,6 +101,10 @@ void CoreApp::draw() {
 }
 
 void CoreApp::draw_fps_counter() {
+    if (!show_debug_info) {
+        return;
+    }
+
     std::ostringstream oss;
     oss << ofToString(ofGetFrameRate(), 2) + " FPS" << std::endl;
     ofDrawBitmapStringHighlight(oss.str(), 10, 20);
@@ -125,6 +130,9 @@ void CoreApp::keyPressed(int key) {
             break;
         case 'r':
             tracking_scene.reset_camera();
+            break;
+        case 'f':
+            show_debug_info = !show_debug_info;
             break;
         case '1':
             keyboard_triggered_scene = &intro_scene;
