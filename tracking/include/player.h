@@ -40,8 +40,6 @@ class Player {
 
     ofxAzureKinect::BodySkeleton _skeleton;
 
-    ofShader _render_shader;
-    ofVbo _player_vbo;
     ofFbo _player_fbo;
 
     std::shared_ptr<EffectShader> _effect_shader;
