@@ -52,6 +52,8 @@ class CoreApp : public ofBaseApp {
     std::chrono::steady_clock::time_point transition_start_time;
 
     ofSoundPlayer ambient_sound;
+    ofSoundPlayer transition_to_intro_sound;
+    ofSoundPlayer transition_to_tracking_sound;
 
     bool show_debug_info = false;
 };

@@ -1633,5 +1633,11 @@
     <CopyFileToFolders Include="resources\gruen_ambient.wav">
       <Filter>resources\audio</Filter>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="resources\transition_to_intro.wav">
+      <Filter>resources\audio</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="resources\transition_to_tracking.wav">
+      <Filter>resources\audio</Filter>
+    </CopyFileToFolders>
   </ItemGroup>
 </Project>

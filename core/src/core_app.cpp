@@ -38,6 +38,12 @@ void CoreApp::setup() {
     ambient_sound.load("resources/audio/gruen_ambient.wav");
     ambient_sound.play();
     ambient_sound.setLoop(true);
+
+    transition_to_intro_sound.load("resources/audio/transition_to_intro.wav");
+    transition_to_intro_sound.setVolume(0.5f);
+
+    transition_to_tracking_sound.load("resources/audio/transition_to_tracking.wav");
+    transition_to_tracking_sound.setVolume(0.5f);
 }
 
 //--------------------------------------------------------------
@@ -55,10 +61,14 @@ void CoreApp::update() {
 
     const auto &body_skeletons = kinect_device.getBodySkeletons();
 
-    if ((current_scene == &intro_scene && !body_skeletons.empty()) ||
-        (current_scene == &tracking_scene && body_skeletons.empty())) {
+    if (current_scene == &intro_scene && !body_skeletons.empty()) {
+        transition_to_tracking_sound.play();
         transition_start_time = std::chrono::steady_clock::now();
-        std::swap(current_scene, inactive_scene);
+        current_scene = &tracking_scene;
+    } else if (current_scene == &tracking_scene && body_skeletons.empty()) {
+        transition_to_intro_sound.play();
+        transition_start_time = std::chrono::steady_clock::now();
+        current_scene = &intro_scene;
     }
 
     current_scene->update();
