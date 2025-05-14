@@ -98,9 +98,9 @@ void main() {
     vec4 color = texture(tex0, vTexCoord);
     color.a = 1.0;
 
+    color = apply_corner_effect(color);
     color = scanlines(color);
     color = vignette(color);
-    color = apply_corner_effect(color);
     
     fragColor = color;
 }
