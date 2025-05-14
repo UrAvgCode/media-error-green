@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include <set>
+#include <deque>
 #include <memory>
 #include <vector>
 #include <array>
@@ -44,10 +45,11 @@ class Player {
 
     ofFbo _player_fbo;
 
-    std::shared_ptr<EffectShader> _effect_shader;
+    int source;
+    int destination;
 
     std::array<ofFbo, 2> temp_fbos;
-    std::set<std::shared_ptr<EffectShader>> _effect_shader_list;
+    std::deque<std::shared_ptr<EffectShader>> _effect_shader_list;
 
     std::vector<std::array<glm::vec2, 2>> _skeleton_lines;
     std::vector<std::array<glm::vec2, 2>> _previous_skeleton_lines;

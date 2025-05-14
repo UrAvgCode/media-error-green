@@ -1,8 +1,8 @@
 ﻿#include "player.h"
 
 #include <memory>
-#include <vector>
 #include <utility>
+#include <vector>
 
 #include <ofAppRunner.h>
 #include <ofGraphics.h>
@@ -18,7 +18,7 @@ Player::Player() : Player(0, ofxAzureKinect::BodySkeleton{}, nullptr) {}
 Player::Player(int id, ofxAzureKinect::BodySkeleton skeleton, ofEasyCam *camera) :
     _id(id), _camera(camera), _skeleton(skeleton) {
     _player_fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGBA);
-    _effect_shader = std::make_shared<EffectShader>();
+    _effect_shader_list.emplace_front(std::make_shared<EffectShader>());
 
     for (int i = 0; i < 2; ++i) {
         temp_fbos[i].allocate(ofGetWidth(), ofGetHeight(), GL_RGBA);
@@ -26,19 +26,14 @@ Player::Player(int id, ofxAzureKinect::BodySkeleton skeleton, ofEasyCam *camera)
 }
 
 void Player::render(const ofTexture &depth_tex, const ofTexture &body_index_tex, const ofTexture &depth_to_world_tex,
-            const std::vector<int> &body_ids) {
-    _player_fbo.begin();
-    ofClear(0, 0, 0, 0);
-    _effect_shader->draw_player(depth_tex, body_index_tex, depth_to_world_tex, body_ids, _camera, _id);
-    _player_fbo.end();
-
+                    const std::vector<int> &body_ids) {
     temp_fbos[0].begin();
     ofClear(0, 0, 0, 0);
-    _player_fbo.draw(0, 0);
+    _effect_shader_list.front()->draw_player(depth_tex, body_index_tex, depth_to_world_tex, body_ids, _camera, _id);
     temp_fbos[0].end();
 
-    int source = 0;
-    int destination = 1;
+    source = 0;
+    destination = 1;
 
     for (auto &effect_shader: _effect_shader_list) {
         temp_fbos[destination].begin();
@@ -51,29 +46,18 @@ void Player::render(const ofTexture &depth_tex, const ofTexture &body_index_tex,
         temp_fbos[destination].end();
         std::swap(source, destination);
     }
-
-    _player_fbo.begin();
-    ofClear(0, 0, 0, 0);
-    temp_fbos[source].draw(0, 0);
-    _player_fbo.end();
 }
 
-void Player::draw() {
-    _effect_shader->begin_player();
-    _player_fbo.draw(0, 0);
-    _effect_shader->end_player();
-}
+void Player::draw() { temp_fbos[source].draw(0, 0); }
 
 void Player::set_skeleton(const ofxAzureKinect::BodySkeleton &skeleton) { this->_skeleton = skeleton; }
 
 void Player::set_shader(std::shared_ptr<EffectShader> shader) {
-    if (_effect_shader_list.contains(_effect_shader)) {
-        _effect_shader_list.erase(_effect_shader);
-    } else {
-        _effect_shader_list.insert(_effect_shader);
+    _effect_shader_list.emplace_front(shader);
+
+    if (_effect_shader_list.size() > 3) {
+        _effect_shader_list.pop_back();
     }
-    
-    _effect_shader = shader;
 }
 
 int Player::id() const { return _id; }
