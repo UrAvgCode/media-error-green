@@ -33,7 +33,7 @@ CollisionObject::CollisionObject(glm::vec2 position, glm::vec2 velocity, const s
         auto sound_player = ofSoundPlayer();
 
         sound_player.load("resources/audio/" + filename);
-        sound_player.setVolume(0.05f);
+        sound_player.setVolume(0.075f);
         sound_player.setMultiPlay(true);
 
         _pluck_sounds.push_back(sound_player);

@@ -40,10 +40,10 @@ void CoreApp::setup() {
     ambient_sound.setLoop(true);
 
     transition_to_intro_sound.load("resources/audio/transition_to_intro.wav");
-    transition_to_intro_sound.setVolume(0.5f);
+    transition_to_intro_sound.setVolume(0.25f);
 
     transition_to_tracking_sound.load("resources/audio/transition_to_tracking.wav");
-    transition_to_tracking_sound.setVolume(0.5f);
+    transition_to_tracking_sound.setVolume(0.25f);
 }
 
 //--------------------------------------------------------------
