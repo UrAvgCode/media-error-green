@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <vector>
+#include <utility>
 
 #include <ofAppRunner.h>
 #include <ofGraphics.h>
@@ -9,18 +10,54 @@
 #include "effect_shader.h"
 #include "skeleton_utility.h"
 
+#include "chromatic_effect_shader.h"
+#include "glitch_effect_shader.h"
+
 Player::Player() : Player(0, ofxAzureKinect::BodySkeleton{}, nullptr) {}
 
 Player::Player(int id, ofxAzureKinect::BodySkeleton skeleton, ofEasyCam *camera) :
     _id(id), _camera(camera), _skeleton(skeleton) {
     _player_fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGBA);
     _effect_shader = std::make_shared<EffectShader>();
+
+    _effect_shader_list.push_back(std::make_shared<ChromaticEffectShader>());
+    _effect_shader_list.push_back(std::make_shared<GlitchEffectShader>());
+
+    for (int i = 0; i < 2; ++i) {
+        temp_fbos[i].allocate(ofGetWidth(), ofGetHeight(), GL_RGBA);
+    }
 }
 
 void Player::render(const ofTexture &depth_tex, const ofTexture &body_index_tex, const ofTexture &depth_to_world_tex,
             const std::vector<int> &body_ids) {
     _player_fbo.begin();
+    ofClear(0, 0, 0, 0);
     _effect_shader->draw_player(depth_tex, body_index_tex, depth_to_world_tex, body_ids, _camera, _id);
+    _player_fbo.end();
+
+    temp_fbos[0].begin();
+    ofClear(0, 0, 0, 0);
+    _player_fbo.draw(0, 0);
+    temp_fbos[0].end();
+
+    int source = 0;
+    int destination = 1;
+
+    for (auto &effect_shader: _effect_shader_list) {
+        temp_fbos[destination].begin();
+        ofClear(0, 0, 0, 0);
+
+        effect_shader->begin_player();
+        temp_fbos[source].draw(0, 0);
+        effect_shader->end_player();
+
+        temp_fbos[destination].end();
+        std::swap(source, destination);
+    }
+
+    _player_fbo.begin();
+    ofClear(0, 0, 0, 0);
+    temp_fbos[source].draw(0, 0);
     _player_fbo.end();
 }
 
