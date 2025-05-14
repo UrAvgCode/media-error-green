@@ -26,17 +26,27 @@ CollisionObject::CollisionObject(glm::vec2 position, glm::vec2 velocity, const s
     _image.draw(_fbo_padding, _fbo_padding);
     _fbo.end();
 
-    auto audio_filenames = std::vector<std::string>(
-            {"gruen_pluck_b.wav", "gruen_pluck_d.wav", "gruen_pluck_e.wav", "gruen_pluck_g.wav"});
+    auto pluck_filenames = std::vector<std::string>({"pluck_1.wav", "pluck_2.wav", "pluck_3.wav", "pluck_4.wav"});
+    auto noise_filenames = std::vector<std::string>({"noise_hit_1.wav", "noise_hit_2.wav", "noise_hit_3.wav"});
 
-    for (const auto &filename: audio_filenames) {
+    for (const auto &filename: pluck_filenames) {
+        auto sound_player = ofSoundPlayer();
+
+        sound_player.load("resources/audio/" + filename);
+        sound_player.setVolume(0.05f);
+        sound_player.setMultiPlay(true);
+
+        _pluck_sounds.push_back(sound_player);
+    }
+
+    for (const auto &filename: noise_filenames) {
         auto sound_player = ofSoundPlayer();
 
         sound_player.load("resources/audio/" + filename);
         sound_player.setVolume(0.15f);
         sound_player.setMultiPlay(true);
 
-        puck_sounds.push_back(sound_player);
+        _noise_sounds.push_back(sound_player);
     }
 }
 
@@ -54,7 +64,7 @@ void CollisionObject::update(std::vector<Player> &players, const std::vector<Col
 
     if (auto [collided, dir] = check_collision_with_bodies(players, camera); collided) {
         if (_can_collide_with_player) {
-            play_random_pluck();
+            play_random_noise_hit();
             _velocity = dir;
             _can_collide_with_player = false;
         }
@@ -64,6 +74,7 @@ void CollisionObject::update(std::vector<Player> &players, const std::vector<Col
 
     if (auto [collided, dir] = check_collision_with_objects(objects); collided) {
         if (_can_collide_with_object) {
+            play_random_pluck();
             _velocity = dir;
             _can_collide_with_object = false;
         }
@@ -124,8 +135,13 @@ std::pair<bool, glm::vec2> CollisionObject::global_effect_triggered() {
 void CollisionObject::set_effect_shader(std::shared_ptr<EffectShader> shader) { _effect_shader = shader; }
 
 void CollisionObject::play_random_pluck() {
-    auto random = static_cast<std::size_t>(ofRandom(puck_sounds.size()));
-    puck_sounds[random].play();
+    auto random = static_cast<std::size_t>(ofRandom(_pluck_sounds.size()));
+    _pluck_sounds[random].play();
+}
+
+void CollisionObject::play_random_noise_hit() {
+    auto random = static_cast<std::size_t>(ofRandom(_noise_sounds.size()));
+    _noise_sounds[random].play();
 }
 
 std::pair<bool, glm::vec2> CollisionObject::check_collision_with_bodies(std::vector<Player> &players,
