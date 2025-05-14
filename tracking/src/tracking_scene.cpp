@@ -23,7 +23,7 @@ TrackingScene::TrackingScene(ofxAzureKinect::Device *device) :
     _global_effect_position = {0, 0};
     _global_effect_trigger_time = 0;
 
-    _global_effect.load("resources/audio/gruen_globalEffect.wav");
+    _global_effect.load("resources/audio/global_effect.wav");
     _global_effect.setMultiPlay(false);
 
     _effect_shaders = {std::make_shared<CloudEffectShader>(),    std::make_shared<MatrixEffectShader>(),

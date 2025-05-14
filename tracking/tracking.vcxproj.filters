@@ -1711,21 +1711,6 @@
     <CopyFileToFolders Include="resources\me-logo-green.png">
       <Filter>resources</Filter>
     </CopyFileToFolders>
-    <CopyFileToFolders Include="resources\audio\gruen_globalEffect.wav">
-      <Filter>resources\audio</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="resources\audio\gruen_pluck_b.wav">
-      <Filter>resources\audio</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="resources\audio\gruen_pluck_d.wav">
-      <Filter>resources\audio</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="resources\audio\gruen_pluck_e.wav">
-      <Filter>resources\audio</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="resources\audio\gruen_pluck_g.wav">
-      <Filter>resources\audio</Filter>
-    </CopyFileToFolders>
     <CopyFileToFolders Include="resources\me-logo.png">
       <Filter>resources</Filter>
     </CopyFileToFolders>
@@ -1800,6 +1785,30 @@
     </CopyFileToFolders>
     <CopyFileToFolders Include="shaders\render\cloud.vert">
       <Filter>shaders\render</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="resources\audio\pluck_4.wav">
+      <Filter>resources\audio</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="resources\audio\global_effect.wav">
+      <Filter>resources\audio</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="resources\audio\pluck_1.wav">
+      <Filter>resources\audio</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="resources\audio\pluck_2.wav">
+      <Filter>resources\audio</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="resources\audio\pluck_3.wav">
+      <Filter>resources\audio</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="resources\audio\noise_hit_1.wav">
+      <Filter>resources\audio</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="resources\audio\noise_hit_2.wav">
+      <Filter>resources\audio</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="resources\audio\noise_hit_3.wav">
+      <Filter>resources\audio</Filter>
     </CopyFileToFolders>
   </ItemGroup>
 </Project>

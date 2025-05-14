@@ -35,6 +35,7 @@ class CollisionObject {
 
   protected:
     void play_random_pluck();
+    void play_random_noise_hit();
     std::pair<bool, glm::vec2> check_collision_with_bodies(std::vector<Player> &players, const ofEasyCam &camera);
     std::pair<bool, glm::vec2> check_collision_with_objects(const std::vector<CollisionObject> &objects);
 
@@ -51,7 +52,8 @@ class CollisionObject {
     ofImage _image;
     std::shared_ptr<EffectShader> _effect_shader;
 
-    std::vector<ofSoundPlayer> puck_sounds;
+    std::vector<ofSoundPlayer> _pluck_sounds;
+    std::vector<ofSoundPlayer> _noise_sounds;
 
     bool _can_collide_with_player;
     bool _can_collide_with_object;
