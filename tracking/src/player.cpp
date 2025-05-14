@@ -20,9 +20,6 @@ Player::Player(int id, ofxAzureKinect::BodySkeleton skeleton, ofEasyCam *camera)
     _player_fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGBA);
     _effect_shader = std::make_shared<EffectShader>();
 
-    _effect_shader_list.push_back(std::make_shared<ChromaticEffectShader>());
-    _effect_shader_list.push_back(std::make_shared<GlitchEffectShader>());
-
     for (int i = 0; i < 2; ++i) {
         temp_fbos[i].allocate(ofGetWidth(), ofGetHeight(), GL_RGBA);
     }
@@ -69,7 +66,15 @@ void Player::draw() {
 
 void Player::set_skeleton(const ofxAzureKinect::BodySkeleton &skeleton) { this->_skeleton = skeleton; }
 
-void Player::set_shader(std::shared_ptr<EffectShader> shader) { _effect_shader = shader; }
+void Player::set_shader(std::shared_ptr<EffectShader> shader) {
+    if (_effect_shader_list.contains(_effect_shader)) {
+        _effect_shader_list.erase(_effect_shader);
+    } else {
+        _effect_shader_list.insert(_effect_shader);
+    }
+    
+    _effect_shader = shader;
+}
 
 int Player::id() const { return _id; }
 
