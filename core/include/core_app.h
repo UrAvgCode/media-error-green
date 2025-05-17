@@ -33,7 +33,8 @@ class CoreApp : public ofBaseApp {
     void gotMessage(ofMessage msg) override;
 
   private:
-    void draw_fps_counter();
+    static void draw_green_frame();
+    void draw_fps_counter() const;
 
     ofxAzureKinect::Device kinect_device;
 
