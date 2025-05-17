@@ -159,7 +159,7 @@ void CoreApp::keyPressed(int key) {
             keyboard_triggered_scene = &tracking_scene;
             break;
         case '3':
-            keyboard_triggered_scene == nullptr;
+            keyboard_triggered_scene = nullptr;
             break;
     }
 }
