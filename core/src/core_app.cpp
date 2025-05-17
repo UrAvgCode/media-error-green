@@ -104,9 +104,21 @@ void CoreApp::draw() {
     }
 
     draw_fps_counter();
+    draw_green_frame();
 }
 
-void CoreApp::draw_fps_counter() {
+void CoreApp::draw_green_frame() {
+    ofPushStyle();
+
+    ofNoFill();
+    ofSetColor(0, 255, 0);
+
+    ofDrawRectangle(0, 0, static_cast<float>(ofGetWidth()), static_cast<float>(ofGetHeight()));
+
+    ofPopStyle();
+}
+
+void CoreApp::draw_fps_counter() const {
     if (!show_debug_info) {
         return;
     }
@@ -147,7 +159,7 @@ void CoreApp::keyPressed(int key) {
             keyboard_triggered_scene = &tracking_scene;
             break;
         case '3':
-            keyboard_triggered_scene == nullptr;
+            keyboard_triggered_scene = nullptr;
             break;
     }
 }
