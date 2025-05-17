@@ -26,10 +26,12 @@ TrackingScene::TrackingScene(ofxAzureKinect::Device *device) :
     _global_effect.load("resources/audio/global_effect.wav");
     _global_effect.setMultiPlay(false);
 
-    _effect_shaders = {std::make_shared<CloudEffectShader>(),    std::make_shared<MatrixEffectShader>(),
-                       std::make_shared<PixelEffectShader>(),    std::make_shared<GlitchEffectShader>(),
-                       std::make_shared<WarpEffectShader>(),     std::make_shared<SignallossEffectShader>(),
-                       std::make_shared<ChromaticEffectShader>()};
+    _effect_shaders = {
+            std::make_shared<WarpEffectShader>(),       std::make_shared<MatrixEffectShader>(),
+            std::make_shared<ChromaticEffectShader>(),  std::make_shared<CloudEffectShader>(),
+            std::make_shared<PixelEffectShader>(),      std::make_shared<GlitchEffectShader>(),
+            std::make_shared<SignallossEffectShader>(),
+    };
 
     for (std::size_t i = 0; i < _number_of_objects; ++i) {
         auto position = glm::vec2(ofRandom(5, 1000), ofRandom(5, 500));
