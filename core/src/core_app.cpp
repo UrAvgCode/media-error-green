@@ -66,6 +66,8 @@ void CoreApp::update() {
         transition_start_time = std::chrono::steady_clock::now();
         current_scene = &tracking_scene;
     } else if (current_scene == &tracking_scene && body_skeletons.empty()) {
+        intro_scene.reset_particles();
+
         transition_to_intro_sound.play();
         transition_start_time = std::chrono::steady_clock::now();
         current_scene = &intro_scene;
@@ -160,6 +162,9 @@ void CoreApp::keyPressed(int key) {
             break;
         case '3':
             keyboard_triggered_scene = nullptr;
+            break;
+        case 'p':
+            intro_scene.reset_particles();
             break;
     }
 }

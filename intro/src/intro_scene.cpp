@@ -167,6 +167,12 @@ void IntroScene::render() {
     frame_buffer.end();
 }
 
+void IntroScene::reset_particles() {
+    for (auto &particle: particles) {
+        particle.reset_position();
+    }
+}
+
 void IntroScene::create_logo_vectors() {
 
     // SVG-Bounding-Box berechnen

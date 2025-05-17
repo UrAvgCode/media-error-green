@@ -88,3 +88,12 @@ void Particle::apply_repulsion(const std::array<Particle, 2048> &particles, floa
                 return diff * force;
             });
 }
+
+void Particle::reset_position() { 
+    position = {ofRandomWidth(), ofRandomHeight()};
+
+    auto &vertices = mesh.getVertices();
+    for (auto &vertex: vertices) {
+        vertex = static_cast<ofPoint>(position);
+    }
+}

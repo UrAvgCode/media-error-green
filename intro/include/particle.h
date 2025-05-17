@@ -27,6 +27,8 @@ class Particle {
     void apply_force(ofVec2f force);
     void apply_repulsion(const std::array<Particle, 2048> &particles, float repulsion_radius, float repulsion_strength);
 
+    void reset_position();
+
   protected:
     void move_vertices();
     void wrap_position();

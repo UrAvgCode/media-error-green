@@ -18,6 +18,8 @@ class IntroScene : public Scene {
     void update() override;
     void render() override;
 
+    void reset_particles();
+
   private:
     const int screen_width = ofGetWidth();
     const int screen_height = ofGetHeight();
