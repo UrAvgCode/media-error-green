@@ -64,12 +64,6 @@ void main() {
     int body_index = int(texture(body_index_texture, tex_coord).x * 255);
     vec4 ray = texture(world_texture, tex_coord);
 
-    if (body_ids[body_index] == player_id && depth != 0 && ray.x != 0 && ray.y != 0) {
-        v_color = vec4(0.0, 1.0, 0.0, 1.0);
-    } else {
-        v_color = vec4(0.0);
-    }
-
     vec4 pos_world = vec4(1);
     pos_world.z = depth * 65535.0;
     pos_world.x = ray.x * pos_world.z;
@@ -77,6 +71,12 @@ void main() {
     
     v_normal = normal_vector(tex_coord, pos_world);
     v_frag_pos = vec3(pos_world.xyz);
+
+    if (body_ids[body_index] == player_id && depth != 0 && ray.x != 0 && ray.y != 0) {
+        v_color = vec4(0.0, 1.0, 0.0, 1.0);
+    } else {
+        v_color = vec4(0.0);
+    }
     
     gl_Position = modelViewProjectionMatrix * pos_world;
 }
