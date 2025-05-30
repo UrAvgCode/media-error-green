@@ -50,8 +50,7 @@ CollisionObject::CollisionObject(glm::vec2 position, glm::vec2 velocity, const s
     }
 }
 
-void CollisionObject::update(std::vector<Player> &players, const std::vector<CollisionObject> &objects,
-                             const ofEasyCam &camera) {
+void CollisionObject::update(std::vector<Player> &players, const std::vector<CollisionObject> &objects) {
     if (_position.x <= 0 || _position.x + width() >= ofGetWidth()) {
         play_random_pluck();
         _velocity.x *= -1;
@@ -62,24 +61,24 @@ void CollisionObject::update(std::vector<Player> &players, const std::vector<Col
         _velocity.y *= -1;
     }
 
-    if (auto [collided, dir] = check_collision_with_bodies(players, camera); collided) {
-        if (_can_collide_with_player) {
-            play_random_noise_hit();
-            _velocity = dir;
-            _can_collide_with_player = false;
-        }
-    } else {
-        _can_collide_with_player = true;
-    }
-
-    if (auto [collided, dir] = check_collision_with_objects(objects); collided) {
+    if (auto direction = check_collision_with_objects(objects); direction.has_value()) {
         if (_can_collide_with_object) {
             play_random_pluck();
-            _velocity = dir;
+            _velocity = direction.value();
             _can_collide_with_object = false;
         }
     } else {
         _can_collide_with_object = true;
+    }
+
+    if (auto direction = check_collision_with_bodies(players); direction.has_value()) {
+        if (_can_collide_with_player) {
+            play_random_noise_hit();
+            _velocity = direction.value();
+            _can_collide_with_player = false;
+        }
+    } else {
+        _can_collide_with_player = true;
     }
 
     _velocity *= _friction;
@@ -144,10 +143,8 @@ void CollisionObject::play_random_noise_hit() {
     _noise_sounds[random].play();
 }
 
-std::pair<bool, glm::vec2> CollisionObject::check_collision_with_bodies(std::vector<Player> &players,
-                                                                        const ofEasyCam &camera) {
+std::optional<glm::vec2> CollisionObject::check_collision_with_bodies(std::vector<Player> &players) const {
     for (auto &player: players) {
-        // Zugriff auf die Skeleton-Vertices des Spielers
         const auto &lines = player.get_skeleton_lines();
         const auto &velocities = player.get_skeleton_velocities();
 
@@ -159,18 +156,19 @@ std::pair<bool, glm::vec2> CollisionObject::check_collision_with_bodies(std::vec
             if (bounding_box.intersects(line[0], line[1])) {
                 player.set_shader(_effect_shader);
 
-                auto new_velocity = -_velocity;
+                auto new_velocity = -(_velocity);
                 new_velocity += line_velocity[0];
 
-                return {true, new_velocity};
+                return new_velocity;
             }
         }
     }
 
-    return {false, {0, 0}};
+    return std::nullopt;
 }
 
-std::pair<bool, glm::vec2> CollisionObject::check_collision_with_objects(const std::vector<CollisionObject> &objects) {
+std::optional<glm::vec2>
+CollisionObject::check_collision_with_objects(const std::vector<CollisionObject> &objects) const {
     auto this_bounds = ofRectangle(position().x, position().y, width(), height());
     for (const auto &object: objects) {
         if (this == &object) {
@@ -198,11 +196,11 @@ std::pair<bool, glm::vec2> CollisionObject::check_collision_with_objects(const s
                 new_velocity.y = -(new_velocity.y); // bounce vertically
             }
 
-            return {true, new_velocity};
+            return new_velocity;
         }
     }
 
-    return {false, _velocity};
+    return std::nullopt;
 }
 
 float CollisionObject::width() const { return _image.getWidth(); }
