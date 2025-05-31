@@ -21,15 +21,15 @@ class IntroScene : public Scene {
     void reset_particles();
 
   private:
-    const int screen_width = ofGetWidth();
-    const int screen_height = ofGetHeight();
+    void create_logo_vectors();
+    void create_logo_in_outs_vectors();
 
     // flow field
     std::vector<ofVec2f> flow_field;
+    int flow_field_resolution;
+    int flow_field_cols;
+    int flow_field_rows;
     float flow_field_offset;
-    const int flow_field_resolution = 20;
-    const int flow_field_cols = ofGetWidth() / flow_field_resolution;
-    const int flow_field_rows = ofGetHeight() / flow_field_resolution;
 
     // particles
     std::array<Particle, 2048> particles;
@@ -44,7 +44,7 @@ class IntroScene : public Scene {
     // logo
     ofxSVG logo_svg;
     ofxSVG logo_in_outs_svg;
-    const float logo_scale = 1.0;
+
     std::vector<pair<ofVec2f, ofVec2f>> logo_vectors;
     std::vector<pair<ofVec2f, ofVec2f>> logo_in_outs_vectors;
     std::vector<std::pair<ofVec2f, ofVec2f>> all_logo_vectors;
@@ -53,12 +53,9 @@ class IntroScene : public Scene {
     ofFbo logo_fbo;
 
     ofVec2f logo_position;
-    float logo_width;
-    float logo_height;
-    int logo_left, logo_right, logo_top, logo_bottom;
     ofVec2f logo_center;
     float logo_radius;
-    int logo_margin = 30;
+    int logo_margin;
 
     ofFbo particle_draw_fbo;
 
@@ -66,7 +63,4 @@ class IntroScene : public Scene {
     ofShader particle_pixel_shader;
 
     int line_position = 0;
-
-    void create_logo_vectors();
-    void create_logo_in_outs_vectors();
 };
