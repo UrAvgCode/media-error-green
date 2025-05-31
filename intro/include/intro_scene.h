@@ -1,10 +1,11 @@
 #pragma once
 
-#include <string>
 #include <utility>
 #include <vector>
 
-#include <ofMain.h>
+#include <ofFbo.h>
+#include <ofShader.h>
+#include <ofVec2f.h>
 #include <ofxSvg.h>
 
 #include <scene.h>
