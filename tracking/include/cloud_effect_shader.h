@@ -6,11 +6,11 @@ class CloudEffectShader : public EffectShader {
   public:
     CloudEffectShader();
 
-    void begin_player() override;
-    void end_player() override;
+    void begin_player() final;
+    void end_player() final;
 
-    void begin_object() override;
-    void end_object() override;
+    void begin_object() final;
+    void end_object() final;
 
   private:
     ofShader _shader;
