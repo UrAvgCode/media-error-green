@@ -46,8 +46,8 @@ class IntroScene : public Scene {
     ofxSVG logo_svg;
     ofxSVG logo_in_outs_svg;
 
-    std::vector<pair<ofVec2f, ofVec2f>> logo_vectors;
-    std::vector<pair<ofVec2f, ofVec2f>> logo_in_outs_vectors;
+    std::vector<std::pair<ofVec2f, ofVec2f>> logo_vectors;
+    std::vector<std::pair<ofVec2f, ofVec2f>> logo_in_outs_vectors;
     std::vector<std::pair<ofVec2f, ofVec2f>> all_logo_vectors;
 
     ofxSVG logo_picture;

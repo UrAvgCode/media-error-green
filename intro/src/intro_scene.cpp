@@ -5,6 +5,7 @@
 #include <vector>
 
 #include <ofVec2f.h>
+#include <ofGraphics.h>
 
 IntroScene::IntroScene() {
     flow_field_resolution = 20;
@@ -56,7 +57,7 @@ IntroScene::IntroScene() {
     ofRectangle boundingBoxLogo;
     for (int i = 0; i < logo_svg.getNumPath(); i++) {
         ofPath path = logo_svg.getPathAt(i);
-        vector<ofPolyline> outlines = path.getOutline();
+        std::vector<ofPolyline> outlines = path.getOutline();
         for (auto &outline: outlines) {
             boundingBoxLogo.growToInclude(outline.getBoundingBox());
         }
