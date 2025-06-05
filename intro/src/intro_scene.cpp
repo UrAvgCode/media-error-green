@@ -5,10 +5,15 @@
 #include <vector>
 
 #include <ofVec2f.h>
+#include <ofGraphics.h>
 
 IntroScene::IntroScene() {
-    flow_field.resize(flow_field_cols * flow_field_rows); // initialize vector field
-    flow_field_offset = 0.0;
+    flow_field_resolution = 20;
+    flow_field_cols = ofGetWidth() / flow_field_resolution;
+    flow_field_rows = ofGetHeight() / flow_field_resolution;
+    flow_field.resize(flow_field_cols * flow_field_rows);
+
+    flow_field_offset = 0;
 
     logo_picture.load("resources/media_error_logo.svg");
     logo_fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGB);
@@ -36,13 +41,11 @@ IntroScene::IntroScene() {
     logo_svg.load("resources/media_error_logo_lines.svg");
     logo_in_outs_svg.load("resources/logo_in_and_out_lines.svg");
     logo_position = ofVec2f(ofGetWidth() / 2, ofGetHeight() / 2);
-    logo_width = logo_svg.getWidth() * logo_scale;
-    logo_height = logo_svg.getHeight() * logo_scale;
 
-    logo_left = screen_width / 2 - logo_svg.getWidth() / 2;
-    logo_right = screen_width / 2 + logo_svg.getWidth() / 2;
-    logo_top = screen_height / 2 - logo_svg.getHeight() / 2;
-    logo_bottom = screen_height / 2 + logo_svg.getHeight() / 2;
+    float logo_left = ofGetWidth() / 2.0f - logo_svg.getWidth() / 2.0f;
+    float logo_right = ofGetWidth() / 2.0f + logo_svg.getWidth() / 2.0f;
+    float logo_top = ofGetHeight() / 2.0f - logo_svg.getHeight() / 2.0f;
+    float logo_bottom = ofGetHeight() / 2.0f + logo_svg.getHeight() / 2.0f;
 
     create_logo_vectors();
     create_logo_in_outs_vectors();
@@ -54,7 +57,7 @@ IntroScene::IntroScene() {
     ofRectangle boundingBoxLogo;
     for (int i = 0; i < logo_svg.getNumPath(); i++) {
         ofPath path = logo_svg.getPathAt(i);
-        vector<ofPolyline> outlines = path.getOutline();
+        std::vector<ofPolyline> outlines = path.getOutline();
         for (auto &outline: outlines) {
             boundingBoxLogo.growToInclude(outline.getBoundingBox());
         }
@@ -63,6 +66,7 @@ IntroScene::IntroScene() {
     // Mittelpunkt und Radius des Kreises berechnen
     logo_center = ofVec2f(boundingBoxLogo.getCenter().x + logo_left, boundingBoxLogo.getCenter().y + logo_top);
     logo_radius = (std::max(boundingBoxLogo.getWidth(), boundingBoxLogo.getHeight()) / 2.0f);
+    logo_margin = 30;
 }
 
 //--------------------------------------------------------------
@@ -186,9 +190,6 @@ void IntroScene::create_logo_vectors() {
 
         for (auto &outline: outlines) {
             outline = outline.getResampledBySpacing(4); // Resample für gleichmäßige Punkte
-            for (auto &point: outline) {
-                point *= logo_scale;
-            }
             bounding_box.growToInclude(outline.getBoundingBox());
         }
     }
@@ -207,8 +208,8 @@ void IntroScene::create_logo_vectors() {
         for (auto &outline: outlines) {
             outline = outline.getResampledBySpacing(4); // Optional: Punkte gleichmäßig verteilen
             for (int j = 0; j < outline.size() - 1; j++) {
-                ofVec2f start = ofVec2f(outline[j]) * logo_scale + offset;
-                ofVec2f end = ofVec2f(outline[j + 1]) * logo_scale + offset;
+                ofVec2f start = ofVec2f(outline[j]) + offset;
+                ofVec2f end = ofVec2f(outline[j + 1]) + offset;
 
                 // Richtung berechnen entlang des Pfades
                 ofVec2f direction = end - start;
@@ -238,9 +239,6 @@ void IntroScene::create_logo_in_outs_vectors() {
 
         for (auto &outline: outlines) {
             outline = outline.getResampledBySpacing(4); // Resample für gleichmäßige Punkte
-            for (auto &point: outline) {
-                point *= logo_scale;
-            }
             bounding_box.growToInclude(outline.getBoundingBox());
         }
     }
@@ -259,8 +257,8 @@ void IntroScene::create_logo_in_outs_vectors() {
         for (auto &outline: outlines) {
             outline = outline.getResampledBySpacing(4); // Optional: Punkte gleichmäßig verteilen
             for (int j = 0; j < outline.size() - 1; j++) {
-                ofVec2f start = ofVec2f(outline[j]) * logo_scale + offset;
-                ofVec2f end = ofVec2f(outline[j + 1]) * logo_scale + offset;
+                ofVec2f start = ofVec2f(outline[j]) + offset;
+                ofVec2f end = ofVec2f(outline[j + 1]) + offset;
 
                 // Richtung berechnen entlang des Pfades
                 ofVec2f direction = end - start;

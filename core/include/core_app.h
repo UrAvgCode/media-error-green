@@ -36,25 +36,25 @@ class CoreApp : public ofBaseApp {
     static void draw_green_frame();
     void draw_fps_counter() const;
 
-    ofxAzureKinect::Device kinect_device;
+    ofxAzureKinect::Device _kinect_device;
 
-    IntroScene intro_scene;
-    TrackingScene tracking_scene;
+    IntroScene _intro_scene;
+    TrackingScene _tracking_scene;
 
-    Scene *current_scene;
-    Scene *inactive_scene;
-    Scene *keyboard_triggered_scene;
+    Scene *_current_scene;
+    Scene *_inactive_scene;
+    Scene *_keyboard_triggered_scene;
 
-    ofFbo current_app_fbo;
-    ofFbo inactive_app_fbo;
-    ofShader transition_shader;
+    ofFbo _current_app_fbo;
+    ofFbo _inactive_app_fbo;
+    ofShader _transition_shader;
 
-    const std::chrono::milliseconds transition_duration = 500ms;
-    std::chrono::steady_clock::time_point transition_start_time;
+    const std::chrono::milliseconds _transition_duration = 500ms;
+    std::chrono::steady_clock::time_point _transition_start_time;
 
-    ofSoundPlayer ambient_sound;
-    ofSoundPlayer transition_to_intro_sound;
-    ofSoundPlayer transition_to_tracking_sound;
+    ofSoundPlayer _ambient_sound;
+    ofSoundPlayer _transition_to_intro_sound;
+    ofSoundPlayer _transition_to_tracking_sound;
 
-    bool show_debug_info = false;
+    bool _show_debug_info;
 };
