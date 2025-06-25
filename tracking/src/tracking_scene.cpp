@@ -21,7 +21,7 @@ TrackingScene::TrackingScene(ofxAzureKinect::Device *device) :
 
     _global_effect_shader.load("shaders/global_effect");
     _global_effect_position = {0, 0};
-    _global_effect_trigger_time = 0;
+    _global_effect_trigger_time = ofGetSystemTimeMillis();
 
     _global_effect.load("resources/audio/global_effect.wav");
     _global_effect.setMultiPlay(false);
