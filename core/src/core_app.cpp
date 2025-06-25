@@ -104,7 +104,6 @@ void CoreApp::draw_green_frame() {
 
     ofNoFill();
     ofSetColor(0, 255, 0);
-
     ofDrawRectangle(0, 0, static_cast<float>(ofGetWidth()), static_cast<float>(ofGetHeight()));
 
     ofPopStyle();
