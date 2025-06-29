@@ -1,6 +1,9 @@
 #pragma once
 
-#include <ofMain.h>
+#include <ofAppRunner.h>
+#include <ofFbo.h>
+#include <ofImage.h>
+#include <ofPixels.h>
 
 class Scene {
   public:
@@ -17,6 +20,16 @@ class Scene {
     }
 
     virtual ofFbo &get_frame_buffer() { return frame_buffer; }
+
+    void save_frame() {
+        auto pixels = ofPixels();
+        auto image = ofImage();
+
+        frame_buffer.readToPixels(pixels);
+
+        image.setFromPixels(pixels);
+        image.save("frame_" + std::to_string(ofGetElapsedTimeMillis()) + ".png");
+    }
 
   protected:
     ofFbo frame_buffer;

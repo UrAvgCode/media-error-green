@@ -1810,5 +1810,11 @@
     <CopyFileToFolders Include="resources\audio\noise_hit_3.wav">
       <Filter>resources\audio</Filter>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\render\matrix.frag">
+      <Filter>shaders\render</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="shaders\render\matrix.vert">
+      <Filter>shaders\render</Filter>
+    </CopyFileToFolders>
   </ItemGroup>
 </Project>
