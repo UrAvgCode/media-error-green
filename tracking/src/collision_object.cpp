@@ -91,7 +91,9 @@ void CollisionObject::update(std::vector<Player> &players, const std::vector<Col
             _velocity *= _max_speed / speed;
         }
     }
+}
 
+void CollisionObject::update_position() {
     _position += _velocity;
 
     // clamp the position to the screen size

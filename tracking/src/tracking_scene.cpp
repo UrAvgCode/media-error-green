@@ -82,6 +82,10 @@ void TrackingScene::update() {
 
     for (auto &collision_object: _collision_objects) {
         collision_object.update(_players, _collision_objects);
+    }
+
+    for (auto &collision_object: _collision_objects) {
+        collision_object.update_position();
 
         if (ofGetSystemTimeMillis() - _global_effect_trigger_time > _global_effect_duration) {
             auto [triggered, position] = collision_object.global_effect_triggered();

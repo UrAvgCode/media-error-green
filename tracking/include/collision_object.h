@@ -22,6 +22,7 @@ class CollisionObject {
                     std::shared_ptr<EffectShader> effect_shader);
 
     void update(std::vector<Player> &players, const std::vector<CollisionObject> &objects);
+    void update_position();
     void draw() const;
 
     std::pair<bool, glm::vec2> global_effect_triggered();
