@@ -154,6 +154,8 @@ void CoreApp::keyPressed(int key) {
         case 'p':
             _intro_scene.reset_particles();
             break;
+        case OF_KEY_F1:
+            _current_scene->save_frame();
         default:
             break;
     }
