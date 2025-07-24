@@ -1,5 +1,7 @@
 #include "matrix_effect_shader.h"
 
+#include <vector>
+
 #include <ofAppRunner.h>
 #include <ofUtils.h>
 

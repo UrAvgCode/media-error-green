@@ -2,6 +2,8 @@
 
 #include "effect_shader.h"
 
+#include <vector>
+
 #include <ofGraphics.h>
 #include <ofImage.h>
 #include <ofPixels.h>
@@ -17,9 +19,8 @@ class MatrixEffectShader : public EffectShader {
     void begin_object() final;
     void end_object() final;
 
-    virtual void draw_player(const ofTexture &depth_tex, const ofTexture &body_index_tex,
-                             const ofTexture &depth_to_world_tex, const std::vector<int> &body_ids, ofEasyCam *camera,
-                             int id) final;
+    void draw_player(const ofTexture &depth_tex, const ofTexture &body_index_tex, const ofTexture &depth_to_world_tex,
+                     const std::vector<int> &body_ids, ofEasyCam *camera, int id) final;
 
   private:
     ofShader _shader;
